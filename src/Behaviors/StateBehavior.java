@@ -1,5 +1,7 @@
-package common;
+package Behaviors;
 
+import State.SharedState;
+import State.State;
 import lejos.robotics.subsumption.Behavior;
 
 abstract public class StateBehavior implements Behavior {
@@ -11,8 +13,11 @@ abstract public class StateBehavior implements Behavior {
 	
 	@Override
 	public boolean takeControl() {
-		return this.sharedState.getState() == this.getTargetState();
+		return this.sharedState.getState().equals(this.getTargetState());
 	}
-	
+//	@Override
+//	public void suppress() {
+//		this.sharedState.reset();
+//	}
 	abstract State getTargetState();
 }
