@@ -1,14 +1,17 @@
 package Behaviors;
 
+import HAL.IHAL;
 import State.SharedState;
 import State.State;
 import lejos.robotics.subsumption.Behavior;
 
 abstract public class StateBehavior implements Behavior {
 	protected SharedState sharedState;
+	protected IHAL hal;
 	
-	public StateBehavior(SharedState sharedState) {
+	public StateBehavior(SharedState sharedState, IHAL hal) {
 		this.sharedState = sharedState;
+		this.hal = hal;
 	}
 	
 	@Override

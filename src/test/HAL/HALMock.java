@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
+import HAL.HALHelper;
 import HAL.IHAL;
 
 public class HALMock implements IHAL{
@@ -23,6 +24,8 @@ public class HALMock implements IHAL{
 	@Override
 	public void printOnDisplay(String text, Optional<Long> waitDuration) {
 		this.storage.add(text);
+		if(waitDuration.isPresent())
+			HALHelper.sleep(waitDuration.get());
 	}
 
 	
