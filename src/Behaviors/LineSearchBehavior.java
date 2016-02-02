@@ -9,10 +9,10 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
+import java.io.*;
 
 public class LineSearchBehavior extends StateBehavior {
 	public static final float THRESHOLD = 0.15f;
-	
 	public static final int MEAN_WINDOW = 5;
 	
 	// TODO: update this as soon as we have proper handling in the HAL
@@ -37,14 +37,20 @@ public class LineSearchBehavior extends StateBehavior {
 		MeanFilter meanFilter = new MeanFilter(sampleProvider, LineSearchBehavior.MEAN_WINDOW);
 		float[] meanBuffer = new float[meanFilter.sampleSize()];
 		float[] valueBuffer = new float[sampleProvider.sampleSize()];
-		
+//		float[] fileSample = new float[sampleProvider.sampleSize()];
+	    File file = new File("sensor.log");
 		// TODO: implement handling the barcode
+	    DataOutputStream out = null; // declare outside the try block
+
+	      try {
+			out = new DataOutputStream(new FileOutputStream(file));
 		
 		int counter = 1;
 		Direction direction = Direction.LEFT;
 		while (!this.suppressed) {
 			// Do not sample too often.
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+			this.writeToLogFile(valueBuffer[0], out);
 			
 			if (this.isOnLine(meanFilter, meanBuffer, sampleProvider, valueBuffer)) {
 				// Drive forward and reset search strategy values for potential later use.
@@ -65,20 +71,31 @@ public class LineSearchBehavior extends StateBehavior {
 			}
 			this.hal.rotate(turn_angle, true);
 			while (!this.suppressed && this.hal.motorsAreMoving()) {
+				this.writeToLogFile(valueBuffer[0], out);
 				if (this.isOnLine(meanFilter, meanBuffer, sampleProvider, valueBuffer)) {
+
 					// We've found the line, stop moving.
 					this.hal.stop();
 					break;
 				}
 				
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+				Delay.msDelay(LineSearchBehavior.LOOP_DELAY/10);
 			}
 			direction = Direction.changeDirection(direction);
 			counter++;
 		}
-		
+	      } 
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    finally{
 		sensor.close();
+	      }
 	}
 
 	private boolean isOnLine(MeanFilter meanFilter, float[] meanBuffer, SampleProvider sampleProvider, float[] valueBuffer) {
@@ -90,7 +107,10 @@ public class LineSearchBehavior extends StateBehavior {
 		LCD.drawString("currentMean: " + currentMean, 0, 1);
 		return isOnLine;
 	}
-
+	
+	private void writeToLogFile(float sample, DataOutputStream fos) throws IOException {
+		fos.writeFloat(sample);
+	}
 	@Override
 	State getTargetState() {
 		return State.LineSearch;
