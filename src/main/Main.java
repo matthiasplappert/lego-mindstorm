@@ -15,17 +15,29 @@ import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
+import lejos.utility.TextMenu;
 
 
 public class Main {
 	public static void main(String[] args) {
-		
-		// Wait until we press enter to start the program.
-		LCD.drawString("Press ENTER to start", 0, 0);
-		while (!Button.ENTER.isDown()) {
-			Thread.yield();
+		// Allow to pick initial state using the GUI. This code ensures that the default
+		// state is always at the top of the list, hence the somewhat lengthy code.
+		State[] states = new State[State.values().length];
+		states[0] = State.getInitState();
+		int i = 1;
+		for (State state: State.values()) {
+			if (state.equals(State.getInitState())) {
+				continue;
+			}
+			states[i] = state;
+			i++;
 		}
-		LCD.clear();
+		String[] stateStrings = new String[states.length];
+		for (int i = 0; i < states.length; i++) {
+			stateStrings[i] = states[i] + "";
+		}
+		TextMenu menu = new TextMenu(stateStrings);
+		int initialStateIndex = menu.select();
 
 		IHAL hal = new HAL();
 //		IHAL hal = new DefaultHAL(){
@@ -38,7 +50,7 @@ public class Main {
 //		};
 
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
-		SharedState sharedState = new SharedState(State.LineSearch);
+		SharedState sharedState = new SharedState(states[initialStateIndex]);
 		
 		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
