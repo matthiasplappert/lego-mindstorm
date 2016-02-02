@@ -23,18 +23,14 @@ public class LineSearchBehavior extends StateBehavior {
 	public void action() {
 		// TODO: search for line, follow it until we read barcode and then modify state
 		// this.sharedState.setState(folowUpState);
-		this.hal.printOnDisplay("Default State", 1000);
 
-		if(this.firstRun){
-			this.firstRun = false;
-			this.sharedState.switchState(State.TestState);
-		}
-		else{
-			System.exit(0);
-		}
+	
 	}
 
-
+	private void changeToFollowupState(){
+		this.sharedState.switchState(State.TestState);
+		Thread.yield();
+	}
 
 	@Override
 	State getTargetState() {
