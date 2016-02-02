@@ -43,6 +43,6 @@ public class Main {
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
 		Arbitrator a = new Arbitrator(Iterables.toArray(behaviors, Behavior.class));
-		a.go();
+		a.start();
 	}
 }

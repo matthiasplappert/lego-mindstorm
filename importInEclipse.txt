@@ -2,4 +2,4 @@
 2: create a new project in eclipse with this existing code
 3: Convert the project from step 2 to a lejos project
 4: add all jars in lib to the project java build path
-
+5: add JUNIT 4 lib
