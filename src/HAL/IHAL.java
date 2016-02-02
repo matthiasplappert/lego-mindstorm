@@ -5,6 +5,11 @@ public interface IHAL {
 
 	void printOnDisplay(String text, long waitDuration);
 	
-	boolean isTouchButtonPressed();
+	void backward();
+	void forward();
+	void stop();
+	void rotate(int angle, boolean returnImmediately);
+	boolean motorsAreMoving();
 
+	boolean isTouchButtonPressed();
 }
