@@ -66,13 +66,25 @@ public class HAL implements IHAL {
 
 	@Override
 	public void rotate(int angle, boolean immediateReturn) {
-		this.motorLeft.rotate(angle, true);
-		this.motorRight.rotate(-angle, true);
-		if (immediateReturn) {
-			return;
+		boolean rotateWithGyro = true;
+		int sign = (int) Math.signum(angle);
+		int rotationStep = 10;
+				
+		if(rotateWithGyro){
+			this.resetGyro();
+			do{
+				this.motorLeft.rotate(sign*rotationStep, true);
+				this.motorRight.rotate(-sign*rotationStep, true);
+			}while(Math.abs(this.getGyroValue()) < Math.abs(angle));
+		}else{
+			this.motorLeft.rotate(angle, true);
+			this.motorRight.rotate(-angle, true);
+			if (immediateReturn) {
+				return;
+			}
+			while (this.motorsAreMoving())
+				Thread.yield();
 		}
-		while (this.motorsAreMoving())
-			Thread.yield();
 	}
 
 	@Override
@@ -96,6 +108,7 @@ public class HAL implements IHAL {
 
 	@Override
 	public float getRGB() {
+		return 0;
 		
 	}
 
