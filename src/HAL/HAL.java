@@ -6,6 +6,8 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.RegulatedMotor;
+import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3TouchSensor;
 
 public class HAL implements IHAL{
 	private RegulatedMotor motorLeft;
@@ -57,5 +59,21 @@ public class HAL implements IHAL{
 	@Override
 	public boolean motorsAreMoving() {
 		return this.motorLeft.isMoving() || this.motorRight.isMoving();
+	}
+
+	@Override
+	public boolean isTouchButtonPressed() {
+		boolean result;
+		EV3TouchSensor touchSensor = new EV3TouchSensor(SensorPort.S2);
+		float[] sample = new float[1];
+		
+	    touchSensor.getTouchMode().fetchSample(sample, 0); //ger current sample
+	    if(sample[0] == 0){ //not pressed
+	    	result = false;
+	    }else{ //pressed
+	    	result = true;               
+	    }
+	    touchSensor.close();
+	    return result;
 	}
 }

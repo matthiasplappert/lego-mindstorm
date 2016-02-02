@@ -37,4 +37,9 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public boolean isTouchButtonPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

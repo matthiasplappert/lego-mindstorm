@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Behaviors.DisplayTestStateBehavior;
 import Behaviors.LineSearchBehavior;
+import Behaviors.ShutdownBehavior;
 import HAL.DefaultHAL;
 import HAL.HAL;
 import HAL.HALHelper;
@@ -31,6 +32,10 @@ public class Main {
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		SharedState sharedState = new SharedState(State.LineSearch);
 		
+		// WARNING: always keep this as the first element since it allows us to exit from the program. 
+		behaviors.add(new ShutdownBehavior());
+		
+		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
 		Behavior[] behavs = new Behavior[behaviors.size()];

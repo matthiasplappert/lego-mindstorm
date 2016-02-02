@@ -10,4 +10,6 @@ public interface IHAL {
 	void stop();
 	void rotate(int angle, boolean returnImmediately);
 	boolean motorsAreMoving();
+
+	boolean isTouchButtonPressed();
 }

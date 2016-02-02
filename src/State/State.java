@@ -1,8 +1,17 @@
 package State;
 
 public enum State {
+	
+	T1, TestState,
+	BossState,
+	BridgeState,
+	ElevatorState,
+	FreeTrackState,
+	HangingBridgeState,
 	LineSearch,
-	T1, TestState;
+	MazeState,
+	RockerState,
+	RollBoxState;
 	public static State getInitState(){
 		return State.LineSearch;
 	}
