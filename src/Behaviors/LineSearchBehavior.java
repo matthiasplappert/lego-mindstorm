@@ -12,7 +12,7 @@ import lejos.utility.Delay;
 import java.io.*;
 
 public class LineSearchBehavior extends StateBehavior {
-	public static final float THRESHOLD = 0.15f;
+	public static final float THRESHOLD = 0.05f;
 	public static final int MEAN_WINDOW = 5;
 
 	// TODO: update this as soon as we have proper handling in the HAL
@@ -66,6 +66,8 @@ public class LineSearchBehavior extends StateBehavior {
 					continue;
 				}
 
+				//Random directory
+				direction = Utils.drawBoolean() ? Direction.LEFT: Direction.RIGHT;
 				// Okay, we're not on the line anymore. Start search strategy.
 				// We first
 				// turn EXPLORATION_ANGLE_DIFF to the left, then the same amount
@@ -73,6 +75,7 @@ public class LineSearchBehavior extends StateBehavior {
 				// (relative to the start position), then 2 *
 				// EXPLORATION_ANGLE_DIFF to the
 				// left, ... and so on until we find the line.
+
 				int turn_angle = counter * LineSearchBehavior.EXPLORATION_ANGLE_DIFF;
 				if (direction.equals(Direction.RIGHT)) {
 					turn_angle = -turn_angle;
