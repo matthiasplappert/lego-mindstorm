@@ -13,7 +13,6 @@ public class DisplayTestStateBehavior extends StateBehavior {
 
 	private boolean surpressed =  false;
 
-
 	@Override
 	public void action() {
 		if(!this.surpressed){
@@ -24,7 +23,6 @@ public class DisplayTestStateBehavior extends StateBehavior {
 			Thread.yield();
 		}
 	}
-
 
 	@Override
 	State getTargetState() {

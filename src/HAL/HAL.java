@@ -3,8 +3,19 @@ package HAL;
 import java.util.Objects;
 
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.robotics.RegulatedMotor;
 
 public class HAL implements IHAL{
+	private RegulatedMotor motorLeft;
+	private RegulatedMotor motorRight;
+	
+	public HAL() {
+		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
+		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
+	}
+	
 	@Override
 	public void printOnDisplay(String text, final  long waitDuration){
 		if(text.isEmpty() || text ==null)
@@ -14,5 +25,26 @@ public class HAL implements IHAL{
 		if (waitDuration>0)
 			HALHelper.sleep(waitDuration);		
 	}
-
+	
+	@Override
+	public void forward() {
+		this.motorLeft.forward();
+		this.motorRight.forward();
+	}
+	
+	@Override
+	public void backward() {
+		this.motorLeft.backward();
+		this.motorRight.backward();
+	}
+	
+	@Override
+	public void rotate(int angle, boolean immediateReturn) {
+		this.motorLeft.rotate(angle, true);
+		this.motorRight.rotate(-angle, true);
+		if (immediateReturn) {
+			return;
+		}
+		while (this.motorLeft.isMoving() || this.motorRight.isMoving()) Thread.yield();
+	}
 }

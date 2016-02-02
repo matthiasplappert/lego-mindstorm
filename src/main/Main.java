@@ -10,6 +10,7 @@ import HAL.HALHelper;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.port.SensorPort;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
@@ -30,7 +31,7 @@ public class Main {
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		SharedState sharedState = new SharedState(State.LineSearch);
 		
-		behaviors.add(new LineSearchBehavior(sharedState, hal));
+		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
 		Behavior[] behavs = new Behavior[behaviors.size()];
 		for(int i=0;i<behavs.length;i++)
