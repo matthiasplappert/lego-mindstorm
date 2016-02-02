@@ -42,4 +42,34 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public float getRGB() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void moveDistanceSensorToPosition(int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetGyro() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getGyroValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

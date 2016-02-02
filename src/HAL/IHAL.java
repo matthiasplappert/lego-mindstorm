@@ -9,7 +9,12 @@ public interface IHAL {
 	void forward();
 	void stop();
 	void rotate(int angle, boolean returnImmediately);
+	float getRGB();
+	float getDistance();
+	void moveDistanceSensorToPosition(int position);
 	boolean motorsAreMoving();
+	void resetGyro();
+	float getGyroValue();
 
 	boolean isTouchButtonPressed();
 }
