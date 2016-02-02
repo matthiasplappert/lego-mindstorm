@@ -1,7 +1,5 @@
 package Behaviors;
 
-import com.google.common.base.Optional;
-
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
@@ -25,7 +23,7 @@ public class LineSearchBehavior extends StateBehavior {
 	public void action() {
 		// TODO: search for line, follow it until we read barcode and then modify state
 		// this.sharedState.setState(folowUpState);
-		this.hal.printOnDisplay("Default State", Optional.of(1000l));
+		this.hal.printOnDisplay("Default State", 1000);
 
 		if(this.firstRun){
 			this.firstRun = false;

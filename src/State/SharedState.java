@@ -1,31 +1,22 @@
 package State;
 
-import com.google.common.eventbus.EventBus;
 
 public class SharedState {
 	private State state;
-	private EventBus eventBus;
 	
 	public SharedState(State initialState) {
-		this(initialState, new EventBus());
-	}
-	public SharedState(State initialState, EventBus eventBus) {
 		this.state = initialState;
-		this.eventBus = new EventBus();
+	}
 
-	}
 	
-	public void register(Object handler){
-		this.eventBus.register(handler);
-	}
+
 	public State getState() {
 		return this.state;
 	}
 	
 	public void setState(State state) {
-		State oldState = this.state;
+//		State oldState = this.state;
 		this.state = state;
-		this.eventBus.post(new StateChangeEvent(oldState, this.state));
 	}
 	
 	public void reset(boolean yield){
