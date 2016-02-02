@@ -12,7 +12,7 @@ import lejos.utility.Delay;
 import java.io.*;
 
 public class LineSearchBehavior extends StateBehavior {
-	public static final float THRESHOLD = 0.05f;
+	public static final float THRESHOLD = 0.1f;
 	public static final int MEAN_WINDOW = 5;
 
 	// TODO: update this as soon as we have proper handling in the HAL
