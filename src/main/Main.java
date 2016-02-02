@@ -11,12 +11,21 @@ import HAL.HALHelper;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.Button;
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
 
 public class Main {
 	public static void main(String[] args) {
+		
+		// Wait until we press enter to start the program.
+		LCD.drawString("Press ENTER to start", 0, 0);
+		while (!Button.ENTER.isDown()) {
+			Thread.yield();
+		}
+		LCD.clear();
 
 		IHAL hal = new HAL();
 //		IHAL hal = new DefaultHAL(){
