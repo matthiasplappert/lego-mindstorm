@@ -11,11 +11,14 @@ import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 
 public class LineSearchBehavior extends StateBehavior {
-	public static final float THRESHOLD = 0.2f;
+	public static final float THRESHOLD = 0.15f;
 	
 	public static final int MEAN_WINDOW = 5;
 	
-	public static final int EXPLORATION_ANGLE_DIFF = 5;
+	// TODO: update this as soon as we have proper handling in the HAL
+	public static final int EXPLORATION_ANGLE_DIFF = 25;
+	
+	public static final int LOOP_DELAY = 100;
 	
 	private Port port;
 
@@ -36,14 +39,19 @@ public class LineSearchBehavior extends StateBehavior {
 		float[] valueBuffer = new float[sampleProvider.sampleSize()];
 		
 		// TODO: implement handling the barcode
+		
 		int counter = 1;
 		Direction direction = Direction.LEFT;
 		while (!this.suppressed) {
+			// Do not sample too often.
+			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+			
 			if (this.isOnLine(meanFilter, meanBuffer, sampleProvider, valueBuffer)) {
 				// Drive forward and reset search strategy values for potential later use.
 				counter = 1;
 				direction = Direction.LEFT;
 				this.hal.forward();
+				
 				continue;
 			}
 			
@@ -62,7 +70,9 @@ public class LineSearchBehavior extends StateBehavior {
 					this.hal.stop();
 					break;
 				}
-				Delay.msDelay(100);
+				
+				// Again, do not sample too often here.
+				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			}
 			direction = Direction.changeDirection(direction);
 			counter++;
@@ -79,11 +89,6 @@ public class LineSearchBehavior extends StateBehavior {
 		LCD.drawString("isOnLine: " + isOnLine, 0, 0);
 		LCD.drawString("currentMean: " + currentMean, 0, 1);
 		return isOnLine;
-		
-		/*sampleProvider.fetchSample(valueBuffer, 0);
-		float currentValue = valueBuffer[0];
-		float delta = currentMean - currentValue;
-		return Math.abs(delta) > LineSearchBehavior.THRESHOLD;*/
 	}
 
 	@Override
