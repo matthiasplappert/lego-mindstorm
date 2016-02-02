@@ -39,12 +39,23 @@ public class HAL implements IHAL{
 	}
 	
 	@Override
+	public void stop() {
+		this.motorLeft.stop();
+		this.motorRight.stop();
+	}
+	
+	@Override
 	public void rotate(int angle, boolean immediateReturn) {
 		this.motorLeft.rotate(angle, true);
 		this.motorRight.rotate(-angle, true);
 		if (immediateReturn) {
 			return;
 		}
-		while (this.motorLeft.isMoving() || this.motorRight.isMoving()) Thread.yield();
+		while (this.motorsAreMoving()) Thread.yield();
+	}
+	
+	@Override
+	public boolean motorsAreMoving() {
+		return this.motorLeft.isMoving() || this.motorRight.isMoving();
 	}
 }

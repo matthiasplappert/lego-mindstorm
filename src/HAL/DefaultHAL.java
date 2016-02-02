@@ -25,4 +25,16 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean motorsAreMoving() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

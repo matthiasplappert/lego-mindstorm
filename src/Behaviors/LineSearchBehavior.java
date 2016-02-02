@@ -3,10 +3,12 @@ package Behaviors;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
+import lejos.utility.Delay;
 
 public class LineSearchBehavior extends StateBehavior {
 	public static final float THRESHOLD = 0.2f;
@@ -34,14 +36,14 @@ public class LineSearchBehavior extends StateBehavior {
 		float[] valueBuffer = new float[sampleProvider.sampleSize()];
 		
 		// TODO: implement handling the barcode
-		this.hal.forward();
 		int counter = 1;
 		Direction direction = Direction.LEFT;
 		while (!this.suppressed) {
 			if (this.isOnLine(meanFilter, meanBuffer, sampleProvider, valueBuffer)) {
-				// We're already driving forward, just keep doing that. Reset search strategy values.
+				// Drive forward and reset search strategy values for potential later use.
 				counter = 1;
 				direction = Direction.LEFT;
+				this.hal.forward();
 				continue;
 			}
 			
@@ -53,7 +55,15 @@ public class LineSearchBehavior extends StateBehavior {
 			if (direction.equals(Direction.RIGHT)) {
 				turn_angle = -turn_angle;
 			}
-			this.hal.rotate(turn_angle, false);
+			this.hal.rotate(turn_angle, true);
+			while (!this.suppressed && this.hal.motorsAreMoving()) {
+				if (this.isOnLine(meanFilter, meanBuffer, sampleProvider, valueBuffer)) {
+					// We've found the line, stop moving.
+					this.hal.stop();
+					break;
+				}
+				Delay.msDelay(100);
+			}
 			direction = Direction.changeDirection(direction);
 			counter++;
 		}
@@ -65,7 +75,10 @@ public class LineSearchBehavior extends StateBehavior {
 		meanFilter.fetchSample(meanBuffer, 0);
 		float currentMean = meanBuffer[0];
 		
-		return currentMean > LineSearchBehavior.THRESHOLD;
+		boolean isOnLine = currentMean > LineSearchBehavior.THRESHOLD;
+		LCD.drawString("isOnLine: " + isOnLine, 0, 0);
+		LCD.drawString("currentMean: " + currentMean, 0, 1);
+		return isOnLine;
 		
 		/*sampleProvider.fetchSample(valueBuffer, 0);
 		float currentValue = valueBuffer[0];
