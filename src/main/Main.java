@@ -32,12 +32,13 @@ public class Main {
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		SharedState sharedState = new SharedState(State.LineSearch);
 		
-		// WARNING: always keep this as the first element since it allows us to exit from the program. 
-		behaviors.add(new ShutdownBehavior());
-		
 		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
+		
+		// WARNING: always keep this as the last element since it allows us to exit from the program. 
+		behaviors.add(new ShutdownBehavior());
+		
 		Behavior[] behavs = new Behavior[behaviors.size()];
 		for(int i=0;i<behavs.length;i++)
 			behavs[i] = behaviors.get(i);
