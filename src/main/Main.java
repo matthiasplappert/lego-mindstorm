@@ -11,8 +11,7 @@ import HAL.HALHelper;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
-import lejos.hardware.Button;
-import lejos.hardware.lcd.LCD;
+import lejos.hardware.port.SensorPort;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.TextMenu;
@@ -60,7 +59,7 @@ public class Main {
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		
 		// Task-specific behaviors
-		behaviors.add(new LineSearchBehavior(sharedState, hal));
+		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
