@@ -1,16 +1,16 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Behaviors.DisplayTestStateBehavior;
 import Behaviors.LineSearchBehavior;
 import Behaviors.ShutdownBehavior;
-import HAL.DefaultHAL;
 import HAL.HAL;
-import HAL.HALHelper;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.SensorPort;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
@@ -43,19 +43,12 @@ public class Main {
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
 		int initialStateIndex = menu.select();
+		LCD.clear();
+		
 		SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 		IHAL hal = new HAL();
-//		IHAL hal = new DefaultHAL(){
-//			@Override
-//			public void printOnDisplay(String text, long waitDuration) {
-//				System.out.println(text);
-//				if(waitDuration>0)
-//					HALHelper.sleep(waitDuration);
-//			}
-//		};
-		
-		// Create behaviors.
+
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		
 		// Task-specific behaviors
@@ -65,10 +58,16 @@ public class Main {
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());
 		
+
+		Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), false);
+		a.start();
+	}
+	
+	public static Behavior[] getArrayForList(List<Behavior> behaviors){
 		Behavior[] behavs = new Behavior[behaviors.size()];
 		for(int i=0;i<behavs.length;i++)
 			behavs[i] = behaviors.get(i);
-		Arbitrator a = new Arbitrator(behavs, false);
-		a.start();
+		return behavs;
+		
 	}
 }
