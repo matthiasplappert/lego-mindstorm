@@ -32,6 +32,8 @@ public class Main {
 		Thread.sleep (1000);
 		Motor.C.rotateTo(-135);
 		Thread.sleep (1000);
+		Motor.C.rotateTo(-180);
+		Thread.sleep (1000);
 		Motor.C.rotateTo(0);
 		Thread.sleep (1000);
 		Motor.C.stop();
