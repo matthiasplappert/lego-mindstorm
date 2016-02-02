@@ -25,6 +25,11 @@ public class HALMock implements IHAL{
 		if(waitDuration > 0)
 			HALHelper.sleep(waitDuration);
 	}
+	@Override
+	public boolean isTouchButtonPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	
 

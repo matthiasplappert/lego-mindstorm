@@ -8,4 +8,10 @@ public class DefaultHAL implements IHAL {
 		
 	}
 
+	@Override
+	public boolean isTouchButtonPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

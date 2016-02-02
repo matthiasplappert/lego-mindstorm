@@ -11,4 +11,10 @@ public class DefaultTestHAL implements IHAL{
 		fail();
 	}
 
+	@Override
+	public boolean isTouchButtonPressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
