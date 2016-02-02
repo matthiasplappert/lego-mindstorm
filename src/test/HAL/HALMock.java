@@ -3,8 +3,6 @@ package test.HAL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import HAL.HALHelper;
 import HAL.IHAL;
 
@@ -22,10 +20,10 @@ public class HALMock implements IHAL{
 		return java.util.Collections.unmodifiableList(this.storage);
 	}
 	@Override
-	public void printOnDisplay(String text, Optional<Long> waitDuration) {
+	public void printOnDisplay(String text, long waitDuration) {
 		this.storage.add(text);
-		if(waitDuration.isPresent())
-			HALHelper.sleep(waitDuration.get());
+		if(waitDuration > 0)
+			HALHelper.sleep(waitDuration);
 	}
 
 	

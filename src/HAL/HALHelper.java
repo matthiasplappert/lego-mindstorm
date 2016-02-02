@@ -2,10 +2,13 @@ package HAL;
 
 public class HALHelper {
 	public static void sleep(long duration){
-		{ try {
-			Thread.sleep(duration);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}}
+		if(duration>0){
+			{
+				try {
+				Thread.sleep(duration);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}}
+		}
 	}
 }

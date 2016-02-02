@@ -1,7 +1,6 @@
 package Behaviors;
 
 
-import com.google.common.base.Optional;
 
 import HAL.IHAL;
 import State.SharedState;
@@ -19,7 +18,7 @@ public class DisplayTestStateBehavior extends StateBehavior {
 	public void action() {
 		if(!this.surpressed){
 			for(int i=1;i<=5;i++){
-				this.hal.printOnDisplay("Counter: "+i, Optional.of(1000l));
+				this.hal.printOnDisplay("Counter: "+i, 1000l);
 			}
 			this.sharedState.reset(true);
 			Thread.yield();
