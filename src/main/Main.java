@@ -19,25 +19,32 @@ import lejos.utility.TextMenu;
 
 
 public class Main {
-	public static void main(String[] args) {
+	private static TextMenu createMenu(State[] states) {
 		// Allow to pick initial state using the GUI. This code ensures that the default
 		// state is always at the top of the list, hence the somewhat lengthy code.
-		State[] states = new State[State.values().length];
 		states[0] = State.getInitState();
-		int i = 1;
+		int j = 1;
 		for (State state: State.values()) {
 			if (state.equals(State.getInitState())) {
 				continue;
 			}
-			states[i] = state;
-			i++;
+			states[j] = state;
+			j++;
 		}
 		String[] stateStrings = new String[states.length];
 		for (int i = 0; i < states.length; i++) {
 			stateStrings[i] = states[i] + "";
 		}
 		TextMenu menu = new TextMenu(stateStrings);
+		return menu;
+	}
+	
+	public static void main(String[] args) {
+		// Create initial shared state.
+		State[] states = new State[State.values().length];
+		TextMenu menu = Main.createMenu(states);
 		int initialStateIndex = menu.select();
+		SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 		IHAL hal = new HAL();
 //		IHAL hal = new DefaultHAL(){
@@ -48,9 +55,9 @@ public class Main {
 //					HALHelper.sleep(waitDuration);
 //			}
 //		};
-
+		
+		// Create behaviors.
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
-		SharedState sharedState = new SharedState(states[initialStateIndex]);
 		
 		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
