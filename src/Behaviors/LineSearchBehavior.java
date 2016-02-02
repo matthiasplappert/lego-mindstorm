@@ -11,9 +11,13 @@ import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 import java.io.*;
 
+//TODO:
+//Change to three level detection: white, border, line. Behaviour: increasing rotation angle as closer the measurements comes to the border
+//TODO: Redo analysis on larger data set
 public class LineSearchBehavior extends StateBehavior {
 	public static final float THRESHOLD = 0.1f;
 	public static final int MEAN_WINDOW = 5;
+	public static final boolean KEEP_MEASUREMENTS = false;
 
 	// TODO: update this as soon as we have proper handling in the HAL
 	public static final int EXPLORATION_ANGLE_DIFF = 25;
@@ -30,6 +34,8 @@ public class LineSearchBehavior extends StateBehavior {
 		this.suppressed = false;
 	}
 	private BufferedWriter openWriter(String filename) throws IOException{
+		if(KEEP_MEASUREMENTS)
+			filename+= System.currentTimeMillis()+".bak";
 		File file = new File(filename);
 
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -83,7 +89,8 @@ public class LineSearchBehavior extends StateBehavior {
 				this.hal.rotate(turn_angle, true);
 				while (!this.suppressed && this.hal.motorsAreMoving()) {
 					if (this.isOnLine(meanFilter, meanBuffer, sampleProvider, valueBuffer, out)) {
-
+						//Overdrive
+						this.hal.rotate(turn_angle, true);
 						// We've found the line, stop moving.
 						this.hal.stop();
 						break;
@@ -92,6 +99,7 @@ public class LineSearchBehavior extends StateBehavior {
 					// Again, do not sample too often here.
 					Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 10);
 				}
+				
 				direction = Direction.changeDirection(direction);
 				counter++;
 
