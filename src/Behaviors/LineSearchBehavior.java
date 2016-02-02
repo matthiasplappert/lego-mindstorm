@@ -16,7 +16,7 @@ public class LineSearchBehavior extends StateBehavior {
 	public static final int MEAN_WINDOW = 5;
 	
 	// TODO: update this as soon as we have proper handling in the HAL
-	public static final int EXPLORATION_ANGLE_DIFF = 25;
+	public static final int EXPLORATION_ANGLE_DIFF = 2;
 	
 	public static final int LOOP_DELAY = 100;
 	
@@ -32,7 +32,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	@Override
 	public void action() {
-		EV3ColorSensor sensor = new EV3ColorSensor(this.port);
+		EV3ColorSensor sensor = this.hal.getColorSensor();
 		SampleProvider sampleProvider = sensor.getRedMode();
 		MeanFilter meanFilter = new MeanFilter(sampleProvider, LineSearchBehavior.MEAN_WINDOW);
 		float[] meanBuffer = new float[meanFilter.sampleSize()];

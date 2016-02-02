@@ -1,5 +1,6 @@
 package HAL;
 
+import lejos.hardware.sensor.EV3ColorSensor;
 
 public class DefaultHAL implements IHAL {
 
@@ -71,5 +72,11 @@ public class DefaultHAL implements IHAL {
 	public float getGyroValue() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public EV3ColorSensor getColorSensor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

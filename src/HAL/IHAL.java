@@ -1,5 +1,6 @@
 package HAL;
 
+import lejos.hardware.sensor.EV3ColorSensor;
 
 public interface IHAL {
 
@@ -15,6 +16,8 @@ public interface IHAL {
 	boolean motorsAreMoving();
 	void resetGyro();
 	float getGyroValue();
+	
+	EV3ColorSensor getColorSensor();
 
 	boolean isTouchButtonPressed();
 }

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.RegulatedMotor;
 import lejos.hardware.port.SensorPort;
@@ -20,6 +20,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 public class HAL implements IHAL {
 	private RegulatedMotor motorLeft;
 	private RegulatedMotor motorRight;
+	private RegulatedMotor motorUltrasonic;
 	private EV3GyroSensor gyro;
 	private EV3UltrasonicSensor ultrasonic;
 	private EV3ColorSensor colorsensor;
@@ -29,11 +30,13 @@ public class HAL implements IHAL {
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
 		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
+		this.motorUltrasonic = new EV3MediumRegulatedMotor(MotorPort.C);
 		this.gyro = new EV3GyroSensor(SensorPort.S4);
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		this.colorsensor = new EV3ColorSensor(SensorPort.S1);
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
-		Motor.C.setSpeed(50);
+		
+		this.motorUltrasonic.setSpeed(50);		
 	}
 
 	@Override
@@ -137,22 +140,22 @@ public class HAL implements IHAL {
 	public void moveDistanceSensorToPosition(int position) {
 		switch (position) {
 		case 0:
-			Motor.C.rotateTo(0);
+			motorUltrasonic.rotateTo(0);
 			break;
 		case 1:
-			Motor.C.rotateTo(-45);
+			motorUltrasonic.rotateTo(-45);
 			break;
 		case 2:
-			Motor.C.rotateTo(-90);
+			motorUltrasonic.rotateTo(-90);
 			break;
 		case 3:
-			Motor.C.rotateTo(-135);
+			motorUltrasonic.rotateTo(-135);
 			break;
 		case 4:
-			Motor.C.rotateTo(-180);
+			motorUltrasonic.rotateTo(-180);
 			break;
 		default:
-			Motor.C.rotateTo(0);
+			motorUltrasonic.rotateTo(0);
 		}
 
 	}
@@ -168,5 +171,11 @@ public class HAL implements IHAL {
 	public float getGyroValue() {
 		gyro.getAngleMode().fetchSample(sample, 0);
 		return sample[0];
+	}
+
+	@Override
+	public EV3ColorSensor getColorSensor() {
+		// TODO Auto-generated method stub
+		return colorsensor;
 	}
 }
