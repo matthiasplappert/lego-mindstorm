@@ -14,10 +14,36 @@ import State.State;
 import lejos.hardware.port.SensorPort;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
+import lejos.utility.TextMenu;
 
 
 public class Main {
+	private static TextMenu createMenu(State[] states) {
+		// Allow to pick initial state using the GUI. This code ensures that the default
+		// state is always at the top of the list, hence the somewhat lengthy code.
+		states[0] = State.getInitState();
+		int j = 1;
+		for (State state: State.values()) {
+			if (state.equals(State.getInitState())) {
+				continue;
+			}
+			states[j] = state;
+			j++;
+		}
+		String[] stateStrings = new String[states.length];
+		for (int i = 0; i < states.length; i++) {
+			stateStrings[i] = states[i] + "";
+		}
+		TextMenu menu = new TextMenu(stateStrings);
+		return menu;
+	}
+	
 	public static void main(String[] args) {
+		// Create initial shared state.
+		State[] states = new State[State.values().length];
+		TextMenu menu = Main.createMenu(states);
+		int initialStateIndex = menu.select();
+		SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 		IHAL hal = new HAL();
 //		IHAL hal = new DefaultHAL(){
@@ -28,9 +54,9 @@ public class Main {
 //					HALHelper.sleep(waitDuration);
 //			}
 //		};
-
+		
+		// Create behaviors.
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
-		SharedState sharedState = new SharedState(State.LineSearch);
 		
 		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
