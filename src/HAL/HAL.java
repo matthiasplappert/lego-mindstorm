@@ -167,24 +167,31 @@ public class HAL implements IHAL {
 	 * down 3: left-down 4: left
 	 */
 	@Override
-	public void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean returnImmediately) {
+	public void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean immediateReturn) {
+		int angle;
 		switch (position) {
-		case RIGHT_DOWN:
-			motorUltrasonic.rotateTo(45, returnImmediately);
+		case LEFT_DOWN:
+			angle = 45;
 			break;
 		case DOWN:
-			motorUltrasonic.rotateTo(90, returnImmediately);
+			angle = 90;
 			break;
-		case LEFT_DOWN:
-			motorUltrasonic.rotateTo(135, returnImmediately);
-			break;
-		case LEFT:
-			motorUltrasonic.rotateTo(180, returnImmediately);
+		case RIGHT_DOWN:
+			angle = 135;
 			break;
 		case RIGHT:
+			angle = 180;
+			break;
+		case LEFT:
 		default:
-			motorUltrasonic.rotateTo(0, returnImmediately);
+			angle = 0;
 		}
+		this.moveDistanceSensorToPosition(angle, immediateReturn);
+	}
+	
+	@Override
+	public void moveDistanceSensorToPosition(int angle, boolean immediateReturn) {
+		this.motorUltrasonic.rotateTo(angle, immediateReturn);
 	}
 
 	// Resets the gyroscope to zero

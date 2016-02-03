@@ -14,6 +14,7 @@ public interface IHAL {
 	void turn(int angle, boolean stopInnerChain, boolean immediateReturn);
 	
 	void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean immediateReturn);
+	void moveDistanceSensorToPosition(int angle, boolean immediateReturn);
 	boolean motorsAreMoving();
 	boolean isRotating();
 	

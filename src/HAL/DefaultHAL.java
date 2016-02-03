@@ -97,4 +97,10 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void moveDistanceSensorToPosition(int angle, boolean immediateReturn) {
+		// TODO Auto-generated method stub
+		
+	}
 }
