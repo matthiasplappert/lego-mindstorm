@@ -7,6 +7,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -44,6 +46,10 @@ public class HAL implements IHAL {
 	private final int turnSpeedOuter = 200;
 	private final int rotationStep = 5;	
 
+	private SampleProvider sampleProvider_Gyro; 
+	private MeanFilter meanFilter_Gyro;
+	
+	
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
 		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
@@ -52,7 +58,8 @@ public class HAL implements IHAL {
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		this.colorsensor = new EV3ColorSensor(SensorPort.S1);
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
-
+		this.sampleProvider_Gyro = this.gyro.getAngleMode();
+		this.meanFilter_Gyro = new MeanFilter(sampleProvider_Gyro, 10);
 		this.motorUltrasonic.setSpeed(50);
 	}
 
@@ -224,8 +231,9 @@ public class HAL implements IHAL {
 	// Returns the current angle(degrees) measured by the gyroscope
 	@Override
 	public float getGyroValue() {
-		gyro.getAngleMode().fetchSample(sample, 0);
-		return sample[0];
+		float[] meanBuffer = new float[meanFilter_Gyro.sampleSize()];
+	    meanFilter_Gyro.fetchSample(meanBuffer, 0);
+	    return meanBuffer[0];
 	}
 
 	@Override
