@@ -14,7 +14,7 @@ public class BridgeBehaviour extends StateBehavior {
 	
 	private static final int SLIDING_WINDOW = 3;
 	
-	private static final int TURN_ANGLE = 2;
+	private static final int MAX_TURN_ANGLE = 45;
 	
 	public BridgeBehaviour(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
@@ -56,17 +56,15 @@ public class BridgeBehaviour extends StateBehavior {
 				canSeeDropoff = false;
 			}
 			
-			// LCD for debugging
-			LCD.clear(1);
-			LCD.clear(2);
-			LCD.drawString("Distance: " + Float.toString(distance), 0, 1);
-			LCD.drawString(canSeeDropoff ? "Dropoff detected" : "No dropoff detected", 0, 2);
-			
 			// Robot control.
 			if (canSeeDropoff) {
 				// Turn slightly to the left until we do not see the dropoff anymore.
-				while (!this.surpressed && !this.canSeeDropoff(this.getDistance(meanFilter))) {
-					this.hal.turn(-TURN_ANGLE, false, false);
+				this.hal.turn(-MAX_TURN_ANGLE, false, true);
+				while (!this.surpressed && this.hal.isRotating()) {
+					if (!this.canSeeDropoff(this.getDistance(meanFilter))) {
+						break;
+					}
+					Delay.msDelay(10);
 				}
 				hasSeenDropoff = true;
 			} else {
@@ -77,8 +75,12 @@ public class BridgeBehaviour extends StateBehavior {
 				} else {
 					// We have seen the dropoff before, but can't see it anymore. Correct by
 					// turning slighty to the right until we see the dropoff again.
-					while (!this.surpressed && this.canSeeDropoff(this.getDistance(meanFilter))) {
-						this.hal.turn(TURN_ANGLE, false, false);
+					this.hal.turn(MAX_TURN_ANGLE, false, true);
+					while (!this.surpressed && this.hal.isRotating()) {
+						if (this.canSeeDropoff(this.getDistance(meanFilter))) {
+							break;
+						}
+						Delay.msDelay(10);
 					}
 				}
 			}
@@ -100,11 +102,22 @@ public class BridgeBehaviour extends StateBehavior {
 		float[] buffer = new float[meanFilter.sampleSize()];
 		meanFilter.fetchSample(buffer, 0);
 		float distance = buffer[0] * 100.0f;  // in cm
+		
+		// Debugging
+		LCD.clear(1);
+		LCD.drawString("Distance: " + Float.toString(distance), 0, 1);
+		
 		return distance;
 	}
 	
 	private boolean canSeeDropoff(float distance) {
-		return (distance > DROPOFF_DISTANCE_THRESHOLD);
+		boolean canSeeDropoff = (distance > DROPOFF_DISTANCE_THRESHOLD);
+		
+		// Debugging
+		LCD.clear(2);
+		LCD.drawString(canSeeDropoff ? "Dropoff detected" : "No dropoff detected", 0, 2);
+		
+		return canSeeDropoff;
 	}
 
 	@Override
