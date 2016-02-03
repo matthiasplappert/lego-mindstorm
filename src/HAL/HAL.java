@@ -30,8 +30,8 @@ public class HAL implements IHAL {
 	float lastGyroAngleBeforeRotation = 0.f;
 	float rotateToAngle = 0.f;
 		
-	private final int forwardSpeedVeryFast = 720;
-	private final int forwardSpeedFast = 250;
+	private final int forwardSpeedVeryFast = 350;
+	private final int forwardSpeedFast = 200;
 	private final int forwardSpeedMedium = 150;
 	private final int forwardSpeedSlow = 100;
 	private final int forwardSpeedVerySlow = 50;
@@ -137,6 +137,7 @@ public class HAL implements IHAL {
 					this.motorLeft.rotate(sign * rotationStep, true);
 					this.motorRight.rotate(-sign * rotationStep, true);
 				} while (Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(angle));
+				this.stop();
 			}
 		} else {
 			this.motorLeft.rotate(angle, true);
@@ -269,15 +270,13 @@ public class HAL implements IHAL {
 				this.motorRight.setSpeed(turnSpeedOuter);
 			}
 		}
-		
-		if (immediateReturn) {
-			this.motorLeft.forward();
-			this.motorRight.forward();						
-		} else { // block until rotation is done
+		this.motorLeft.forward();
+		this.motorRight.forward();
+		if (!immediateReturn) {// block until rotation is done			
 			do {
-				this.motorLeft.forward();
-				this.motorRight.forward();
+				Delay.msDelay(10);
 			} while (Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(angle));
+			this.stop();
 		}		
 	}
 }
