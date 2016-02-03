@@ -40,7 +40,6 @@ public class BridgeBehaviour extends StateBehavior {
 			// Get (filtered) distance
 			meanFilter.fetchSample(buffer, 0);
 			float distance = buffer[0] * 100.0f;  // in cm
-			
 			LCD.clear(2);
 			if (distance > BridgeBehaviour.DROPOFF_DISTANCE_THRESHOLD) {
 				LCD.drawString("Dropoff detected", 0, 2);

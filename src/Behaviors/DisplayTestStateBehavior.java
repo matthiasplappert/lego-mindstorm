@@ -17,7 +17,7 @@ public class DisplayTestStateBehavior extends StateBehavior {
 	public void action() {
 		if(!this.surpressed){
 			for(int i=1;i<=5;i++){
-				this.hal.printOnDisplay("Counter: "+i, 1000l);
+				this.hal.printOnDisplay("Counter: "+i, 0, 1000l);
 			}
 			this.sharedState.reset(true);
 			Thread.yield();
