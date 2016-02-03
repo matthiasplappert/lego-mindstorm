@@ -9,11 +9,11 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.filter.MeanFilter;
 
 public class BridgeBehaviour extends StateBehavior {	
-	private static final float DISTANCE_THRESHOLD = 1.0f;  // in cm
+	private static final float DROPOFF_DISTANCE_THRESHOLD = 50.0f;  // in cm
 	
 	private static final int MEAN_WINDOW = 3;
 	
-	private static final int TURN_ANGLE = 1;
+	private static final int TURN_ANGLE = 5;
 	
 	public BridgeBehaviour(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
@@ -27,7 +27,6 @@ public class BridgeBehaviour extends StateBehavior {
 		
 		// RELEASE THE KRAKEN (and wait for it)
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.LEFT_DOWN, false);
-		System.exit(0);
 		
 		// We use a slight mean filter to avoid reacting nervously
 		EV3UltrasonicSensor sensor = this.hal.getUltrasonicSensor();
@@ -43,7 +42,7 @@ public class BridgeBehaviour extends StateBehavior {
 			float distance = buffer[0] * 100.0f;  // in cm
 			
 			LCD.clear(2);
-			if (distance > DISTANCE_THRESHOLD) {
+			if (distance > BridgeBehaviour.DROPOFF_DISTANCE_THRESHOLD) {
 				LCD.drawString("Dropoff detected", 0, 2);
 				this.hal.turn(BridgeBehaviour.TURN_ANGLE, false, false);
 			} else {
