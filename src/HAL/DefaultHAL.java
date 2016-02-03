@@ -103,4 +103,10 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void forward(Speed speed) {
+		// TODO Auto-generated method stub
+		
+	}
 }

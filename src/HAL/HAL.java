@@ -6,15 +6,16 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
-import lejos.robotics.RegulatedMotor;
-import lejos.robotics.SampleProvider;
-import lejos.robotics.filter.MeanFilter;
-import lejos.utility.Delay;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.hardware.sensor.SensorMode;
+import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.filter.MeanFilter;
+import lejos.utility.Delay;
 
 /**
  * @author David
@@ -50,6 +51,8 @@ public class HAL implements IHAL {
 	private MeanFilter meanFilter_Gyro;
 	private SampleProvider sampleProvider_Distance; 
 	private MeanFilter meanFilter_Distance;
+	private SensorMode sampleProvider_Redcolor;
+	private MeanFilter meanFilter_Redcolor;
 	
 	
 	public HAL() {
@@ -65,14 +68,16 @@ public class HAL implements IHAL {
 		this.motorUltrasonic.setSpeed(50);
 		this.sampleProvider_Distance = this.ultrasonic.getDistanceMode();
 		this.meanFilter_Distance = new MeanFilter(sampleProvider_Distance, 10);
+		this.meanFilter_Redcolor = null;
 	}
 	@Override
 	public void enableRedMode(){
-		SensorMode RedSampleProvider = colorsensor.getRedMode();
-		MeanFilter meanFilter = new MeanFilter(RedSampleProvider, LineSearchBehavior.MEAN_WINDOW);
-		this.RedMeanBuffer = new float[meanFilter.sampleSize()];
+		this.sampleProvider_Redcolor = this.colorsensor.getRedMode();
+		this.meanFilter_Redcolor = new MeanFilter(sampleProvider_Redcolor, 5);
+
 	}
 	public void resetRedMode(){
+		this.meanFilter_Redcolor = null;
 	}
 	@Override
 	public void printOnDisplay(String text, int row, final long waitDuration) {
@@ -262,7 +267,9 @@ public class HAL implements IHAL {
 	}
 	@Override
 	public float getRedColorSensorValue(){
-		return this.RedMeanBuffer[0];
+		float[] means = new float[this.meanFilter_Redcolor.sampleSize()];
+		this.meanFilter_Redcolor.fetchSample(means, 0);
+		return means[0];
 
 	}
 	@Override
@@ -304,4 +311,14 @@ public class HAL implements IHAL {
 			this.stop();
 		}		
 	}
+//	@Override
+//	public float getRedColorSensorValue() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+//	@Override
+//	public void enableRedMode() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }
