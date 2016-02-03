@@ -3,11 +3,11 @@ package main;
 import java.util.ArrayList;
 
 import Behaviors.DisplayTestStateBehavior;
+import Behaviors.HangingBridgeBehaviour;
 import Behaviors.LineSearchBehavior;
 import Behaviors.ShutdownBehavior;
 import HAL.DefaultHAL;
 import HAL.HAL;
-import HAL.HALHelper;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
@@ -58,9 +58,11 @@ public class Main {
 		// Create behaviors.
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		
-		// Task-specific behaviors
+		// Task-specific behaviors		
 		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
+		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
+		
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());

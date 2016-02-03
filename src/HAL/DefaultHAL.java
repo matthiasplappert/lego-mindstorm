@@ -5,7 +5,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 public class DefaultHAL implements IHAL {
 
 	@Override
-	public void printOnDisplay(String text, long waitDuration) {
+	public void printOnDisplay(String text, int row, long waitDuration) {
 		
 	}
 
@@ -78,5 +78,17 @@ public class DefaultHAL implements IHAL {
 	public EV3ColorSensor getColorSensor() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isRotating() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void turn(int angle, boolean stopInnerChain, boolean immediateReturn) {
+		// TODO Auto-generated method stub
+		
 	}
 }
