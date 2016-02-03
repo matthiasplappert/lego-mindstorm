@@ -43,7 +43,7 @@ public class LineSearchBehavior extends StateBehavior {
 	}
 	@Override
 	public void action() {
-		EV3ColorSensor sensor = new EV3ColorSensor(this.port);
+		EV3ColorSensor sensor = this.hal.getColorSensor();
 		SampleProvider sampleProvider = sensor.getRedMode();
 		MeanFilter meanFilter = new MeanFilter(sampleProvider, LineSearchBehavior.MEAN_WINDOW);
 		float[] meanBuffer = new float[meanFilter.sampleSize()];
@@ -112,9 +112,10 @@ public class LineSearchBehavior extends StateBehavior {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			sensor.close();
 		}
+	    finally{
+		sensor.close();
+	      }
 	}
 
 	private boolean isOnLine(MeanFilter meanFilter, float[] meanBuffer, SampleProvider sampleProvider,
@@ -125,7 +126,6 @@ public class LineSearchBehavior extends StateBehavior {
 		boolean isOnLine = currentMean > LineSearchBehavior.THRESHOLD;
 		LCD.drawString("isOnLine: " + isOnLine, 0, 0);
 		LCD.drawString("currentMean: " + currentMean, 0, 1);
-		this.writeToLogFile(currentMean, out);
 		return isOnLine;
 	}
 
@@ -133,7 +133,6 @@ public class LineSearchBehavior extends StateBehavior {
 	    out.write(Float.toString(sample));
 	    out.newLine();
 	}
-
 	@Override
 	State getTargetState() {
 		return State.LineSearch;
