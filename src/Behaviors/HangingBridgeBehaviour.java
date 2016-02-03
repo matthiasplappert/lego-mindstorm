@@ -1,5 +1,6 @@
 package Behaviors;
 
+import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
@@ -163,7 +164,9 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			}
 						
 			Sound.beep();
-			this.hal.moveDistanceSensorToPosition(1);
+			this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP, false);
+			//TODO: Matze: Hier gewünschtes Verhalten reinfixen
+//			this.hal.moveDistanceSensorToPosition(1);
 			
 			for(int i = 0; i < 100; i++){
 				LCD.clear(4);
@@ -177,7 +180,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 				
 			}
 			Sound.beep();
-			this.hal.moveDistanceSensorToPosition(2);
+			this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP, false);
+			//TODO: Matze: Hier gewünschtes Verhalten reinfixen;
 			
 			for(int i = 0; i < 100; i++){
 				LCD.clear(5);
@@ -193,7 +197,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			}
 			
 			Sound.beep();
-			this.hal.moveDistanceSensorToPosition(0);
+			this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP, false);
+			//TODO: Matze: Hier gewünschtes Verhalten reinfixen
 			
 			while(!this.surpressed){
 				LCD.clear(6);
