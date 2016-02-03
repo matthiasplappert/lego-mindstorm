@@ -1,5 +1,6 @@
 package HAL;
 
+import lejos.hardware.sensor.EV3ColorSensor;
 
 public class DefaultHAL implements IHAL {
 
@@ -41,5 +42,41 @@ public class DefaultHAL implements IHAL {
 	public boolean isTouchButtonPressed() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public float getRGB() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void moveDistanceSensorToPosition(int position) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetGyro() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getGyroValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public EV3ColorSensor getColorSensor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
