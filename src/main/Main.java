@@ -3,8 +3,16 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import Behaviors.BossBehaviour;
+import Behaviors.BridgeBehaviour;
 import Behaviors.DisplayTestStateBehavior;
+import Behaviors.ElevatorBehaviour;
+import Behaviors.FreeTrackBehaviour;
+import Behaviors.HangingBridgeBehaviour;
 import Behaviors.LineSearchBehavior;
+import Behaviors.MazeBehaviour;
+import Behaviors.RockerBehaviour;
+import Behaviors.RollBoxBehaviour;
 import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
@@ -53,12 +61,18 @@ public class Main {
 		
 		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
-		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
+		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
+		behaviors.add(new BridgeBehaviour(sharedState, hal));
+		behaviors.add(new BossBehaviour(sharedState, hal));
+		behaviors.add(new ElevatorBehaviour(sharedState, hal));
+		behaviors.add(new FreeTrackBehaviour(sharedState, hal));
+		behaviors.add(new MazeBehaviour(sharedState, hal));
+		behaviors.add(new RockerBehaviour(sharedState, hal));
+		behaviors.add(new RollBoxBehaviour(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());
 		
-
 		Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), false);
 		a.start();
 	}
@@ -68,6 +82,5 @@ public class Main {
 		for(int i=0;i<behavs.length;i++)
 			behavs[i] = behaviors.get(i);
 		return behavs;
-		
 	}
 }
