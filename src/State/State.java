@@ -11,7 +11,7 @@ public enum State {
 	LineSearch,
 	MazeState,
 	RockerState,
-	RollBoxState;
+	RollBoxState, FindLineState;
 	public static State getInitState(){
 		return State.LineSearch;
 	}

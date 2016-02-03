@@ -1,7 +1,6 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Behaviors.BossBehaviour;
 import Behaviors.BridgeBehaviour;
@@ -18,8 +17,6 @@ import HAL.HAL;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
-import lejos.hardware.lcd.LCD;
-import lejos.hardware.port.SensorPort;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.TextMenu;
@@ -51,20 +48,30 @@ public class Main {
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
 		int initialStateIndex = menu.select();
-		LCD.clear();
-		
 		SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 		IHAL hal = new HAL();
-
+		hal.resetGyro();
+//		IHAL hal = new DefaultHAL(){
+//			@Override
+//			public void printOnDisplay(String text, long waitDuration) {
+//				System.out.println(text);
+//				if(waitDuration>0)
+//					HALHelper.sleep(waitDuration);
+//			}
+//		};
+		
+		// Create behaviors.
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		
-
+<<<<<<< HEAD
+		// Task-specific behaviors
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
-
-		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
-
+=======
+		// Task-specific behaviors		
+		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
+>>>>>>> refine_follow_line
 		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 		behaviors.add(new BridgeBehaviour(sharedState, hal));
 		behaviors.add(new BossBehaviour(sharedState, hal));
@@ -77,6 +84,7 @@ public class Main {
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());
 		
+<<<<<<< HEAD
 		Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), false);
 		a.start();
 	}
@@ -86,5 +94,12 @@ public class Main {
 		for(int i=0;i<behavs.length;i++)
 			behavs[i] = behaviors.get(i);
 		return behavs;
+=======
+		Behavior[] behavs = new Behavior[behaviors.size()];
+		for(int i=0;i<behavs.length;i++)
+			behavs[i] = behaviors.get(i);
+		Arbitrator a = new Arbitrator(behavs, false);
+		a.start();
+>>>>>>> refine_follow_line
 	}
 }
