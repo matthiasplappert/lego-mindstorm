@@ -9,7 +9,6 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
-import java.io.*;
 
 //TODO:
 //Change to three level detection: white, border, line. Behaviour: increasing rotation angle as closer the measurements comes to the border
@@ -23,16 +22,14 @@ public class LineSearchBehavior extends StateBehavior {
 
 	public static final int LOOP_DELAY = 100;
 
-	private Port port;
 
 	private boolean suppressed;
 	private MeanFilter meanFilter;
 	private SampleProvider sampleProvider;
 	private float[] meanBuffer;
 	
-	public LineSearchBehavior(SharedState sharedState, IHAL hal, Port port) {
+	public LineSearchBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
-		this.port = port;
 		this.suppressed = false;
 		this.halInit();
 	}
