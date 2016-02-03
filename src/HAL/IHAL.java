@@ -8,6 +8,7 @@ public interface IHAL {
 	
 	void backward();
 	void forward();
+	void forward(Speed speed);
 	void stop();
 	void rotate(int angle, boolean returnImmediately);	
 	void turn(int angle, boolean stopInnerChain, boolean immediateReturn);

@@ -46,6 +46,7 @@ public class Main {
 		SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 		IHAL hal = new HAL();
+		hal.resetGyro();
 //		IHAL hal = new DefaultHAL(){
 //			@Override
 //			public void printOnDisplay(String text, long waitDuration) {
