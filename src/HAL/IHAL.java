@@ -24,4 +24,8 @@ public interface IHAL {
 	EV3ColorSensor getColorSensor(); //remove later
 
 	boolean isTouchButtonPressed();
+
+	float getRedColorSensorValue();
+
+	void enableRedMode();
 }

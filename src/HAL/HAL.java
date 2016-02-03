@@ -2,17 +2,20 @@ package HAL;
 
 import java.util.Objects;
 
+import Behaviors.LineSearchBehavior;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.hardware.sensor.SensorMode;
 
 /**
  * @author David
@@ -36,7 +39,8 @@ public class HAL implements IHAL {
 	private final int turnSpeedOuterStops = 200;
 	private final int turnSpeedInner = 100;
 	private final int turnSpeedOuter = 200;
-	private final int rotationStep = 5;	
+	private final int rotationStep = 5;
+	private float[] RedMeanBuffer;	
 
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
@@ -48,8 +52,19 @@ public class HAL implements IHAL {
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
 
 		this.motorUltrasonic.setSpeed(50);
-	}
+		
 
+
+		
+	}
+	@Override
+	public void enableRedMode(){
+		SensorMode RedSampleProvider = colorsensor.getRedMode();
+		MeanFilter meanFilter = new MeanFilter(RedSampleProvider, LineSearchBehavior.MEAN_WINDOW);
+		this.RedMeanBuffer = new float[meanFilter.sampleSize()];
+	}
+	public void resetRedMode(){
+	}
 	@Override
 	public void printOnDisplay(String text, int row, final long waitDuration) {
 		if (text.isEmpty() || text == null)
@@ -213,7 +228,11 @@ public class HAL implements IHAL {
 	public boolean isRotating() {
 		return Math.abs(this.getGyroValue()) < Math.abs(rotateToAngle);
 	}
+	@Override
+	public float getRedColorSensorValue(){
+		return this.RedMeanBuffer[0];
 
+	}
 	@Override
 	/*
 	 * angle >= 0: right

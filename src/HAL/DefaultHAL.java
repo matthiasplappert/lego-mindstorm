@@ -91,4 +91,16 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public float getRedColorSensorValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void enableRedMode() {
+		// TODO Auto-generated method stub
+		
+	}
 }

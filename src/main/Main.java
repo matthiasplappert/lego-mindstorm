@@ -59,7 +59,7 @@ public class Main {
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		
 		// Task-specific behaviors		
-		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
+		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
 		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 		
