@@ -1,5 +1,6 @@
 package HAL;
 
+import Behaviors.LineType;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 
@@ -51,11 +52,7 @@ public class DefaultHAL implements IHAL {
 		return 0;
 	}
 
-	@Override
-	public float getDistance() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 
 	@Override
 	public void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean returnImmediately) {
@@ -69,11 +66,7 @@ public class DefaultHAL implements IHAL {
 		
 	}
 
-	@Override
-	public float getGyroValue() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 
 	@Override
 	public EV3ColorSensor getColorSensor() {
@@ -102,5 +95,65 @@ public class DefaultHAL implements IHAL {
 	public void moveDistanceSensorToPosition(int angle, boolean immediateReturn) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void forward(Speed speed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getMeanDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getCurrentGyro() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getMeanGyro() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getRedColorSensorValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void enableRedMode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public LineType getLineType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void disableRedMode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetRedMode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isRedMode() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

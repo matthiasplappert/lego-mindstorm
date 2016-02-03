@@ -235,27 +235,25 @@ public class HAL implements IHAL {
 	public void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean immediateReturn) {
 		int angle;
 		switch (position) {
-<<<<<<< HEAD
 		case DOWN:
 			angle = -90;
+			break;
 			// alternative: angle=90 if deployed on the left-hand side of the robot
-=======
-		case 0:
-			motorUltrasonic.rotateTo(0);
-			break;
-		case 1:
-			motorUltrasonic.rotateTo(-45);
-			break;
-		case 2:
-			motorUltrasonic.rotateTo(-90);
-			break;
-		case 3:
-			motorUltrasonic.rotateTo(-135);
-			break;
-		case 4:
-			motorUltrasonic.rotateTo(-180);
->>>>>>> refine_follow_line
-			break;
+//		case 0:
+//			motorUltrasonic.rotateTo(0);
+//			break;
+//		case 1:
+//			motorUltrasonic.rotateTo(-45);
+//			break;
+//		case 2:
+//			motorUltrasonic.rotateTo(-90);
+//			break;
+//		case 3:
+//			motorUltrasonic.rotateTo(-135);
+//			break;
+//		case 4:
+//			motorUltrasonic.rotateTo(-180);
+//			break;
 		case UP:
 		default:
 			angle = 0;
