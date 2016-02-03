@@ -30,10 +30,12 @@ public class MeasurementStarter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		LCD.drawString("Press return to start", 0, 0);
+
 		while(Button.ESCAPE.isDown() == false){//solange Knopf nicht gedrückt ist
 			Delay.msDelay(100);
 		}
+		LCD.clear();
 		LCD.drawString("MeasurementMode run", 0, 0);
 
 		Sound.beep();
