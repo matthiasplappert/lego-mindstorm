@@ -52,7 +52,7 @@ public class Main {
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		
 		// Task-specific behaviors
-		behaviors.add(new LineSearchBehavior(sharedState, hal, SensorPort.S1));
+		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new DisplayTestStateBehavior(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
