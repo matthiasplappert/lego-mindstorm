@@ -109,16 +109,25 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			Delay.msDelay(2000);
 			Sound.buzz();
 			*/
-			float a_angle;
+			/*float a_angle;
 			this.hal.resetGyro();
 			while(!this.surpressed){ //&&!finishcode
 				this.hal.forward(Speed.Slow);
-				a_angle = this.hal.getGyroValue(); 
-				if(a_angle != 0){
-					this.hal.rotate((int)-a_angle, false);
+				a_angle = this.hal.getGyroValue();
+				s = String.valueOf(a_angle);
+				this.hal.printOnDisplay(s, 6, 10);
+				if(Math.abs(a_angle) >= 1){
+					this.hal.rotate((int)a_angle, false);
 				}else{
 					Delay.msDelay(50);
 				}
+			}*/
+			float distance;
+			while(!this.surpressed){
+				LCD.clear();
+				distance = this.hal.getDistance();
+				this.hal.printOnDisplay(String.valueOf(distance), 6, 10);
+				Delay.msDelay(50);
 			}
 		}
 		

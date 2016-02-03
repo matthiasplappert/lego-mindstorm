@@ -44,10 +44,12 @@ public class HAL implements IHAL {
 	private final int turnSpeedOuterStops = 200;
 	private final int turnSpeedInner = 100;
 	private final int turnSpeedOuter = 200;
-	private final int rotationStep = 5;	
+	private final int rotationStep = 1;	
 
 	private SampleProvider sampleProvider_Gyro; 
 	private MeanFilter meanFilter_Gyro;
+	private SampleProvider sampleProvider_Distance; 
+	private MeanFilter meanFilter_Distance;
 	
 	
 	public HAL() {
@@ -61,6 +63,8 @@ public class HAL implements IHAL {
 		this.sampleProvider_Gyro = this.gyro.getAngleMode();
 		this.meanFilter_Gyro = new MeanFilter(sampleProvider_Gyro, 10);
 		this.motorUltrasonic.setSpeed(50);
+		this.sampleProvider_Distance = this.ultrasonic.getDistanceMode();
+		this.meanFilter_Distance = new MeanFilter(sampleProvider_Distance, 10);
 	}
 
 	@Override
@@ -188,10 +192,12 @@ public class HAL implements IHAL {
 
 	public float getDistance() {
 		// TODO Auto-generated method stub
-		ultrasonic.enable();
-		ultrasonic.getDistanceMode().fetchSample(sample, 0);
-		ultrasonic.disable();
-		return sample[0] / 100;
+		//ultrasonic.enable();
+		//ultrasonic.getDistanceMode().fetchSample(sample, 0);
+		//ultrasonic.disable();
+		float[] meanBuffer = new float[meanFilter_Distance.sampleSize()];
+	    meanFilter_Distance.fetchSample(meanBuffer, 0);
+		return meanBuffer[0] * 100;
 	}
 
 	/*
