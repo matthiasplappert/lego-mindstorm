@@ -51,11 +51,6 @@ public class DefaultHAL implements IHAL {
 		return 0;
 	}
 
-	@Override
-	public float getDistance() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public void moveDistanceSensorToPosition(int position) {
@@ -69,11 +64,7 @@ public class DefaultHAL implements IHAL {
 		
 	}
 
-	@Override
-	public float getGyroValue() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 
 	@Override
 	public EV3ColorSensor getColorSensor() {
@@ -94,6 +85,30 @@ public class DefaultHAL implements IHAL {
 	}
 
 	@Override
+	public void forward(Speed speed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getMeanDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getMeanGyro() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getCurrentGyro() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
 	public float getRedColorSensorValue() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -104,14 +119,6 @@ public class DefaultHAL implements IHAL {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void forward(Speed speed) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 
 	@Override
 	public LineType getLineType() {
