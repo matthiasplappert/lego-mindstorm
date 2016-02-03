@@ -27,9 +27,15 @@ public class HAL implements IHAL {
 	private EV3ColorSensor colorsensor;
 	private EV3TouchSensor touchSensor;
 	private float[] sample = new float[1];
-	float rotateToAngle = 0;
-	
-	private final int forwardSpeed = 200;
+	float lastGyroAngleBeforeRotation = 0.f;
+	float rotateToAngle = 0.f;
+		
+	private final int forwardSpeedVeryFast = 720;
+	private final int forwardSpeedFast = 250;
+	private final int forwardSpeedMedium = 150;
+	private final int forwardSpeedSlow = 100;
+	private final int forwardSpeedVerySlow = 50;
+			
 	private final int backwardSpeed = 200;
 	private final int rotateSpeed = 200;
 	private final int turnSpeedInnerStops = 20;
@@ -62,8 +68,27 @@ public class HAL implements IHAL {
 
 	@Override
 	public void forward() {
-		this.motorLeft.setSpeed(forwardSpeed);
-		this.motorRight.setSpeed(forwardSpeed);
+		this.motorLeft.setSpeed(forwardSpeedFast);
+		this.motorRight.setSpeed(forwardSpeedFast);
+		
+		this.motorLeft.forward();
+		this.motorRight.forward();
+	}
+	
+	@Override
+	public void forward(Speed speed) {
+		int s = forwardSpeedFast;
+		
+		switch(speed){
+		case VerySlow: 	s = forwardSpeedVerySlow; break;
+		case Slow: 		s = forwardSpeedSlow; break;
+		case Medium:	s = forwardSpeedMedium; break;
+		case Fast: 		s = forwardSpeedFast; break;
+		case VeryFast: 	s = forwardSpeedVeryFast; break;
+		}
+				
+		this.motorLeft.setSpeed(s);
+		this.motorRight.setSpeed(s);
 		
 		this.motorLeft.forward();
 		this.motorRight.forward();
@@ -92,13 +117,13 @@ public class HAL implements IHAL {
 	public void rotate(int angle, boolean immediateReturn) {
 		boolean rotateWithGyro = true;
 		rotateToAngle = angle;
+		lastGyroAngleBeforeRotation = angle;
 		int sign = (int) Math.signum(angle);	
 		
 		this.motorLeft.setSpeed(rotateSpeed);
 		this.motorRight.setSpeed(rotateSpeed);
 		
-		if (rotateWithGyro) {
-			this.resetGyro();
+		if (rotateWithGyro) {			
 			if (immediateReturn) {
 				if(sign >= 0){
 					this.motorLeft.forward();
@@ -111,7 +136,7 @@ public class HAL implements IHAL {
 				do {
 					this.motorLeft.rotate(sign * rotationStep, true);
 					this.motorRight.rotate(-sign * rotationStep, true);
-				} while (Math.abs(this.getGyroValue()) < Math.abs(angle));
+				} while (Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(angle));
 			}
 		} else {
 			this.motorLeft.rotate(angle, true);
@@ -211,7 +236,7 @@ public class HAL implements IHAL {
 
 	@Override
 	public boolean isRotating() {
-		return Math.abs(this.getGyroValue()) < Math.abs(rotateToAngle);
+		return Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(rotateToAngle);		
 	}
 
 	@Override
@@ -224,6 +249,7 @@ public class HAL implements IHAL {
 	 */
 	public void turn(int angle, boolean stopInnerChain, boolean immediateReturn) {		
 		rotateToAngle = angle;
+		lastGyroAngleBeforeRotation = angle;
 		int sign = (int) Math.signum(angle);
 		
 		if(stopInnerChain){
@@ -244,8 +270,6 @@ public class HAL implements IHAL {
 			}
 		}
 		
-		this.resetGyro();
-		
 		if (immediateReturn) {
 			this.motorLeft.forward();
 			this.motorRight.forward();						
@@ -253,7 +277,7 @@ public class HAL implements IHAL {
 			do {
 				this.motorLeft.forward();
 				this.motorRight.forward();
-			} while (Math.abs(this.getGyroValue()) < Math.abs(angle));
+			} while (Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(angle));
 		}		
 	}
 }
