@@ -130,34 +130,31 @@ public class HAL implements IHAL {
 
 	
 	/* Rotates the Distance Sensor to a given position
-	 * 0: right
-	 * 1: right-down
-	 * 2: down
-	 * 3: left-down
-	 * 4: left
 	 */
 	@Override
-	public void moveDistanceSensorToPosition(int position) {
+	public void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean returnImmediately) {
 		switch (position) {
-		case 0:
+		case RIGHT:
 			motorUltrasonic.rotateTo(0);
 			break;
-		case 1:
+		case RIGHT_DOWN:
 			motorUltrasonic.rotateTo(-45);
 			break;
-		case 2:
+		case DOWN:
 			motorUltrasonic.rotateTo(-90);
 			break;
-		case 3:
+		case LEFT_DOWN:
 			motorUltrasonic.rotateTo(-135);
 			break;
-		case 4:
+		case LEFT:
 			motorUltrasonic.rotateTo(-180);
 			break;
 		default:
 			motorUltrasonic.rotateTo(0);
 		}
-
+		while (!returnImmediately && this.motorUltrasonic.isMoving()) {
+			Thread.yield();
+		}
 	}
 
 	//Resets the gyroscope to zero
@@ -177,5 +174,10 @@ public class HAL implements IHAL {
 	public EV3ColorSensor getColorSensor() {
 		// TODO Auto-generated method stub
 		return colorsensor;
+	}
+
+	@Override
+	public EV3UltrasonicSensor getUltrasonicSensor() {
+		return this.ultrasonic;
 	}
 }

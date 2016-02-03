@@ -1,6 +1,7 @@
 package HAL;
 
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 
 public class DefaultHAL implements IHAL {
 
@@ -57,7 +58,7 @@ public class DefaultHAL implements IHAL {
 	}
 
 	@Override
-	public void moveDistanceSensorToPosition(int position) {
+	public void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean returnImmediately) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -76,6 +77,12 @@ public class DefaultHAL implements IHAL {
 
 	@Override
 	public EV3ColorSensor getColorSensor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EV3UltrasonicSensor getUltrasonicSensor() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,6 +1,7 @@
 package HAL;
 
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 
 public interface IHAL {
 
@@ -12,12 +13,13 @@ public interface IHAL {
 	void rotate(int angle, boolean returnImmediately);
 	float getRGB();
 	float getDistance();
-	void moveDistanceSensorToPosition(int position);
+	void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean returnImmediately);
 	boolean motorsAreMoving();
 	void resetGyro();
 	float getGyroValue();
 	
 	EV3ColorSensor getColorSensor();
+	EV3UltrasonicSensor getUltrasonicSensor();
 
 	boolean isTouchButtonPressed();
 }
