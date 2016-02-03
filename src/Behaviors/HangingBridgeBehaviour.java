@@ -1,9 +1,9 @@
 package Behaviors;
 
 import HAL.IHAL;
+import HAL.Speed;
 import State.SharedState;
 import State.State;
-import lejos.hardware.Audio;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -72,21 +72,44 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			
 			/*
 			hal.forward();
-			Delay.msDelay(200);
+			Delay.msDelay(500);
 			hal.turn(45, true, false);
 			Delay.msDelay(100);			
 			hal.turn(-45, true, false);
 			Delay.msDelay(500);
-			
-			Sound.beep();
-			hal.forward();
-			Delay.msDelay(200);
 						
+			hal.stop();
+			Delay.msDelay(2000);
+			Sound.beep();			
+			
 			hal.forward();
 			Delay.msDelay(100);
-			hal.turn(45, false, false);
-			Delay.msDelay(100);			
 			hal.turn(-45, false, false);
+			Delay.msDelay(100);			
+			hal.turn(45, false, false);
+			Delay.msDelay(500);
+			
+			hal.stop();
+			Delay.msDelay(2000);
+			Sound.beep();
+			
+
+			hal.forward(Speed.VerySlow);
+			Delay.msDelay(2000);
+			Sound.beep();
+			hal.forward(Speed.Slow);
+			Delay.msDelay(2000);
+			Sound.beep();
+			hal.forward(Speed.Medium);
+			Delay.msDelay(2000);
+			Sound.beep();
+			hal.forward(Speed.Fast);
+			Delay.msDelay(2000);
+			Sound.beep();
+			hal.forward(Speed.VeryFast);
+			Delay.msDelay(2000);
+			Sound.beep();
+			hal.stop();
 			Delay.msDelay(500);
 			
 			/*Sound.beep();
