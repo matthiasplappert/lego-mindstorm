@@ -2,6 +2,7 @@ package HAL;
 
 import java.util.Objects;
 
+import Behaviors.LineType;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -32,7 +33,9 @@ public class HAL implements IHAL {
 	private float[] sample = new float[1];
 	float lastGyroAngleBeforeRotation = 0.f;
 	float rotateToAngle = 0.f;
-		
+	public static final float THRESHOLD_BLACK = 0.09f;
+	public static final float THRESHOLD_BORDER = 0.20f;
+
 	private final int forwardSpeedVeryFast = 350;
 	private final int forwardSpeedFast = 200;
 	private final int forwardSpeedMedium = 150;
@@ -53,6 +56,7 @@ public class HAL implements IHAL {
 	private MeanFilter meanFilter_Distance;
 	private SensorMode sampleProvider_Redcolor;
 	private MeanFilter meanFilter_Redcolor;
+	private boolean redMode;
 	
 	
 	public HAL() {
@@ -69,13 +73,22 @@ public class HAL implements IHAL {
 		this.sampleProvider_Distance = this.ultrasonic.getDistanceMode();
 		this.meanFilter_Distance = new MeanFilter(sampleProvider_Distance, 10);
 		this.meanFilter_Redcolor = null;
+		this.redMode = false;
 	}
 	@Override
 	public void enableRedMode(){
 		this.sampleProvider_Redcolor = this.colorsensor.getRedMode();
 		this.meanFilter_Redcolor = new MeanFilter(sampleProvider_Redcolor, 5);
+		this.redMode = true;
 
 	}
+	@Override
+	public boolean isRedMode(){return this.redMode;}
+	@Override
+	public void disableRedMode(){
+		this.redMode = false;
+	}
+	@Override
 	public void resetRedMode(){
 		this.meanFilter_Redcolor = null;
 	}
@@ -272,6 +285,22 @@ public class HAL implements IHAL {
 		return means[0];
 
 	}
+	
+	
+	@Override
+	public LineType getLineType(){
+		if(this.isRedMode()){
+		final float data = this.getRedColorSensorValue();
+			if(data <= THRESHOLD_BLACK) return LineType.BLACK;
+			else if(data > THRESHOLD_BLACK && data <= THRESHOLD_BORDER) return LineType.BORDER;
+			else if(data > THRESHOLD_BORDER && data <= 1.0f) return LineType.LINE;
+			else return LineType.UNDEFINED;
+		}
+		else return LineType.UNDEFINED;
+	}
+	
+	
+	
 	@Override
 	/*
 	 * angle >= 0: right
@@ -321,4 +350,5 @@ public class HAL implements IHAL {
 //		// TODO Auto-generated method stub
 //		
 //	}
+
 }

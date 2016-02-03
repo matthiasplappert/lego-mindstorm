@@ -1,5 +1,6 @@
 package HAL;
 
+import Behaviors.LineType;
 import lejos.hardware.sensor.EV3ColorSensor;
 
 public class DefaultHAL implements IHAL {
@@ -108,5 +109,31 @@ public class DefaultHAL implements IHAL {
 	public void forward(Speed speed) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+
+	@Override
+	public LineType getLineType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void disableRedMode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetRedMode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isRedMode() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

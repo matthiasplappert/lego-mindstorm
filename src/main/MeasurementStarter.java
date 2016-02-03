@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import Behaviors.FindLineBehaviour;
+import Behaviors.LineType;
 import HAL.HAL;
 import HAL.IHAL;
+import HAL.Speed;
+import State.SharedState;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -19,56 +23,76 @@ public class MeasurementStarter {
 
 	public static void main(String[] args) throws IOException{
 		IHAL hal = new HAL();
-		BufferedWriter out = null;
-		
-		final EV3ColorSensor sensor = hal.getColorSensor();
-		final SensorMode sampleProvider = sensor.getRedMode();
+		hal.resetGyro();
 
-		try {
-			out = openWriter("sensor.log");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		BufferedWriter out = null;
+		
+
+//		try {
+////			out = openWriter("sensor.log");
+//		}
+//		catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		hal.enableRedMode();
 		LCD.drawString("Press return to start", 0, 0);
 
 		while(Button.ESCAPE.isDown() == false){//solange Knopf nicht gedrückt ist
 			Delay.msDelay(100);
 		}
 		LCD.clear();
-		LCD.drawString("MeasurementMode run", 0, 0);
+		SharedState state= new SharedState(null);
+		FindLineBehaviour behav = new FindLineBehaviour(state, hal);
+		behav.action();
+//		LCD.drawString("MeasurementMode run", 0, 0);
+//
+//		Sound.beep();
+//		Delay.msDelay(1000);
+//		Sound.beep();
+////		try{
+//			
+//		
+//		while(hal.isTouchButtonPressed() == false){
+//			//drive forward
+////			hal.forward();
+////			float[] valueBuffer = new float[sampleProvider.sampleSize()];
+////			sampleProvider.fetchSample(valueBuffer, 0);
+////			float currentVal = hal.getRedColorSensorValue();
+////			writeToLogFile(currentVal,out);
+//			//measure data		
+////			LCD.drawString("currentVal: " + currentVal, 0, 1);
+//			LineType lt =  hal.getLineType();
+//			LCD.drawString("Line Type: " +lt.toString(), 0, 1);
+//			switch(lt){
+//			case BLACK:
+//				hal.stop();
+//				break;
+//			case BORDER:
+//				Sound.beep();
+//				hal.stop();
+//				break;
+//			case LINE:
+//				hal.forward(Speed.VerySlow);
+//				break;
+//			case UNDEFINED:
+//				hal.stop();
+//				Sound.beepSequence();
+//				break;
+//
+//			}
+////			out.flush();
+//			Delay.msDelay(SAMPLE_RATE);//wait for next sample
+//		}
+//		out.close();
 
+		
+		
+		
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		Sound.beep();
-		Delay.msDelay(1000);
-		Sound.beep();
-		try{
-			
-		
-		while(hal.isTouchButtonPressed() == false){
-			//drive forward
-			hal.forward();
-			float[] valueBuffer = new float[sampleProvider.sampleSize()];
-			sampleProvider.fetchSample(valueBuffer, 0);
-			float currentVal = valueBuffer[0];
-			writeToLogFile(currentVal,out);
-			//measure data		
-			LCD.drawString("currentVal: " + currentVal, 0, 1);
-
-			out.flush();
-			Delay.msDelay(SAMPLE_RATE);//wait for next sample
-		}
-		out.close();
-
-		
-		
-		
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally{
-			sensor.close();
-		}
 		LCD.drawString("MeasurementMode finished", 0, 0);
 		Delay.msDelay(1000);
 		System.exit(0);

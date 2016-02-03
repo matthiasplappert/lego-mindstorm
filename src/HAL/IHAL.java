@@ -1,5 +1,6 @@
 package HAL;
 
+import Behaviors.LineType;
 import lejos.hardware.sensor.EV3ColorSensor;
 
 public interface IHAL {
@@ -29,4 +30,12 @@ public interface IHAL {
 	float getRedColorSensorValue();
 
 	void enableRedMode();
+
+	LineType getLineType();
+
+	void disableRedMode();
+
+	void resetRedMode();
+
+	boolean isRedMode();
 }
