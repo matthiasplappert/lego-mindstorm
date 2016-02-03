@@ -7,6 +7,7 @@ import State.State;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import HAL.Speed;
 
 public class HangingBridgeBehaviour extends StateBehavior {	
 	
@@ -69,6 +70,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			//hal.moveDistanceSensorToPosition(1);
 			//hal.moveDistanceSensorToPosition(0);
 			
+			/*
 			hal.forward();
 			Delay.msDelay(500);
 			hal.turn(45, true, false);
@@ -124,10 +126,23 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			while(this.hal.isRotating() && !this.surpressed){
 				Delay.msDelay(10);
 			}*/
+			/*
 			hal.stop();
 			Sound.beep();
 			Delay.msDelay(2000);
 			Sound.buzz();
+			*/
+			float a_angle;
+			this.hal.resetGyro();
+			while(!this.surpressed){ //&&!finishcode
+				this.hal.forward(Speed.Slow);
+				a_angle = this.hal.getGyroValue(); 
+				if(a_angle != 0){
+					this.hal.rotate((int)-a_angle, false);
+				}else{
+					Delay.msDelay(50);
+				}
+			}
 		}
 		
 		this.sharedState.reset(true);
