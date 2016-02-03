@@ -40,8 +40,8 @@ public class FindLineBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
-		// this.hal.resetGyro();
-		// final float initGyro = this.hal.getGyroValue();
+		 this.hal.resetGyro();
+//		 final float initGyro = this.hal.getMeanGyro();
 		this.direction = Utils.drawDirection();
 		int line_search_angle_diff = this.default_exploration_angle;
 		int counter = 1;
@@ -50,7 +50,6 @@ public class FindLineBehaviour extends StateBehavior {
 			this.hal.enableRedMode();
 		LCD.drawString("Start Line Search", 0, 0);
 		while (!this.suppressed) {
-			// get Gyro Value
 			// check if we have rotate for more than 180 degree
 			LineType line_state = this.hal.getLineType();
 			LCD.drawString("LineType: " + line_state.toString(), 1, 0);
@@ -75,24 +74,16 @@ public class FindLineBehaviour extends StateBehavior {
 			final int turn_angle = direction.getMultiplierForDirection() * angle_val;
 
 			// rotate
-			this.hal.rotate(turn_angle, false);
+			this.hal.rotate(turn_angle, true);
 			// Rotate until we have seen the line again
-
-//			this.hal.rotate(turn_angle, true);
-			// Rotate until Until we have seen the line again
 
 			while (!this.suppressed && this.hal.motorsAreMoving()) {
 				if (this.hal.getLineType() == LineType.LINE) {
-
-					// Overdrive
-
-					// here choose the other direction than in line search
-					// strategy
 					this.hal.stop();
 					break;
 				}
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+				Delay.msDelay(LineSearchBehavior.LOOP_DELAY/2);
 			}
 			// invert direction and increase counter: In the next step explore
 			// the other direction
@@ -101,9 +92,6 @@ public class FindLineBehaviour extends StateBehavior {
 			Delay.msDelay(FindLineBehaviour.LOOP_DELAY);
 
 		}
-		// invert direction and increase counter: In the next step
-		// explore the other direction
-
 	}
 
 	
