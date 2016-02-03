@@ -19,7 +19,7 @@ public class LineSearchBehavior extends StateBehavior {
 	public static final int MEAN_WINDOW = 5;
 
 	// TODO: update this as soon as we have proper handling in the HAL
-	public static final int EXPLORATION_ANGLE_DIFF = 25;
+	public static final int EXPLORATION_ANGLE_DIFF = 15;
 
 	public static final int LOOP_DELAY = 100;
 
