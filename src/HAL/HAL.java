@@ -16,10 +16,6 @@ import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 
-/**
- * @author David
- *
- */
 public class HAL implements IHAL {
 	private RegulatedMotor motorLeft;
 	private RegulatedMotor motorRight;
@@ -46,10 +42,7 @@ public class HAL implements IHAL {
 	private final int turnSpeedOuter = 200;
 	private final int rotationStep = 1;	
 
-	private SampleProvider sampleProvider_Gyro; 
-	private MeanFilter meanFilter_Gyro;
-	private SampleProvider sampleProvider_Distance; 
-	private MeanFilter meanFilter_Distance;
+	private SensorMeanFilter meanFilter;
 	
 	
 	public HAL() {
@@ -60,11 +53,10 @@ public class HAL implements IHAL {
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		this.colorsensor = new EV3ColorSensor(SensorPort.S1);
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
-		this.sampleProvider_Gyro = this.gyro.getAngleMode();
-		this.meanFilter_Gyro = new MeanFilter(sampleProvider_Gyro, 10);
 		this.motorUltrasonic.setSpeed(50);
-		this.sampleProvider_Distance = this.ultrasonic.getDistanceMode();
-		this.meanFilter_Distance = new MeanFilter(sampleProvider_Distance, 10);
+
+		meanFilter = new SensorMeanFilter(gyro, ultrasonic, colorsensor);
+		meanFilter.start();
 	}
 
 	@Override
@@ -147,7 +139,7 @@ public class HAL implements IHAL {
 				do {
 					this.motorLeft.rotate(sign * rotationStep, true);
 					this.motorRight.rotate(-sign * rotationStep, true);
-				} while (Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(angle));
+				} while (Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(angle));
 				this.stop();
 			}
 		} else {
@@ -191,16 +183,17 @@ public class HAL implements IHAL {
 	 */
 	@Override
 
-	public float getDistance() {
-		// TODO Auto-generated method stub
-		//ultrasonic.enable();
-		//ultrasonic.getDistanceMode().fetchSample(sample, 0);
-		//ultrasonic.disable();
-		float[] meanBuffer = new float[meanFilter_Distance.sampleSize()];
-	    meanFilter_Distance.fetchSample(meanBuffer, 0);
-		return meanBuffer[0] * 100;
+	public float getMeanDistance() {
+		return meanFilter.getMeanUltrasonic() * 100.f;
 	}
 
+	@Override
+	public float getCurrentGyro() {
+		float[] sample = new float[1];
+		this.gyro.getAngleMode().fetchSample(sample, 0);
+		return sample[0];
+	}
+	
 	/*
 	 * Rotates the Distance Sensor to a given position 0: right 1: right-down 2:
 	 * down 3: left-down 4: left
@@ -212,16 +205,16 @@ public class HAL implements IHAL {
 			motorUltrasonic.rotateTo(0);
 			break;
 		case 1:
-			motorUltrasonic.rotateTo(45);
+			motorUltrasonic.rotateTo(-45);
 			break;
 		case 2:
-			motorUltrasonic.rotateTo(90);
+			motorUltrasonic.rotateTo(-90);
 			break;
 		case 3:
-			motorUltrasonic.rotateTo(135);
+			motorUltrasonic.rotateTo(-135);
 			break;
 		case 4:
-			motorUltrasonic.rotateTo(180);
+			motorUltrasonic.rotateTo(-180);
 			break;
 		default:
 			motorUltrasonic.rotateTo(0);
@@ -237,10 +230,8 @@ public class HAL implements IHAL {
 
 	// Returns the current angle(degrees) measured by the gyroscope
 	@Override
-	public float getGyroValue() {
-		float[] meanBuffer = new float[meanFilter_Gyro.sampleSize()];
-	    meanFilter_Gyro.fetchSample(meanBuffer, 0);
-	    return meanBuffer[0];
+	public float getMeanGyro() {
+		return meanFilter.getMeanGyro();
 	}
 
 	@Override
@@ -251,7 +242,7 @@ public class HAL implements IHAL {
 
 	@Override
 	public boolean isRotating() {
-		return Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(rotateToAngle);		
+		return Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(rotateToAngle);		
 	}
 
 	@Override
@@ -289,7 +280,7 @@ public class HAL implements IHAL {
 		if (!immediateReturn) {// block until rotation is done			
 			do {
 				Delay.msDelay(10);
-			} while (Math.abs(this.getGyroValue() - lastGyroAngleBeforeRotation) < Math.abs(angle));
+			} while (Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(angle));
 			this.stop();
 		}		
 	}

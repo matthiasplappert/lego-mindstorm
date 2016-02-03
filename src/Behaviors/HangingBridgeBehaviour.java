@@ -145,12 +145,67 @@ public class HangingBridgeBehaviour extends StateBehavior {
 					Delay.msDelay(50);
 				}
 			}*/
+			this.hal.printOnDisplay(String.valueOf(Float.POSITIVE_INFINITY*100.f), 1, 10);
+			
 			float distance;
-			while(!this.surpressed){
-				LCD.clear();
-				distance = this.hal.getDistance();
-				this.hal.printOnDisplay(String.valueOf(distance), 6, 10);
+			float gyro;	
+			for(int i = 0; i < 100; i++){
+				LCD.clear(3);
+				distance = this.hal.getMeanDistance();
+				if(distance == Float.NaN || 
+						distance == Float.POSITIVE_INFINITY || 
+						distance == Float.NEGATIVE_INFINITY) 
+					this.hal.printOnDisplay("Something is wrong", 7, 10);
+				this.hal.printOnDisplay(String.valueOf(distance), 3, 10);
+
 				Delay.msDelay(50);
+				
+			}
+						
+			Sound.beep();
+			this.hal.moveDistanceSensorToPosition(1);
+			
+			for(int i = 0; i < 100; i++){
+				LCD.clear(4);
+				distance = this.hal.getMeanDistance();
+				if(distance == Float.NaN || 
+						distance == Float.POSITIVE_INFINITY || 
+						distance == Float.NEGATIVE_INFINITY) 
+					this.hal.printOnDisplay("Something is wrong", 7, 10);
+				this.hal.printOnDisplay(String.valueOf(distance), 4, 10);
+				Delay.msDelay(50);
+				
+			}
+			Sound.beep();
+			this.hal.moveDistanceSensorToPosition(2);
+			
+			for(int i = 0; i < 100; i++){
+				LCD.clear(5);
+				distance = this.hal.getMeanDistance();
+				if(distance == Float.NaN || 
+						distance == Float.POSITIVE_INFINITY || 
+						distance == Float.NEGATIVE_INFINITY) 
+					this.hal.printOnDisplay("Something is wrong", 7, 10);
+				this.hal.printOnDisplay(String.valueOf(distance), 5, 10);
+											
+				Delay.msDelay(50);
+				
+			}
+			
+			Sound.beep();
+			this.hal.moveDistanceSensorToPosition(0);
+			
+			while(!this.surpressed){
+				LCD.clear(6);
+				distance = this.hal.getMeanDistance();
+				if(distance == Float.NaN || 
+						distance == Float.POSITIVE_INFINITY || 
+						distance == Float.NEGATIVE_INFINITY) 
+					this.hal.printOnDisplay("Something is wrong", 7, 10);
+				this.hal.printOnDisplay(String.valueOf(distance), 6, 10);
+
+				Delay.msDelay(50);
+				
 			}
 		}
 		

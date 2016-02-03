@@ -51,12 +51,6 @@ public class DefaultHAL implements IHAL {
 	}
 
 	@Override
-	public float getDistance() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void moveDistanceSensorToPosition(int position) {
 		// TODO Auto-generated method stub
 		
@@ -66,12 +60,6 @@ public class DefaultHAL implements IHAL {
 	public void resetGyro() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public float getGyroValue() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -96,5 +84,23 @@ public class DefaultHAL implements IHAL {
 	public void forward(Speed speed) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public float getMeanDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getMeanGyro() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getCurrentGyro() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

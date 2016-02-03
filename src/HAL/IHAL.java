@@ -18,9 +18,10 @@ public interface IHAL {
 	boolean isRotating();
 	
 	float getRGB();
-	float getDistance();	
+	float getMeanDistance();	
 	void resetGyro();
-	float getGyroValue();
+	float getCurrentGyro();
+	float getMeanGyro();
 	
 	EV3ColorSensor getColorSensor(); //remove later
 
