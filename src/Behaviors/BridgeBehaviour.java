@@ -3,6 +3,7 @@ package Behaviors;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.lcd.LCD;
 
 public class BridgeBehaviour extends StateBehavior {	
 	
@@ -11,20 +12,15 @@ public class BridgeBehaviour extends StateBehavior {
 	}
 
 	private boolean surpressed =  false;
-	private boolean finished = false;
 	
 	@Override
 	public void action() {
-		this.hal.printOnDisplay("HangingBridgeBehaviour started", 1000);
-		while(!this.surpressed && !this.finished){
-			
-			
-			finished = true;
-			
+		LCD.drawString("BridgeBehavior", 0, 0);
+		while (!this.surpressed) {
+			float distance = this.hal.getDistance();
+			LCD.drawString(Float.toString(distance), 0, 1);
 		}
-		
 		this.sharedState.reset(true);
-		Thread.yield();
 	}
 
 	@Override
