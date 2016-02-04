@@ -5,6 +5,7 @@ import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
 import State.State;
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class DrivebyBehaviour extends StateBehavior {
@@ -17,12 +18,12 @@ public class DrivebyBehaviour extends StateBehavior {
 		return returnType;
 	}
 
-	private static final Speed DefaultSpeed = Speed.Slow;
+	private static final Speed DefaultSpeed = Speed.Medium;
 	private int maxTurnAngle;
 	private int offset;
 
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 10, 5, 90);
+		this(sharedState, hal, 5, 5, 170);
 	}
 
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int min_dist, int offset, int maxTurnAngle) {
@@ -37,11 +38,11 @@ public class DrivebyBehaviour extends StateBehavior {
 	public void action() {
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP, false);
 		Delay.msDelay(250);
-
+		LCD.drawString("DriveByBehaviour", 0, 0);
 		while (!this.suppressed) {
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
-
+			LCD.drawString("dist to wall: " + distance, 1, 0);
 			// Robot control.
 			if (isTooClose(distance)) {
 				this.hal.turn(-this.maxTurnAngle, false, true);
