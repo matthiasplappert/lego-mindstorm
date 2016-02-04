@@ -83,14 +83,14 @@ public class SensorSampler extends Thread{
 		lock.lock();
 		final float value = meanBufferGyro[0];
 		lock.unlock();
-		return value;
+		return - value;
 	}
 	
 	public float getCurrentGyro() {
 		lock.lock();
 		final float value = currentBufferGyro[0];
 		lock.unlock();
-		return value;
+		return - value;
 	}
 	
 	public float getMeanUltrasonic(){
