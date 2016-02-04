@@ -49,55 +49,51 @@ public class FindLineBehaviour extends StateBehavior {
 		while (!this.suppressed) {
 			// check if we have found a line
 			LineType line_state = this.hal.getLineType();
-			this.hal.printOnDisplay("FindLine: " + line_state.toString(), 4, 10);
+			this.hal.printOnDisplay("FindLine: " + line_state.toString(), 4, 0);
 			if (line_state == LineType.LINE) {
 				this.hal.stop();
 				this.returnState = FindLineReturnState.LINE_FOUND;
-				this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 10);
+				this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
 				return;
 			}
 
 			// if right sign = 1, if left sign = -1
 			if(lastUsedDirection == Direction.RIGHT){				
 				sign = 1;
-				this.hal.printOnDisplay("TURN RIGHT", 6, 10);
+				this.hal.printOnDisplay("TURN RIGHT", 6, 0);
 			}else{
 				sign = -1;
-				this.hal.printOnDisplay("TURN LEFT", 6, 10);
+				this.hal.printOnDisplay("TURN LEFT", 6, 0);
 			}
-			// rotate to angle
-			Sound.beep();
+			// rotate to angle			
 			this.hal.rotateTo(sign * searchAngle);
 			// Rotate until we have seen the line again or we reached the
 			// searchAngle
-			while (!this.suppressed && this.hal.motorsAreMoving()) {
+			while (!this.suppressed && this.hal.isRotating()) {
 				if (this.hal.getLineType() == LineType.LINE) {
-					Sound.beep();
 					this.hal.stop();
 					this.returnState = FindLineReturnState.LINE_FOUND;
-					this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 10);
-					break;
+					this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
+					return;
 				}
 				// Again, do not sample too often here.
 				Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
 			}
-			Sound.beep();
 			// invert direction and increase counter: In the next step explore
 			// the other direction
 			lastUsedDirection = lastUsedDirection.getOppositeDirection();
-			Sound.buzz();
 
 			// we turned left and right and did not found a line
 			if (bothDirectionsChecked) {
 				this.returnState = FindLineReturnState.LINE_NOT_FOUND;
-				this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 10);
+				this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 0);
 				// we restore the Direction we were looking before
-				Sound.beep();
+				Sound.buzz();
 				this.hal.rotateTo(0);
-				while (!this.suppressed && this.hal.motorsAreMoving()) {
+				while (!this.suppressed && this.hal.isRotating()) {
 					Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
 				}
-				Sound.beep();
+				return;
 			}
 			bothDirectionsChecked = true;
 		}

@@ -25,6 +25,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private boolean suppressed;
 	private FindLineBehaviour findLineBehav;
+	private Direction lastDirection = Direction.LEFT;
 
 	// 0: small rotations, 1: check for barcode, 2: large rotations
 	private int searchStage = 0;
@@ -39,6 +40,7 @@ public class LineSearchBehavior extends StateBehavior {
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
+		int overdrive_angle;
 
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
@@ -68,34 +70,38 @@ public class LineSearchBehavior extends StateBehavior {
 			switch (line_state) {
 			case LINE:
 				// clear some variables
-				this.hal.printOnDisplay("Search found LINE", 1, 10);
+				this.hal.printOnDisplay("Search found LINE", 1, 0);
 				this.hal.forward();
+				Delay.msDelay(100);
 				break;
 			case BORDER:
-				this.hal.printOnDisplay("Search found BORDER", 1, 10);
+				/*Sound.beep();
+				this.hal.printOnDisplay("Search found BORDER", 1, 0);
 				this.hal.forward();
-				// filter for time
-				/*final long time_diff = Math.abs(System.nanoTime() - timestamp_for_correction);
-				if (time_diff < TIMEDIFF_LAST_LINE_FINDING && timestamp_for_correction > 0) {
-					this.driveAndCorrectToDirection(overdrive_direction.getOppositeDirection());
-				}*/
-				break;
+				overdrive_angle = Utils.considerDirectionForRotation(CORRECTION_ANGLE, this.lastDirection);
+				this.hal.turn(overdrive_angle);
+
+				while (this.hal.isRotating() && !this.suppressed) {
+					Delay.msDelay(10);
+				}
+				break;*/
 			case BLACK:
-				this.hal.resetGyro();
-				this.hal.printOnDisplay("Search found BLACK at " + searchStage, 1, 10);
+				this.hal.printOnDisplay("Search found BLACK at " + searchStage, 1, 0);
 				switch (searchStage) {
 				case 0:
-					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 20, Direction.LEFT);
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection.getOppositeDirection());
 					this.findLineBehav.action();
+					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());
 					break;
 				case 1:
 					// TODO start BarCode Behaviour 
 					this.searchStage++; //remove this line if todo is finished, only increase searchStage on failed behaviour
-					break;
+					//break; TODO wieder einkommentieren wenn Barcode drinne ist
 				case 2:
-					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100, Direction.LEFT);
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection.getOppositeDirection());
 					this.findLineBehav.action();
+					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());
 					break;
 				case 3: 
@@ -110,24 +116,15 @@ public class LineSearchBehavior extends StateBehavior {
 		}
 	}
 
-	private void driveAndCorrectToDirection(Direction OverrideDirection) {
-		int overdrive_angle = Utils.considerDirectionForRotation(CORRECTION_ANGLE, OverrideDirection);
-		this.hal.turn(overdrive_angle);
-
-		while (this.hal.isRotating() && !this.suppressed) {
-			Delay.msDelay(10);
-		}
-	}
-
-	private void reactToFindLine(FindLineReturnState state) {
+	private void reactToFindLine(FindLineReturnState state) {				
 		switch(state){
 		case LINE_FOUND:
-			this.hal.printOnDisplay("Result is LINE_FOUND at " + this.searchStage, 2, 10);
+			this.hal.printOnDisplay("Result is LINE_FOUND at " + this.searchStage, 2, 0);
 			this.hal.forward();
-			this.searchStage = 0;
+			this.searchStage = 0; //reset search stage
 			break;
 		case LINE_NOT_FOUND:	
-			this.hal.printOnDisplay("Result is LINE_NOT_FOUND at " + this.searchStage, 2, 10);
+			this.hal.printOnDisplay("Result is LINE_NOT_FOUND at " + this.searchStage, 2, 0);
 			this.searchStage++;
 			break;
 		}

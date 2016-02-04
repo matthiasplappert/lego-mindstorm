@@ -18,6 +18,7 @@ import HAL.HAL;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
@@ -54,6 +55,7 @@ public class Main {
 		// Create initial shared state.		
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
+		Sound.beep();
 		int initialStateIndex = menu.select();
 		if (initialStateIndex < 0) {
 			return;
