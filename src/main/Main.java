@@ -45,12 +45,17 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
+		LCD.drawString("Frank the Tank is getting ready ...", 0, 0);
 		IHAL hal = new HAL();
+		LCD.clear();
 		
 		// Create initial shared state.		
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
 		int initialStateIndex = menu.select();
+		if (initialStateIndex < 0) {
+			return;
+		}
 		LCD.clear();
 		
 		SharedState sharedState = new SharedState(states[initialStateIndex]);	
