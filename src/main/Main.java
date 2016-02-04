@@ -12,6 +12,7 @@ import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
 import Behaviors.RockerBehaviour;
 import Behaviors.RollBoxBehaviour;
+import Behaviors.SensorDataBehaviour;
 import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
@@ -60,7 +61,9 @@ public class Main {
 		
 		SharedState sharedState = new SharedState(states[initialStateIndex]);	
 
-		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();		
+		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
+		behaviors.add(new SensorDataBehaviour(sharedState, hal));
+
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 		behaviors.add(new BridgeBehaviour(sharedState, hal));
