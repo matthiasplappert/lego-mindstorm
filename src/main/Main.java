@@ -13,7 +13,6 @@ import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
 import Behaviors.SensorDataBehaviour;
 import Behaviors.RollBoxBehaviour;
-import Behaviors.SensorDataBehaviour;
 import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
