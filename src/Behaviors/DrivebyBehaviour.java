@@ -13,7 +13,7 @@ public class DrivebyBehaviour extends StateBehavior {
 
 	private boolean suppressed;
 	private DrivebyReturnType returnType;
-	private final int min_dist;
+	private final int target_dist;
 
 	public DrivebyReturnType getReturnType() {
 		return returnType;
@@ -28,13 +28,13 @@ public class DrivebyBehaviour extends StateBehavior {
 	private int holeOffset;
 	//TODO: MeanFilter smaller
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 7, 2, 80,  15);
+		this(sharedState, hal, 5, 2, 80,  15);
 	}
 
-	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int min_dist, int offset, int maxTurnAngle, int holeOffset) {
+	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int target_dist, int offset, int maxTurnAngle, int holeOffset) {
 		super(sharedState, hal);
 		this.suppressed = false;
-		this.min_dist = min_dist;
+		this.target_dist = target_dist;
 		this.offset = offset;
 		this.maxTurnAngle = maxTurnAngle;
 		this.holeOffset = holeOffset;
@@ -49,7 +49,8 @@ public class DrivebyBehaviour extends StateBehavior {
 		Delay.msDelay(3000);
 		Sound.beep();
 		this.hal.setSpeed(DefaultSpeed);
-		while (!this.suppressed) {
+		while (!this.suppressed && this.hal.getLineType()!=LineType.LINE) {
+		
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
 			LCD.drawString("dist to wall: " + distance, 0, 1);
@@ -90,13 +91,26 @@ public class DrivebyBehaviour extends StateBehavior {
 			Delay.msDelay(10);
 
 		}
+		if(this.hal.getLineType() == LineType.LINE) {
+			Sound.beepSequence();
+			targetLineFound();
+		}
+		this.hal.stop();
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		this.sharedState.reset(true);
 	}
+
+	private void targetLineFound() {
+		this.hal.stop();
+		this.hal.setSpeed(Speed.Slow);
+		this.hal.backward();
+		Delay.msDelay(500);
+	}
+	
 	private void moveBackAndTurn(Direction dir){
 		this.hal.setSpeed(Speed.Slow);
 		this.hal.backward();
-		Delay.msDelay(700);
+		Delay.msDelay(1000);
 		this.hal.stop();
 		this.hal.setSpeed(DefaultSpeed);
 		
@@ -112,11 +126,11 @@ public class DrivebyBehaviour extends StateBehavior {
 	}
 
 	private boolean isTooFar(float distance) {
-		return distance > this.min_dist + this.offset;
+		return distance > this.target_dist + this.offset;
 	}
 
 	private boolean isTooClose(float distance) {
-		return distance < this.min_dist;
+		return distance < this.target_dist;
 	}
 
 	@Override
