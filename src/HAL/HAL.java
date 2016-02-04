@@ -321,6 +321,5 @@ public class HAL implements IHAL {
 		} else{
 			this.forward();
 		}
-		Delay.msDelay(10);
 	}
 }

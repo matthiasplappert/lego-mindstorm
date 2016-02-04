@@ -3,6 +3,7 @@ package HAL;
 import Behaviors.LineType;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.utility.Delay;
 
 public interface IHAL {
 
@@ -30,6 +31,7 @@ public interface IHAL {
 	 *     if (someCondition) {
 	 *         break;
 	 *     }
+	 *     Delay.msDelay(10);
 	 * }
 	 */
 	void setCourseFollowingAngle(int followAngle);

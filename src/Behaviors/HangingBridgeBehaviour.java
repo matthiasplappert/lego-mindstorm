@@ -26,6 +26,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		this.hal.setCourseFollowingAngle((int)this.hal.getMeanGyro());
 		while (!this.suppressed) {
 			this.hal.performCourseFollowingStep();
+			Delay.msDelay(10);
 		}
 		this.sharedState.reset(true);
 		Thread.yield();
