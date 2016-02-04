@@ -3,6 +3,7 @@ package Behaviors;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
+import lejos.hardware.lcd.LCD;
 
 public class RockerBehaviour extends StateBehavior {	
 	
@@ -15,11 +16,13 @@ public class RockerBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		LCD.drawString("Sample test", 0, 0);
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
-		while(!this.surpressed && !this.finished){
+		while(!this.surpressed){
+			float value = this.hal.getMeanDistance();
+			LCD.drawString("Distance value:" + value, 0, 1);
 			
-			
-			finished = true;
+//			finished = true;
 			
 		}
 		
