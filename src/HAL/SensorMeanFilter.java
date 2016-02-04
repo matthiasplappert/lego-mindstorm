@@ -21,27 +21,33 @@ public class SensorMeanFilter extends Thread{
 	private EV3ColorSensor colorSensor;
 	private ColorMode colorMode;
 
-	private Lock lock;
+
+
+
+
+
 
 	public SensorMeanFilter(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), 10);
-		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
+		int sampleCount = 10;
+		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), sampleCount);
+		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), sampleCount);	
 		
 		meanBufferGyro = new float[meanFilterGyro.sampleSize()];
 		meanBufferUltrasonic = new float[meanFilterUltrasonic.sampleSize()];
 		this.colorSensor = color;
 		this.enableRedMode();
-		this.lock = new ReentrantLock();
+		
 	}
+	
+	
+	
 	
 	@Override
 	public void run(){
 		while(true){
-			lock.lock();
-				meanFilterGyro.fetchSample(meanBufferGyro, 0);
-				meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
-				meanFilterColor.fetchSample(meanBufferColor, 0);
-			lock.unlock();
+			meanFilterGyro.fetchSample(meanBufferGyro, 0);
+			meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
+			meanFilterColor.fetchSample(meanBufferColor, 0);
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -51,27 +57,19 @@ public class SensorMeanFilter extends Thread{
 	}
 	
 	public float getMeanGyro(){
-		lock.lock();
-		final float value = meanBufferGyro[0];
-		lock.unlock();
-		return value;
+		return meanBufferGyro[0];
 	}
 	
 	public float getMeanUltrasonic(){
-		lock.lock();
-		final float value = meanBufferUltrasonic[0];
-		lock.unlock();
-		if(!Float.isNaN(value))
-			return value;
+		if(!Float.isNaN(meanBufferUltrasonic[0]))
+			return meanBufferUltrasonic[0];
 		else
-			return 100;
+			return Float.POSITIVE_INFINITY;
+						
 	}
 	
 	public float getMeanColorValue(){
-		lock.lock();
-		final float val = meanBufferColor[0];
-		lock.unlock();
-		return val;
+		return meanBufferColor[0];
 	}
 	
 	public void enableRedMode(){
