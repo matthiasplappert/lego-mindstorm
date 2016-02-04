@@ -26,7 +26,7 @@ public class DrivebyBehaviour extends StateBehavior {
 	private int offset;
 	//TODO: MeanFilter smaller
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 5, 3, 90);
+		this(sharedState, hal, 5, 3, 80);
 	}
 
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int min_dist, int offset, int maxTurnAngle) {
@@ -83,14 +83,15 @@ public class DrivebyBehaviour extends StateBehavior {
 
 		}
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
+		this.sharedState.reset(true);
 	}
 	private void moveBackAndTurnLeft(){
-		this.hal.setSpeed(Speed.Medium);
+//		this.hal.setSpeed(Speed.Medium);
 		this.hal.backward();
 		Delay.msDelay(500);
 		this.hal.stop();
-		this.hal.setSpeed(DefaultSpeed);
-		this.hal.turn(maxTurnAngle);
+//		this.hal.setSpeed(DefaultSpeed);
+		this.hal.rotate(maxTurnAngle);
 		Delay.msDelay(1000);
 
 	}
