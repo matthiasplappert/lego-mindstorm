@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import Behaviors.BarcodeBehavior;
 import Behaviors.BossBehaviour;
 import Behaviors.BridgeBehaviour;
 import Behaviors.ElevatorBehaviour;
@@ -64,6 +65,7 @@ public class Main {
 
 		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
 		behaviors.add(new SensorDataBehaviour(sharedState, hal));
+		behaviors.add(new BarcodeBehavior(sharedState, hal));
 
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));

@@ -58,4 +58,11 @@ public interface IHAL {
 	void setColorMode(ColorMode cm);
 
 	boolean isRedColorMode();
+	
+	void resetLeftTachoCount();
+	void resetRightTachoCount();
+	int getLeftTachoCount();
+	int getRightTachoCount();
+	
+	float convertTachoCountToDistance(int tachoCount);
 }

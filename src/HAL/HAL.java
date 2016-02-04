@@ -319,4 +319,30 @@ public class HAL implements IHAL {
 			this.forward();
 		}
 	}
+
+	@Override
+	public float convertTachoCountToDistance(int tachoCount) {
+		float factor = 0.085f; // measured by taking 100 steps, which turned out to be 8.5cm
+		return tachoCount * factor;
+	}
+
+	@Override
+	public int getLeftTachoCount() {
+		return this.motorLeft.getTachoCount();
+	}
+
+	@Override
+	public int getRightTachoCount() {
+		return this.motorRight.getTachoCount();
+	}
+
+	@Override
+	public void resetLeftTachoCount() {
+		this.motorLeft.resetTachoCount();
+	}
+
+	@Override
+	public void resetRightTachoCount() {
+		this.motorRight.resetTachoCount();
+	}
 }

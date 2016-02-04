@@ -12,7 +12,8 @@ public enum State {
 	RockerState,
 	RollBoxState,
 	FindLineState,
-	SensorDataState;
+	SensorDataState,
+	BarcodeState;
 	public static State getInitState(){
 		// TODO: change this
 		return State.SensorDataState;
