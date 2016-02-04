@@ -191,6 +191,8 @@ public class HAL implements IHAL {
 		case UP:
 		default:
 			angle = 0;
+		case Labyrinth:
+			angle = -10;
 		}
 		this.moveDistanceSensorToPosition(angle);
 	}
