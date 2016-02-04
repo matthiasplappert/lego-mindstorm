@@ -39,6 +39,7 @@ public class HAL implements IHAL {
 	private final int rotationStep = 1;	
 
 	private SensorMeanFilter meanFilter;
+	private float courseFollowingAngle;
 	
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
@@ -307,5 +308,18 @@ public class HAL implements IHAL {
 		}			
 	}
 
+	@Override
+	public void setCourseFollowingAngle(int followAngle) {
+		this.courseFollowingAngle = followAngle;
+	}
 
+	@Override
+	public void performCourseFollowingStep() {
+		float currentAngle = this.getCurrentGyro();			
+		if (Math.abs(currentAngle - this.courseFollowingAngle) >= 1){
+			this.turn((int)(currentAngle - this.courseFollowingAngle));
+		} else{
+			this.forward();
+		}
+	}
 }

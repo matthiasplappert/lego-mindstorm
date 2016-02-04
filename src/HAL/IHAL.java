@@ -3,6 +3,7 @@ package HAL;
 import Behaviors.LineType;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.utility.Delay;
 
 public interface IHAL {
 
@@ -19,6 +20,22 @@ public interface IHAL {
 	void moveDistanceSensorToPosition(int angle);
 	boolean motorsAreMoving();
 	boolean isRotating();
+	
+	/**
+	 * Course-based navigation.
+	 * 
+	 * Usage:
+	 * this.hal.setCourseFollowingAngle(10);
+	 * while (!this.suppressed) {
+	 *     this.hal.performCourseFollowingStep();
+	 *     if (someCondition) {
+	 *         break;
+	 *     }
+	 *     Delay.msDelay(10);
+	 * }
+	 */
+	void setCourseFollowingAngle(int followAngle);
+	void performCourseFollowingStep();
 	
 //	float getRGB();
 	float getMeanDistance();	
