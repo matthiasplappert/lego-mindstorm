@@ -22,14 +22,8 @@ public class SensorMeanFilter extends Thread{
 	private ColorMode colorMode;
 
 	private Lock lock;
-//	private Condition defCondition;
-
-
-
-
 
 	public SensorMeanFilter(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-//		int sampleCount = 5	;
 		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), 10);
 		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
 		
@@ -38,11 +32,7 @@ public class SensorMeanFilter extends Thread{
 		this.colorSensor = color;
 		this.enableRedMode();
 		this.lock = new ReentrantLock();
-//		this.defCondition = lock.newCondition();
 	}
-	
-	
-	
 	
 	@Override
 	public void run(){
@@ -74,9 +64,7 @@ public class SensorMeanFilter extends Thread{
 		if(!Float.isNaN(value))
 			return value;
 		else
-//			return Float.POSITIVE_INFINITY;
 			return 100;
-						
 	}
 	
 	public float getMeanColorValue(){
