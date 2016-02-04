@@ -26,8 +26,9 @@ public class SensorDataBehaviour extends StateBehavior {
 		while(!this.surpressed){
 //			float value = this.hal.getMeanDistance();
 			LCD.drawString("Distance value:" + this.hal.getMeanDistance(), 0, 1);
-			LCD.drawString("Gyro value:" + this.hal.getCurrentGyro(), 0, 2);
-			LCD.drawString("Line Type:" + this.hal.getLineType(), 0, 3);
+			LCD.drawString("Curr gyro:" + this.hal.getCurrentGyro(), 0, 2);
+			LCD.drawString("Mean gyro:" + this.hal.getMeanGyro(), 0, 3);
+			LCD.drawString("Line Type:" + this.hal.getLineType(), 0, 4);
 			Delay.msDelay(10);
 //			finished = true;
 			
