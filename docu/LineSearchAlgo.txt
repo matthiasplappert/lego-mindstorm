@@ -1,0 +1,26 @@
+LineSearchAlgo
+
+Linie gefunden: geradeaus
+Linie verloren:
+	- leichter Schwenk nach links (20°)
+	- großer Schwenk nach rechts (100°) (deckt leichten Schwenk mit ab)
+	- großer Schwenk nach links (100°)
+	- Falls immer noch nichts gefunden, dann steuern wir zurück auf die Ausgangsposition,
+		und starten den BarCode Algo
+		
+	ODER:
+	
+	- leichter Schwenk nach links (20°)
+	- leichter Schwenk nach rechts (20°)
+	- Falls immer noch nichts gefunden, dann steuern wir zurück auf die Ausgangsposition,
+		und starten den BarCode Algo
+	- Falls BarCode nicht gefunden wird startet die Recovery (evtl. rückwärts fahren)
+	- großer Schwenk nach links (100°)
+	- großer Schwenk nach rechts 100°)
+	
+
+BarCode Algo
+	- fährt geradeaus mit gyro Methode
+	- liest Barcode ein
+	
+
