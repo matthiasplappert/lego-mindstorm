@@ -168,7 +168,7 @@ public class HAL implements IHAL {
 	
 	@Override
 	public void moveDistanceSensorToPosition(int angle) {
-		this.motorUltrasonic.rotateTo(angle, true);
+		this.motorUltrasonic.rotateTo(angle, false);
 	}
 
 	// Resets the gyroscope to zero
