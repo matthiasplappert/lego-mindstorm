@@ -115,7 +115,7 @@ public class HAL implements IHAL {
 		int rotationDifference = (int) (angle - this.getCurrentGyro());
 		
 		//only turn if necessary
-		if (Math.abs(rotationDifference) > 2) {
+		if (Math.abs(rotationDifference) > 4) {
 			rotationDifference %= 360;
 
 			//dont turn left around if right around is faster
@@ -340,7 +340,7 @@ public class HAL implements IHAL {
 		// The gyro angle is exactly opposite to the motor rotation angle
 		float currentAngle = this.getCurrentGyro();
 		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1) {
-			this.turn((int) (this.courseFollowingAngle - currentAngle));
+			this.turn((int) (currentAngle - this.courseFollowingAngle));
 		} else {
 			this.forward();
 		}

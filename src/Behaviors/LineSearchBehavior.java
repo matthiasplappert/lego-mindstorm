@@ -43,7 +43,7 @@ public class LineSearchBehavior extends StateBehavior {
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
 		
-		while(!suppressed){
+		/*while(!suppressed){
 			this.hal.resetGyro();
 			this.hal.rotateTo(90);
 			
@@ -57,7 +57,7 @@ public class LineSearchBehavior extends StateBehavior {
 			this.hal.printOnDisplay("Gyro: " + this.hal.getMeanGyro(), 2, 10);
 			
 			Delay.msDelay(1000);
-		}
+		}*/
 		
 
 		while (!this.suppressed) {
