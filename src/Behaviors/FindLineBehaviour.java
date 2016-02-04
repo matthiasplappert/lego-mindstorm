@@ -1,5 +1,6 @@
 package Behaviors;
 
+import HAL.ColorMode;
 import HAL.IHAL;
 import State.SharedState;
 import State.State;
@@ -46,8 +47,8 @@ public class FindLineBehaviour extends StateBehavior {
 		int line_search_angle_diff = this.default_exploration_angle;
 		int counter = 1;
 
-		if (!this.hal.isRedMode())
-			this.hal.enableRedMode();
+		if (!this.hal.isRedColorMode())
+			this.hal.setColorMode(ColorMode.RED);
 		LCD.drawString("Start Line Search", 0, 0);
 		while (!this.suppressed) {
 			// check if we have rotate for more than 180 degree

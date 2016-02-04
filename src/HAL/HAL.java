@@ -12,16 +12,10 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.RegulatedMotor;
-import lejos.robotics.SampleProvider;
-import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 
-/**
- * @author David
- *
- */
+
 public class HAL implements IHAL {
 	private RegulatedMotor motorLeft;
 	private RegulatedMotor motorRight;
@@ -50,13 +44,7 @@ public class HAL implements IHAL {
 	private final int turnSpeedOuter = 200;
 	private final int rotationStep = 1;	
 
-	private SampleProvider sampleProvider_Gyro; 
-	private MeanFilter meanFilter_Gyro;
-	private SampleProvider sampleProvider_Distance; 
-	private MeanFilter meanFilter_Distance;
-	private SensorMode sampleProvider_Redcolor;
-	private MeanFilter meanFilter_Redcolor;
-	private boolean redMode;
+
 	private SensorMeanFilter meanFilter;
 	
 	public HAL() {
@@ -67,31 +55,12 @@ public class HAL implements IHAL {
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		this.colorsensor = new EV3ColorSensor(SensorPort.S1);
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
-		this.sampleProvider_Gyro = this.gyro.getAngleMode();
-		this.meanFilter_Gyro = new MeanFilter(sampleProvider_Gyro, 10);
 		this.motorUltrasonic.setSpeed(50);
-		this.meanFilter_Redcolor = null;
-		this.redMode = false;
+		//SensorMeanFilter spans a new thread for continoous measurements
 		meanFilter = new SensorMeanFilter(gyro, ultrasonic, colorsensor);
 		meanFilter.start();
 	}
-	@Override
-	public void enableRedMode(){
-		this.sampleProvider_Redcolor = this.colorsensor.getRedMode();
-		this.meanFilter_Redcolor = new MeanFilter(sampleProvider_Redcolor, 5);
-		this.redMode = true;
 
-	}
-	@Override
-	public boolean isRedMode(){return this.redMode;}
-	@Override
-	public void disableRedMode(){
-		this.redMode = false;
-	}
-	@Override
-	public void resetRedMode(){
-		this.meanFilter_Redcolor = null;
-	}
 	@Override
 	public void printOnDisplay(String text, int row, final long waitDuration) {
 		if (text.isEmpty() || text == null)
@@ -153,7 +122,7 @@ public class HAL implements IHAL {
 	public void rotate(int angle, boolean immediateReturn) {
 		boolean rotateWithGyro = true;
 		rotateToAngle = angle;
-		lastGyroAngleBeforeRotation = angle;
+		lastGyroAngleBeforeRotation = this.getCurrentGyro();
 		int sign = (int) Math.signum(angle);	
 		
 		this.motorLeft.setSpeed(rotateSpeed);
@@ -204,11 +173,7 @@ public class HAL implements IHAL {
 		return result;
 	}
 
-	@Override
-	public float getRGB() {
-		return 0;
 
-	}
 
 	/*
 	 * Returns the Distance measured by the ultrasonic sensor returns the
@@ -239,21 +204,6 @@ public class HAL implements IHAL {
 			angle = -90;
 			break;
 			// alternative: angle=90 if deployed on the left-hand side of the robot
-//		case 0:
-//			motorUltrasonic.rotateTo(0);
-//			break;
-//		case 1:
-//			motorUltrasonic.rotateTo(-45);
-//			break;
-//		case 2:
-//			motorUltrasonic.rotateTo(-90);
-//			break;
-//		case 3:
-//			motorUltrasonic.rotateTo(-135);
-//			break;
-//		case 4:
-//			motorUltrasonic.rotateTo(-180);
-//			break;
 		case UP:
 		default:
 			angle = 0;
@@ -280,7 +230,6 @@ public class HAL implements IHAL {
 
 	@Override
 	public EV3ColorSensor getColorSensor() {
-		// TODO Auto-generated method stub
 		return colorsensor;
 	}
 
@@ -293,18 +242,42 @@ public class HAL implements IHAL {
 		return Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(rotateToAngle);		
 	}
 	@Override
-	public float getRedColorSensorValue(){
-		float[] means = new float[this.meanFilter_Redcolor.sampleSize()];
-		this.meanFilter_Redcolor.fetchSample(means, 0);
-		return means[0];
+	public float getMeanColor(){
+		return this.meanFilter.getMeanColorValue();
 
 	}
+	@Override
+	public void setColorMode(ColorMode cm){
+		switch(cm){
+		case COLORID:
+			this.meanFilter.enableColorIDMode();
+			break;
+		case RED:
+			this.meanFilter.enableRedMode();
+			break;
+		case RGB:
+			this.meanFilter.enableRGBMode();
+			break;
+		default:
+			break;
+			
+		}
+	}
 	
+	@Override
+	public ColorMode getColorMode(){
+		return this.meanFilter.getColorMode();
+	}
+	
+	@Override
+	public boolean isRedColorMode(){
+		return this.getColorMode().equals(ColorMode.RED);
+	}
 	
 	@Override
 	public LineType getLineType(){
-		if(this.isRedMode()){
-		final float data = this.getRedColorSensorValue();
+		if(this.getColorMode().equals(ColorMode.RED)){
+		final float data = this.getMeanColor();
 			if(data <= THRESHOLD_BLACK) return LineType.BLACK;
 			else if(data > THRESHOLD_BLACK && data <= THRESHOLD_BORDER) return LineType.BORDER;
 			else if(data > THRESHOLD_BORDER && data <= 1.0f) return LineType.LINE;
@@ -325,7 +298,7 @@ public class HAL implements IHAL {
 	 */
 	public void turn(int angle, boolean stopInnerChain, boolean immediateReturn) {		
 		rotateToAngle = angle;
-		lastGyroAngleBeforeRotation = angle;
+		lastGyroAngleBeforeRotation = this.getCurrentGyro();
 		int sign = (int) Math.signum(angle);
 		
 		if(stopInnerChain){
@@ -355,15 +328,6 @@ public class HAL implements IHAL {
 			this.stop();
 		}		
 	}
-//	@Override
-//	public float getRedColorSensorValue() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//	@Override
-//	public void enableRedMode() {
-//		// TODO Auto-generated method stub
-//		
-//	}
+
 
 }

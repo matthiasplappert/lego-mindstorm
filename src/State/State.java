@@ -2,7 +2,6 @@ package State;
 
 public enum State {
 	
-	T1, TestState,
 	BossState,
 	BridgeState,
 	ElevatorState,

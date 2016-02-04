@@ -1,5 +1,6 @@
 package Behaviors;
 
+import HAL.ColorMode;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
@@ -34,7 +35,8 @@ public class LineSearchBehavior extends StateBehavior {
 	public void action() {
 
 		Direction overdrive_direction = Direction.LEFT;
-		hal.enableRedMode();
+		if(!hal.isRedColorMode())
+			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
 
 		while (!this.suppressed) {
@@ -86,32 +88,7 @@ public class LineSearchBehavior extends StateBehavior {
 		this.hal.turn(overdrive_angle, false, false);
 	}
 
-//	private LineType getLineState() {
-//
-//		final float currentValue = hal.getRedColorSensorValue();
-//		LineType line_state = hal.getLineType();
-//		String message = null;
-//		switch (line_state) {
-//		case BLACK:
-//			message = "offtrack";
-//			break;
-//		case BORDER:
-//			message = "border";
-//			break;
-//		case LINE:
-//			message = "online";
-//		case UNDEFINED:
-//			throw new IllegalStateException("undefined behaviour");
-//		}
-//		LCD.drawString("Message: " + message, 0, 0);
-//		LCD.drawString("currentMean: " + currentValue, 0, 1);
-//		return line_state;
-//	}
-	// private float getMeanSensorValue(){
-	// this.meanFilter.fetchSample(meanBuffer, 0);
-	// float currentMean = this.meanBuffer[0];
-	// return currentMean;
-	// }
+
 
 	@Override
 	State getTargetState() {
