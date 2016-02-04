@@ -112,6 +112,12 @@ public class HAL implements IHAL {
 			this.motorRight.forward();
 		}						
 	}
+	
+	@Override
+	public void rotateTo(int angle) {
+		float rotationDifference = angle - this.getCurrentGyro();
+		rotate((int) rotationDifference);						
+	}
 
 	@Override
 	public boolean motorsAreMoving() {
