@@ -160,6 +160,9 @@ public class HAL implements IHAL {
 			angle = -90;
 			break;
 			// alternative: angle=90 if deployed on the left-hand side of the robot
+		case Labyrinth:
+			angle= -15;
+			break;
 		case UP:
 		default:
 			angle = 0;
@@ -302,8 +305,8 @@ public class HAL implements IHAL {
 			forwardSpeed = 350;					
 			backwardSpeed = 350;
 			rotateSpeed = 350;
-			turnSpeedInner = 100;
-			turnSpeedOuter = 200;
+			turnSpeedInner = 62;//50
+			turnSpeedOuter = 150;//120; diff von 70
 			break;
 			
 			

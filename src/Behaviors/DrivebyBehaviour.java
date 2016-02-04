@@ -40,9 +40,10 @@ public class DrivebyBehaviour extends StateBehavior {
 	@Override
 	public void action() {
 		LCD.drawString("DriveByBehaviour", 0, 0);
-		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
 		this.hal.getMeanDistance();
-		Delay.msDelay(2000);
+		Sound.beep();
+		Delay.msDelay(5000);
 		Sound.beep();
 		this.hal.setSpeed(DefaultSpeed);
 		while (!this.suppressed) {
@@ -52,6 +53,7 @@ public class DrivebyBehaviour extends StateBehavior {
 			if (isButtonPressed())
 			{
 				this.hal.stop();
+				moveBackAndTurnLeft();
 			} else {
 				// Robot control.
 				if (isTooClose(distance)) {
@@ -77,11 +79,21 @@ public class DrivebyBehaviour extends StateBehavior {
 					this.hal.forward();
 				}
 			}
+			Delay.msDelay(10);
 
 		}
-		Delay.msDelay(10);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 	}
+	private void moveBackAndTurnLeft(){
+		this.hal.setSpeed(Speed.Medium);
+		this.hal.backward();
+		Delay.msDelay(500);
+		this.hal.stop();
+		this.hal.setSpeed(DefaultSpeed);
+		this.hal.turn(maxTurnAngle);
+		Delay.msDelay(1000);
 
+	}
 	private boolean isButtonPressed() {
 		return this.hal.isTouchButtonPressed();
 	}
