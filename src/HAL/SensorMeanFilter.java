@@ -76,7 +76,7 @@ public class SensorMeanFilter extends Thread{
 			return value;
 		else
 //			return Float.POSITIVE_INFINITY;
-			return 300;
+			return 100;
 						
 	}
 	
