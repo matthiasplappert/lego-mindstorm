@@ -79,9 +79,6 @@ public class FindLineBehaviour extends StateBehavior {
 				// Again, do not sample too often here.
 				Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
 			}
-			// invert direction and increase counter: In the next step explore
-			// the other direction
-			lastUsedDirection = lastUsedDirection.getOppositeDirection();
 
 			// we turned left and right and did not found a line
 			if (bothDirectionsChecked) {
@@ -95,6 +92,10 @@ public class FindLineBehaviour extends StateBehavior {
 				}
 				return;
 			}
+			
+			// invert direction and increase counter: In the next step explore
+			// the other direction
+			lastUsedDirection = lastUsedDirection.getOppositeDirection();
 			bothDirectionsChecked = true;
 		}
 	}
