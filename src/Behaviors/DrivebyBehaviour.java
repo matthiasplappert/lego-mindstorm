@@ -43,33 +43,32 @@ public class DrivebyBehaviour extends StateBehavior {
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
 			LCD.drawString("dist to wall: " + distance, 0, 1);
-			if(this.hal.isTouchButtonPressed()){
+			if (this.hal.isTouchButtonPressed()) {
 				this.hal.stop();
-			}
-			// Robot control.
-			if (isTooClose(distance)) {
-				this.hal.turn(-this.maxTurnAngle, false, true);
+			} else {
+				// Robot control.
+				if (isTooClose(distance)) {
+					this.hal.turn(-this.maxTurnAngle, false, true);
 
-				while (!this.suppressed && this.hal.isRotating()) {
-					if (!this.isTooClose(this.hal.getMeanDistance())) {
-						break;
+					while (!this.suppressed && this.hal.isRotating()) {
+						if (!this.isTooClose(this.hal.getMeanDistance())) {
+							break;
+						}
+						Delay.msDelay(10);
 					}
-					Delay.msDelay(10);
-				}
 
-			}
-			else if (isTooFar(distance)) {
-				this.hal.turn(this.maxTurnAngle, false, true);
+				} else if (isTooFar(distance)) {
+					this.hal.turn(this.maxTurnAngle, false, true);
 
-				while (!this.suppressed && this.hal.isRotating()) {
-					if (!this.isTooFar(this.hal.getMeanDistance())) {
-						break;
+					while (!this.suppressed && this.hal.isRotating()) {
+						if (!this.isTooFar(this.hal.getMeanDistance())) {
+							break;
+						}
+						Delay.msDelay(10);
 					}
-					Delay.msDelay(10);
+				} else {
+					this.hal.forward(DefaultSpeed);
 				}
-			}
-			else {
-				this.hal.forward(DefaultSpeed);
 			}
 
 		}
