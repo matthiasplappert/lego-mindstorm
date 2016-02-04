@@ -313,10 +313,18 @@ public class HAL implements IHAL {
 	public void performCourseFollowingStep() {
 		// The gyro angle is exactly opposite to the motor rotation angle 
 		float currentAngle = -this.getCurrentGyro();
+		LCD.clear();
+		//this.printOnDisplay(String.valueOf(currentAngle), 2, 100);
+		//this.printOnDisplay(String.valueOf(this.courseFollowingAngle), 5, 100);
 		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1){
 			this.turn((int)(this.courseFollowingAngle - currentAngle));
 		} else{
 			this.forward();
 		}
+	}
+	
+	@Override
+	public float getCurrentDistance() {
+		return sensorSampler.getCurrentUltrasonic();
 	}
 }

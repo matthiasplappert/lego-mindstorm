@@ -21,6 +21,11 @@ public class SensorSampler extends Thread{
 	private float[] meanBufferUltrasonic;
 	private float[] meanBufferColor;
 
+	
+	private float[] currentBufferUltrasonic;
+	private EV3UltrasonicSensor ultrasonic;
+	private SampleProvider ultrasonicSampleProvider;
+	
 	private MeanFilter meanFilterGyro;
 	private MeanFilter meanFilterUltrasonic;
 	private MeanFilter meanFilterColor;
@@ -39,6 +44,10 @@ public class SensorSampler extends Thread{
 		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
 		meanBufferUltrasonic = new float[meanFilterUltrasonic.sampleSize()];
 		
+		this.ultrasonic = ultrasonic;
+		this.ultrasonicSampleProvider = this.ultrasonic.getDistanceMode();
+		currentBufferUltrasonic = new float [ultrasonic.sampleSize()];
+		
 		this.colorSensor = color;
 		this.enableRedMode();
 	}
@@ -51,6 +60,7 @@ public class SensorSampler extends Thread{
 				gyroSampleProvider.fetchSample(currentBufferGyro, 0);
 				meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
 				meanFilterColor.fetchSample(meanBufferColor, 0);
+				ultrasonicSampleProvider.fetchSample(currentBufferUltrasonic, 0);
 			lock.unlock();
 			try {
 				Thread.sleep(10);
@@ -126,5 +136,12 @@ public class SensorSampler extends Thread{
 	
 	public ColorMode getColorMode() {
 		return colorMode;
+	}
+
+	public float getCurrentUltrasonic() {
+		lock.lock();
+		final float value = currentBufferUltrasonic[0];
+		lock.unlock();
+		return value;
 	}
 }
