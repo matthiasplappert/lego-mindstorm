@@ -49,13 +49,14 @@ public class Main {
 	public static void main(String[] args) {
 		LCD.drawString("Frank the Tank", 0, 2);
 		LCD.drawString("is getting ready", 0, 3);
+		Sound.beep();
 		IHAL hal = new HAL();
 		LCD.clear();
 		
 		// Create initial shared state.		
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
-		Sound.beep();
+		Sound.twoBeeps();
 		int initialStateIndex = menu.select();
 		if (initialStateIndex < 0) {
 			return;
