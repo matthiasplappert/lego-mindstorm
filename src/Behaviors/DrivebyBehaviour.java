@@ -91,8 +91,11 @@ public class DrivebyBehaviour extends StateBehavior {
 		Delay.msDelay(500);
 		this.hal.stop();
 //		this.hal.setSpeed(DefaultSpeed);
-		this.hal.rotate(maxTurnAngle);
-		Delay.msDelay(1000);
+		this.hal.rotate(-maxTurnAngle);
+		while(this.hal.isRotating()){
+			Delay.msDelay(10);
+		}
+		this.hal.stop();
 
 	}
 	private boolean isButtonPressed() {

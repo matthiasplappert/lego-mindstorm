@@ -161,7 +161,7 @@ public class HAL implements IHAL {
 			break;
 			// alternative: angle=90 if deployed on the left-hand side of the robot
 		case Labyrinth:
-			angle= -20;
+			angle= -10;
 			break;
 		case UP:
 		default:
