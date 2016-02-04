@@ -45,7 +45,8 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		LCD.drawString("Frank the Tank is getting ready ...", 0, 0);
+		LCD.drawString("Frank the Tank", 0, 2);
+		LCD.drawString("is getting ready", 0, 3);
 		IHAL hal = new HAL();
 		LCD.clear();
 		

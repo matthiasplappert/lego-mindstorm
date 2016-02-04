@@ -34,10 +34,9 @@ public class BridgeBehaviour extends StateBehavior {
 		
 		// Wait until we have a stable signal. We at least wait for 10 iterations and ensure
 		// that we initially cannot see the dropoff.
-		int initializationSteps = 0;
-		while (!this.suppressed && (initializationSteps < 10 || this.canSeeDropoff(this.getDistance()))) {
+		LCD.drawString("Mode: initializing", 0, 3);
+		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
-			initializationSteps++;
 		}
 		
 		// Configure the follow angle. We use this initially before we have found the edge
