@@ -41,6 +41,8 @@ public class HAL implements IHAL {
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
 		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
+		this.motorLeft.synchronizeWith(new RegulatedMotor[] {this.motorRight});
+		
 		this.motorUltrasonic = new EV3MediumRegulatedMotor(MotorPort.C);
 		this.gyro = new EV3GyroSensor(SensorPort.S4);
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
@@ -70,8 +72,10 @@ public class HAL implements IHAL {
 		this.motorLeft.setSpeed(forwardSpeed);
 		this.motorRight.setSpeed(forwardSpeed);
 
+		this.motorLeft.startSynchronization();
 		this.motorLeft.forward();
 		this.motorRight.forward();
+		this.motorLeft.endSynchronization();
 	}
 
 	@Override
@@ -79,14 +83,18 @@ public class HAL implements IHAL {
 		this.motorLeft.setSpeed(backwardSpeed);
 		this.motorRight.setSpeed(backwardSpeed);
 
+		this.motorLeft.startSynchronization();
 		this.motorLeft.backward();
 		this.motorRight.backward();
+		this.motorLeft.endSynchronization();
 	}
 
 	@Override
 	public void stop() {
+		this.motorLeft.startSynchronization();
 		this.motorLeft.stop();
 		this.motorRight.stop();
+		this.motorLeft.endSynchronization();
 	}
 
 	@Override
@@ -101,6 +109,7 @@ public class HAL implements IHAL {
 		this.motorLeft.setSpeed(rotateSpeed);
 		this.motorRight.setSpeed(rotateSpeed);
 
+		this.motorLeft.startSynchronization();
 		if (sign >= 0) {
 			this.motorLeft.forward();
 			this.motorRight.backward();
@@ -108,6 +117,7 @@ public class HAL implements IHAL {
 			this.motorLeft.backward();
 			this.motorRight.forward();
 		}
+		this.motorLeft.endSynchronization();
 	}
 
 	@Override
@@ -284,8 +294,10 @@ public class HAL implements IHAL {
 			this.motorRight.setSpeed(turnSpeedOuter);
 		}
 
+		this.motorLeft.startSynchronization();
 		this.motorLeft.forward();
 		this.motorRight.forward();
+		this.motorLeft.endSynchronization();
 	}
 
 	@Override
