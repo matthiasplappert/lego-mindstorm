@@ -14,6 +14,10 @@ public class BridgeBehaviour extends StateBehavior {
 	
 	private static final int MAX_TURN_ANGLE = 45;
 	
+	// The initial offset angle. Should be in the direction of the sensor.
+	// This avoids that we fall of the other side before reaching the edge.
+	private static final int OFFSET_ANGLE = 10;
+	
 	public BridgeBehaviour(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 	}
@@ -33,7 +37,10 @@ public class BridgeBehaviour extends StateBehavior {
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
-		// TODO: we need to avoid falling off the other side somehow
+		// Configure the follow angle. We use this initially before we have found the edge
+		// for the first time. 
+		int followAngle = (int)(this.hal.getCurrentGyro() + OFFSET_ANGLE);
+		this.hal.setCourseFollowingAngle(followAngle);
 		
 		// Our strategy is the following: We just keep going until we reach the drop-off.
 		// We then start to regulate the motors such that we keep a safe distance to the drop-off.
@@ -61,9 +68,7 @@ public class BridgeBehaviour extends StateBehavior {
 				hasSeenDropoff = true;
 			} else {
 				if (!hasSeenDropoff) {
-					// We haven't found the dropoff yet, so just keep going.
-					// TODO: we should have a slight bias to the right here to avoid falling of the other side
-					this.hal.forward();
+					this.hal.performCourseFollowingStep();
 				} else {
 					// We have seen the dropoff before, but can't see it anymore. Correct by
 					// turning slighty to the right until we see the dropoff again.
@@ -114,6 +119,6 @@ public class BridgeBehaviour extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		suppressed = true;
+		this.suppressed = true;
 	}
 }
