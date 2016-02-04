@@ -38,7 +38,9 @@ public class LineSearchBehavior extends StateBehavior {
 		if(!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
-
+		
+		this.hal.setSpeed(Speed.Medium);
+		
 		while (!this.suppressed) {
 			// Do not sample too often.
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
@@ -47,8 +49,8 @@ public class LineSearchBehavior extends StateBehavior {
 			long timestamp_for_correction = 0;
 			switch (line_state) {
 			case LINE:
-				// clear some variables
-				this.hal.forward(Speed.Medium);
+				// clear some variables				
+				this.hal.forward();
 				break;
 			case BORDER:
 				// filter for time
@@ -85,7 +87,11 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private void driveAndCorrectToDirection(Direction OverrideDirection) {
 		int overdrive_angle = Utils.considerDirectionForRotation(CORRECTION_ANGLE, OverrideDirection);
-		this.hal.turn(overdrive_angle, false, false);
+		this.hal.turn(overdrive_angle);
+		
+		while(this.hal.isRotating() && !this.suppressed){
+			Delay.msDelay(10);
+		}
 	}
 
 

@@ -18,14 +18,14 @@ public class BridgeBehaviour extends StateBehavior {
 		super(sharedState, hal);
 	}
 
-	private boolean surpressed = false;
+	private boolean suppressed = false;
 	
 	@Override
 	public void action() {
 		LCD.drawString("BridgeBehavior", 0, 0);
 		
 		// RELEASE THE KRAKEN (and wait for it)
-		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN, false);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN);
 		
 		// Warm up for a couple of steps to get a stable signal.
 		for (int i = 0; i < 10; i++) {
@@ -38,7 +38,7 @@ public class BridgeBehaviour extends StateBehavior {
 		// Our strategy is the following: We just keep going until we reach the drop-off.
 		// We then start to regulate the motors such that we keep a safe distance to the drop-off.
 		boolean hasSeenDropoff = false;
-		while (!this.surpressed) {
+		while (!this.suppressed) {
 			// Get (filtered) distance
 			float distance = this.getDistance();
 			boolean canSeeDropoff = this.canSeeDropoff(distance);
@@ -51,8 +51,8 @@ public class BridgeBehaviour extends StateBehavior {
 			// Robot control.
 			if (canSeeDropoff) {
 				// Turn slightly to the left until we do not see the dropoff anymore.
-				this.hal.turn(-MAX_TURN_ANGLE, false, true);
-				while (!this.surpressed && this.hal.isRotating()) {
+				this.hal.turn(-MAX_TURN_ANGLE);
+				while (!this.suppressed && this.hal.isRotating()) {
 					if (!this.canSeeDropoff(this.getDistance())) {
 						break;
 					}
@@ -67,8 +67,8 @@ public class BridgeBehaviour extends StateBehavior {
 				} else {
 					// We have seen the dropoff before, but can't see it anymore. Correct by
 					// turning slighty to the right until we see the dropoff again.
-					this.hal.turn(MAX_TURN_ANGLE, false, true);
-					while (!this.surpressed && this.hal.isRotating()) {
+					this.hal.turn(MAX_TURN_ANGLE);
+					while (!this.suppressed && this.hal.isRotating()) {
 						if (this.canSeeDropoff(this.getDistance())) {
 							break;
 						}
@@ -83,7 +83,7 @@ public class BridgeBehaviour extends StateBehavior {
 		
 		// Restore state
 		LCD.clear();
-		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP, false);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		this.sharedState.reset(true);
 	}
 	
@@ -114,6 +114,6 @@ public class BridgeBehaviour extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		surpressed = true;
+		suppressed = true;
 	}
 }

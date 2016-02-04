@@ -8,15 +8,15 @@ public interface IHAL {
 
 	void printOnDisplay(String text, int row, long waitDuration);
 	
+	void setSpeed(Speed speed);
 	void backward();
 	void forward();
-	void forward(Speed speed);
 	void stop();
-	void rotate(int angle, boolean returnImmediately);	
-	void turn(int angle, boolean stopInnerChain, boolean immediateReturn);
+	void rotate(int angle);	
+	void turn(int angle);
 	
-	void moveDistanceSensorToPosition(DistanceSensorPosition position, boolean immediateReturn);
-	void moveDistanceSensorToPosition(int angle, boolean immediateReturn);
+	void moveDistanceSensorToPosition(DistanceSensorPosition position);
+	void moveDistanceSensorToPosition(int angle);
 	boolean motorsAreMoving();
 	boolean isRotating();
 	
