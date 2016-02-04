@@ -6,16 +6,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import Behaviors.FindLineBehaviour;
-import Behaviors.LineType;
+import HAL.ColorMode;
 import HAL.HAL;
 import HAL.IHAL;
-import HAL.Speed;
 import State.SharedState;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.SensorMode;
 import lejos.utility.Delay;
 
 public class MeasurementStarter {
@@ -34,7 +31,7 @@ public class MeasurementStarter {
 //		catch (IOException e) {
 //			e.printStackTrace();
 //		}
-		hal.enableRedMode();
+		hal.setColorMode(ColorMode.RED);
 		LCD.drawString("Press return to start", 0, 0);
 
 		while(Button.ESCAPE.isDown() == false){//solange Knopf nicht gedrückt ist

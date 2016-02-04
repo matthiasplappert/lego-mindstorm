@@ -20,7 +20,7 @@ public interface IHAL {
 	boolean motorsAreMoving();
 	boolean isRotating();
 	
-	float getRGB();
+//	float getRGB();
 	float getMeanDistance();	
 	void resetGyro();
 	float getCurrentGyro();
@@ -31,15 +31,13 @@ public interface IHAL {
 
 	boolean isTouchButtonPressed();
 
-	float getRedColorSensorValue();
-
-	void enableRedMode();
-
 	LineType getLineType();
 
-	void disableRedMode();
+	float getMeanColor();
 
-	void resetRedMode();
+	ColorMode getColorMode();
 
-	boolean isRedMode();
+	void setColorMode(ColorMode cm);
+
+	boolean isRedColorMode();
 }
