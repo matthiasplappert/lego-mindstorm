@@ -12,6 +12,7 @@ import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
 import Behaviors.RockerBehaviour;
 import Behaviors.RollBoxBehaviour;
+import Behaviors.SensorDataBehaviour;
 import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
@@ -45,17 +46,24 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
+		LCD.drawString("Frank the Tank is getting ready ...", 0, 0);
 		IHAL hal = new HAL();
+		LCD.clear();
 		
 		// Create initial shared state.		
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
 		int initialStateIndex = menu.select();
+		if (initialStateIndex < 0) {
+			return;
+		}
 		LCD.clear();
 		
 		SharedState sharedState = new SharedState(states[initialStateIndex]);	
 
-		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();		
+		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
+		behaviors.add(new SensorDataBehaviour(sharedState, hal));
+
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 		behaviors.add(new BridgeBehaviour(sharedState, hal));
