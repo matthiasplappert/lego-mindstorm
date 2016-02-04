@@ -78,7 +78,7 @@ public class FindLineBehaviour extends StateBehavior {
 			this.hal.rotate(turn_angle);
 			// Rotate until we have seen the line again
 
-			while (!this.suppressed && this.hal.motorsAreMoving()) {
+			while (!this.suppressed && this.hal.isRotating()) {
 				if (this.hal.getLineType() == LineType.LINE) {
 					this.hal.stop();
 					break;
