@@ -5,6 +5,7 @@ import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
 import State.State;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -34,28 +35,43 @@ public class LineSearchBehavior extends StateBehavior {
 	}
 
 	@Override
-	public void action() {
-
-		Direction overdrive_direction = Direction.LEFT;
+	public void action() {		
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
 
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
+		
+		while(!suppressed){
+			this.hal.rotateTo(90);
+			
+			while (this.hal.isRotating() && !this.suppressed) {
+				Delay.msDelay(10);
+				this.hal.printOnDisplay("Gyro: " + this.hal.getMeanColor(), 2, 10);
+			}
+			
+			this.hal.stop();
+			this.hal.printOnDisplay("Gyro: " + this.hal.getMeanColor(), 2, 10);
+			
+			Delay.msDelay(1000);
+		}
+		
 
 		while (!this.suppressed) {
 			// Do not sample too often.
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			LineType line_state = this.hal.getLineType();
-
-			long timestamp_for_correction = 0;
+			
 			switch (line_state) {
 			case LINE:
 				// clear some variables
+				this.hal.printOnDisplay("Search found LINE", 1, 10);
 				this.hal.forward();
 				break;
 			case BORDER:
+				this.hal.printOnDisplay("Search found BORDER", 1, 10);
+				this.hal.forward();
 				// filter for time
 				/*final long time_diff = Math.abs(System.nanoTime() - timestamp_for_correction);
 				if (time_diff < TIMEDIFF_LAST_LINE_FINDING && timestamp_for_correction > 0) {
@@ -63,6 +79,8 @@ public class LineSearchBehavior extends StateBehavior {
 				}*/
 				break;
 			case BLACK:
+				this.hal.resetGyro();
+				this.hal.printOnDisplay("Search found BLACK at " + searchStage, 1, 10);
 				switch (searchStage) {
 				case 0:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 20, Direction.LEFT);
@@ -78,7 +96,13 @@ public class LineSearchBehavior extends StateBehavior {
 					this.findLineBehav.action();
 					reactToFindLine(findLineBehav.returnState());
 					break;
-				}
+				case 3: 
+					//Error nothing ever found
+					Sound.buzz(); 
+					searchStage = 0; //TODO remove this here
+				}			
+				break;
+			default:
 				break;
 			}
 		}
@@ -96,10 +120,12 @@ public class LineSearchBehavior extends StateBehavior {
 	private void reactToFindLine(FindLineReturnState state) {
 		switch(state){
 		case LINE_FOUND:
+			this.hal.printOnDisplay("Result is LINE_FOUND at " + this.searchStage, 2, 10);
 			this.hal.forward();
 			this.searchStage = 0;
 			break;
 		case LINE_NOT_FOUND:	
+			this.hal.printOnDisplay("Result is LINE_NOT_FOUND at " + this.searchStage, 2, 10);
 			this.searchStage++;
 			break;
 		}

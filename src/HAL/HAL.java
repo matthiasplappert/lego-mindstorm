@@ -59,6 +59,7 @@ public class HAL implements IHAL {
 
 	@Override
 	public void printOnDisplay(String text, int row, final long waitDuration) {
+		LCD.clear(row);
 		if (text.isEmpty() || text == null)
 			throw new IllegalArgumentException();
 		Objects.requireNonNull(waitDuration);
@@ -115,8 +116,9 @@ public class HAL implements IHAL {
 	
 	@Override
 	public void rotateTo(int angle) {
-		float rotationDifference = angle - this.getCurrentGyro();
-		rotate((int) rotationDifference);						
+		int rotationDifference = (int) (angle - this.getMeanGyro());
+		rotationDifference %= 360;
+		rotate(rotationDifference);						
 	}
 
 	@Override
