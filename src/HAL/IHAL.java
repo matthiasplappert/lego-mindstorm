@@ -27,6 +27,7 @@ public interface IHAL {
 	 * 
 	 * Usage:
 	 * this.hal.setCourseFollowingAngle(10);
+	 * this.hal.resetGyro();
 	 * while (!this.suppressed) {
 	 *     this.hal.performCourseFollowingStep();
 	 *     if (someCondition) {
