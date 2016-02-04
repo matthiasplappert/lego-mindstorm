@@ -10,7 +10,7 @@ import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class BridgeBehaviour extends StateBehavior {	
-	private static final float DROPOFF_DISTANCE_THRESHOLD = 15.0f;  // in cm
+	private static final float DROPOFF_DISTANCE_THRESHOLD = 10.0f;  // in cm
 	
 	private static final int STEP_DELAY_MS = 10;
 	
