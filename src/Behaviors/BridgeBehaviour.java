@@ -5,14 +5,12 @@ import HAL.IHAL;
 import State.SharedState;
 import State.State;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 
 public class BridgeBehaviour extends StateBehavior {	
-	private static final float DROPOFF_DISTANCE_THRESHOLD = 20.0f;  // in cm
+	private static final float DROPOFF_DISTANCE_THRESHOLD = 15.0f;  // in cm
 	
-	private static final int SLIDING_WINDOW = 3;
+	private static final int STEP_DELAY_MS = 10;
 	
 	private static final int MAX_TURN_ANGLE = 45;
 	
@@ -27,18 +25,12 @@ public class BridgeBehaviour extends StateBehavior {
 		LCD.drawString("BridgeBehavior", 0, 0);
 		
 		// RELEASE THE KRAKEN (and wait for it)
-		//this.hal.moveDistanceSensorToPosition(30, false);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN, false);
 		
-		// We use a slight mean filter to avoid reacting nervously
-		EV3UltrasonicSensor sensor = this.hal.getUltrasonicSensor();
-		sensor.enable();
-		MeanFilter meanFilter = new MeanFilter(sensor, BridgeBehaviour.SLIDING_WINDOW);
-		
-		// Warm up for a couple of steps.
+		// Warm up for a couple of steps to get a stable signal.
 		for (int i = 0; i < 10; i++) {
-			this.getDistance(meanFilter);
-			Delay.msDelay(10);
+			this.getDistance();
+			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
 		// TODO: we need to avoid falling off the other side somehow
@@ -48,7 +40,7 @@ public class BridgeBehaviour extends StateBehavior {
 		boolean hasSeenDropoff = false;
 		while (!this.surpressed) {
 			// Get (filtered) distance
-			float distance = this.getDistance(meanFilter);
+			float distance = this.getDistance();
 			boolean canSeeDropoff = this.canSeeDropoff(distance);
 			if (distance == Float.POSITIVE_INFINITY && !hasSeenDropoff) {
 				// Work around a problem where the sensor sometimes reports infinity for small distances.
@@ -61,10 +53,10 @@ public class BridgeBehaviour extends StateBehavior {
 				// Turn slightly to the left until we do not see the dropoff anymore.
 				this.hal.turn(-MAX_TURN_ANGLE, false, true);
 				while (!this.surpressed && this.hal.isRotating()) {
-					if (!this.canSeeDropoff(this.getDistance(meanFilter))) {
+					if (!this.canSeeDropoff(this.getDistance())) {
 						break;
 					}
-					Delay.msDelay(10);
+					Delay.msDelay(STEP_DELAY_MS);
 				}
 				hasSeenDropoff = true;
 			} else {
@@ -77,31 +69,26 @@ public class BridgeBehaviour extends StateBehavior {
 					// turning slighty to the right until we see the dropoff again.
 					this.hal.turn(MAX_TURN_ANGLE, false, true);
 					while (!this.surpressed && this.hal.isRotating()) {
-						if (this.canSeeDropoff(this.getDistance(meanFilter))) {
+						if (this.canSeeDropoff(this.getDistance())) {
 							break;
 						}
-						Delay.msDelay(10);
+						Delay.msDelay(STEP_DELAY_MS);
 					}
 				}
 			}
-			
-			// We sample with 100Hz.
-			Delay.msDelay(10);
+			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
 		// TODO: detect the end of the bridge
 		
 		// Restore state
 		LCD.clear();
-		sensor.disable();
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP, false);
 		this.sharedState.reset(true);
 	}
 	
-	private float getDistance(MeanFilter meanFilter) {
-		float[] buffer = new float[meanFilter.sampleSize()];
-		meanFilter.fetchSample(buffer, 0);
-		float distance = buffer[0] * 100.0f;  // in cm
+	private float getDistance() {
+		float distance = this.hal.getMeanDistance();
 		
 		// Debugging
 		LCD.clear(1);
