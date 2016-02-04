@@ -19,11 +19,13 @@ public class DrivebyBehaviour extends StateBehavior {
 	}
 
 	private static final Speed DefaultSpeed = Speed.Medium;
+	private static final int DELAY = 5;
+
 	private int maxTurnAngle;
 	private int offset;
-
+	//TODO: MeanFilter smaller
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 5, 5, 170);
+		this(sharedState, hal, 5, 3, 160);
 	}
 
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int min_dist, int offset, int maxTurnAngle) {
@@ -43,7 +45,8 @@ public class DrivebyBehaviour extends StateBehavior {
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
 			LCD.drawString("dist to wall: " + distance, 0, 1);
-			if (this.hal.isTouchButtonPressed()) {
+			if (isButtonPressed())
+			{
 				this.hal.stop();
 			} else {
 				// Robot control.
@@ -51,20 +54,20 @@ public class DrivebyBehaviour extends StateBehavior {
 					this.hal.turn(-this.maxTurnAngle, false, true);
 
 					while (!this.suppressed && this.hal.isRotating()) {
-						if (!this.isTooClose(this.hal.getMeanDistance())) {
+						if (!this.isTooClose(this.hal.getMeanDistance()) && !this.isButtonPressed()) {
 							break;
 						}
-						Delay.msDelay(10);
+						Delay.msDelay(DELAY);
 					}
 
-				} else if (isTooFar(distance)) {
+				} else if (isTooFar(distance) && !this.isButtonPressed()) {
 					this.hal.turn(this.maxTurnAngle, false, true);
 
 					while (!this.suppressed && this.hal.isRotating()) {
 						if (!this.isTooFar(this.hal.getMeanDistance())) {
 							break;
 						}
-						Delay.msDelay(10);
+						Delay.msDelay(DELAY);
 					}
 				} else {
 					this.hal.forward(DefaultSpeed);
@@ -73,6 +76,10 @@ public class DrivebyBehaviour extends StateBehavior {
 
 		}
 		Delay.msDelay(10);
+	}
+
+	private boolean isButtonPressed() {
+		return this.hal.isTouchButtonPressed();
 	}
 
 	private boolean isTooFar(float distance) {
