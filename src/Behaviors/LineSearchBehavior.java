@@ -52,6 +52,7 @@ public class LineSearchBehavior extends StateBehavior {
 			}
 			
 			this.hal.stop();
+			Sound.beep();
 			this.hal.printOnDisplay("Gyro: " + this.hal.getMeanColor(), 2, 10);
 			
 			Delay.msDelay(1000);
