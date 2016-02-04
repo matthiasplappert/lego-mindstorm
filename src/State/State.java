@@ -10,7 +10,10 @@ public enum State {
 	LineSearch,
 	MazeState,
 	RockerState,
-	RollBoxState, FindLineState, DriveByState, SensorDataState;
+	RollBoxState,
+	FindLineState,
+	DriveByState, 
+	SensorDataState;
 	public static State getInitState(){
 		// TODO: change this
 		return State.SensorDataState;
