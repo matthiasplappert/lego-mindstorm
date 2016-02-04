@@ -5,12 +5,10 @@ import HAL.IHAL;
 import State.SharedState;
 import State.State;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 
 public class BridgeBehaviour extends StateBehavior {	
-	private static final float DROPOFF_DISTANCE_THRESHOLD = 20.0f;  // in cm
+	private static final float DROPOFF_DISTANCE_THRESHOLD = 15.0f;  // in cm
 	
 	private static final int STEP_DELAY_MS = 10;
 	
