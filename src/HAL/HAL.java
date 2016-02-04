@@ -326,8 +326,8 @@ public class HAL implements IHAL {
 	@Override
 	public void performCourseFollowingStep() {
 		float currentAngle = this.getCurrentGyro();			
-		if (Math.abs(currentAngle - this.courseFollowingAngle) >= 1){
-			this.turn((int)(currentAngle - this.courseFollowingAngle));
+		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1){
+			this.turn((int)(this.courseFollowingAngle - currentAngle));
 		} else{
 			this.forward();
 		}

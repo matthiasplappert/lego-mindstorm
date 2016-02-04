@@ -2,23 +2,29 @@ package Behaviors;
 
 import HAL.DistanceSensorPosition;
 import HAL.IHAL;
+import HAL.Speed;
 import State.SharedState;
 import State.State;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class BridgeBehaviour extends StateBehavior {	
-	private static final float DROPOFF_DISTANCE_THRESHOLD = 15.0f;  // in cm
+	private static final float DROPOFF_DISTANCE_THRESHOLD = 10.0f;  // in cm
 	
 	private static final int STEP_DELAY_MS = 10;
 	
 	private static final int MAX_TURN_ANGLE = 45;
 	
+	// The initial offset angle. Should be in the direction of the sensor.
+	// This avoids that we fall of the other side before reaching the edge.
+	private static final int OFFSET_ANGLE = 45;
+	
+	private boolean suppressed = false;
+	
 	public BridgeBehaviour(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 	}
-
-	private boolean suppressed = false;
 	
 	@Override
 	public void action() {
@@ -27,26 +33,46 @@ public class BridgeBehaviour extends StateBehavior {
 		// RELEASE THE KRAKEN (and wait for it)
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN);
 		
-		// Warm up for a couple of steps to get a stable signal.
-		for (int i = 0; i < 10; i++) {
-			this.getDistance();
+		// Wait until we have a stable signal. We at least wait for 10 iterations and ensure
+		// that we initially cannot see the dropoff.
+		LCD.drawString("Mode: initializing", 0, 3);
+		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
-		// TODO: we need to avoid falling off the other side somehow
+		// Configure the follow angle. We use this initially before we have found the edge
+		// for the first time. 
+		LCD.drawString("Mode: finding edge", 0, 3);
+		this.hal.resetGyro();
+		this.hal.setCourseFollowingAngle(OFFSET_ANGLE);
+		this.hal.setSpeed(Speed.Medium);
+		while (!this.suppressed) {
+			this.hal.performCourseFollowingStep();
+			if (this.canSeeDropoff(this.getDistance())) {
+				break;
+			}
+			Delay.msDelay(STEP_DELAY_MS);
+		}
+		
+		// Turn to the left until we can barely see the edge anymore and go go go.
+		Sound.beep();
+		this.hal.setSpeed(Speed.Medium);
+		this.hal.rotate(-MAX_TURN_ANGLE);
+		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
+			Delay.msDelay(STEP_DELAY_MS);
+		}
+		this.hal.stop();
 		
 		// Our strategy is the following: We just keep going until we reach the drop-off.
 		// We then start to regulate the motors such that we keep a safe distance to the drop-off.
-		boolean hasSeenDropoff = false;
+		Sound.buzz();
+		LCD.clear(3);
+		LCD.drawString("Mode: following edge", 0, 3);
+		this.hal.setSpeed(Speed.Fast);
 		while (!this.suppressed) {
 			// Get (filtered) distance
 			float distance = this.getDistance();
 			boolean canSeeDropoff = this.canSeeDropoff(distance);
-			if (distance == Float.POSITIVE_INFINITY && !hasSeenDropoff) {
-				// Work around a problem where the sensor sometimes reports infinity for small distances.
-				// In case we haven't yet seen the dropoff, assume that we are safe.
-				canSeeDropoff = false;
-			}
 			
 			// Robot control.
 			if (canSeeDropoff) {
@@ -58,22 +84,14 @@ public class BridgeBehaviour extends StateBehavior {
 					}
 					Delay.msDelay(STEP_DELAY_MS);
 				}
-				hasSeenDropoff = true;
 			} else {
-				if (!hasSeenDropoff) {
-					// We haven't found the dropoff yet, so just keep going.
-					// TODO: we should have a slight bias to the right here to avoid falling of the other side
-					this.hal.forward();
-				} else {
-					// We have seen the dropoff before, but can't see it anymore. Correct by
-					// turning slighty to the right until we see the dropoff again.
-					this.hal.turn(MAX_TURN_ANGLE);
-					while (!this.suppressed && this.hal.isRotating()) {
-						if (this.canSeeDropoff(this.getDistance())) {
-							break;
-						}
-						Delay.msDelay(STEP_DELAY_MS);
+				// Turn slightly to the right until we do not see the dropoff anymore.
+				this.hal.turn(MAX_TURN_ANGLE);
+				while (!this.suppressed && this.hal.isRotating()) {
+					if (this.canSeeDropoff(this.getDistance())) {
+						break;
 					}
+					Delay.msDelay(STEP_DELAY_MS);
 				}
 			}
 			Delay.msDelay(STEP_DELAY_MS);
@@ -114,6 +132,6 @@ public class BridgeBehaviour extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		suppressed = true;
+		this.suppressed = true;
 	}
 }
