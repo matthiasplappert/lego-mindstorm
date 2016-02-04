@@ -29,7 +29,7 @@ public class SensorMeanFilter extends Thread{
 
 
 	public SensorMeanFilter(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-		int sampleCount = 10;
+		int sampleCount = 5	;
 		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), sampleCount);
 		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), sampleCount);	
 		
