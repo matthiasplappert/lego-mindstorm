@@ -6,6 +6,6 @@ LEFT, RIGHT;
 		return this.equals(Direction.LEFT)? Direction.RIGHT : Direction.LEFT;
 	}
 	public int getMultiplierForDirection(){
-		return this == Direction.RIGHT? 1 : -1;
+		return this.equals(Direction.RIGHT)? 1 : -1;
 	}
 }

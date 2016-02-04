@@ -5,6 +5,7 @@ import java.util.List;
 
 import Behaviors.BossBehaviour;
 import Behaviors.BridgeBehaviour;
+import Behaviors.DrivebyBehaviour;
 import Behaviors.ElevatorBehaviour;
 import Behaviors.FreeTrackBehaviour;
 import Behaviors.HangingBridgeBehaviour;
@@ -65,6 +66,7 @@ public class Main {
 		behaviors.add(new MazeBehaviour(sharedState, hal));
 		behaviors.add(new SensorDataBehaviour(sharedState, hal));
 		behaviors.add(new RollBoxBehaviour(sharedState, hal));
+		behaviors.add(new DrivebyBehaviour(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());
