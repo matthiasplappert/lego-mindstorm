@@ -5,6 +5,7 @@ import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
 import State.State;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -18,14 +19,14 @@ public class DrivebyBehaviour extends StateBehavior {
 		return returnType;
 	}
 
-	private static final Speed DefaultSpeed = Speed.Medium;
+	private static final Speed DefaultSpeed = Speed.Labyrinth;
 	private static final int DELAY = 5;
 
 	private int maxTurnAngle;
 	private int offset;
 	//TODO: MeanFilter smaller
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 5, 3, 160);
+		this(sharedState, hal, 5, 3, 90);
 	}
 
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int min_dist, int offset, int maxTurnAngle) {
@@ -38,10 +39,12 @@ public class DrivebyBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
-		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
-		Delay.msDelay(250);
-		this.hal.setSpeed(DefaultSpeed);
 		LCD.drawString("DriveByBehaviour", 0, 0);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
+		this.hal.getMeanDistance();
+		Delay.msDelay(2000);
+		Sound.beep();
+		this.hal.setSpeed(DefaultSpeed);
 		while (!this.suppressed) {
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
