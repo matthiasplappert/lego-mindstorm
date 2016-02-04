@@ -42,7 +42,10 @@ public class DrivebyBehaviour extends StateBehavior {
 		while (!this.suppressed) {
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
-			LCD.drawString("dist to wall: " + distance, 1, 0);
+			LCD.drawString("dist to wall: " + distance, 0, 1);
+			if(this.hal.isTouchButtonPressed()){
+				this.hal.stop();
+			}
 			// Robot control.
 			if (isTooClose(distance)) {
 				this.hal.turn(-this.maxTurnAngle, false, true);
@@ -54,7 +57,8 @@ public class DrivebyBehaviour extends StateBehavior {
 					Delay.msDelay(10);
 				}
 
-			} else if (isTooFar(distance)) {
+			}
+			else if (isTooFar(distance)) {
 				this.hal.turn(this.maxTurnAngle, false, true);
 
 				while (!this.suppressed && this.hal.isRotating()) {
@@ -63,7 +67,8 @@ public class DrivebyBehaviour extends StateBehavior {
 					}
 					Delay.msDelay(10);
 				}
-			} else {
+			}
+			else {
 				this.hal.forward(DefaultSpeed);
 			}
 
