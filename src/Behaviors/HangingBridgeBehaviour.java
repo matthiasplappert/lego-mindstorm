@@ -16,7 +16,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		super(sharedState, hal);
 	}
 
-	private boolean surpressed =  false;
+	private boolean suppressed =  false;
 	private boolean finished = false;
 	
 	@Override
@@ -27,20 +27,20 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		
 		this.hal.printOnDisplay("followAngle = " + followAngle, 1, 1000);
 		
-		while(!this.surpressed && !this.finished){
+		while(!this.suppressed && !this.finished){
 			LCD.clear(2);
 			LCD.clear(3);
 			LCD.clear(4);
-			this.hal.forward(Speed.Slow);
+			this.hal.setSpeed(Speed.Medium);
 			
 			currentAngle = this.hal.getCurrentGyro();			
 			this.hal.printOnDisplay("currentAngle = " + currentAngle, 2, 10);
 			
 			if(Math.abs(currentAngle - followAngle) >= 1){
 				this.hal.printOnDisplay("turning = " + (currentAngle - followAngle), 3, 10);
-				this.hal.turn((int)(currentAngle - followAngle), false, true);
+				this.hal.turn((int)(currentAngle - followAngle));
 				
-				while(this.hal.isRotating() && !this.surpressed){
+				while(this.hal.isRotating() && !this.suppressed){
 					this.hal.printOnDisplay("current Gyro = " + this.hal.getCurrentGyro(), 4, 10);
 				}									
 			}else{
@@ -60,6 +60,6 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		surpressed = true;
+		suppressed = true;
 	}
 }

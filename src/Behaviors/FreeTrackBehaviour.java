@@ -10,13 +10,13 @@ public class FreeTrackBehaviour extends StateBehavior {
 		super(sharedState, hal);
 	}
 
-	private boolean surpressed =  false;
+	private boolean suppressed =  false;
 	private boolean finished = false;
 	
 	@Override
 	public void action() {
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
-		while(!this.surpressed && !this.finished){
+		while(!this.suppressed && !this.finished){
 			
 			
 			finished = true;
@@ -34,6 +34,6 @@ public class FreeTrackBehaviour extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		surpressed = true;
+		suppressed = true;
 	}
 }

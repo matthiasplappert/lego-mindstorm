@@ -75,7 +75,7 @@ public class FindLineBehaviour extends StateBehavior {
 			final int turn_angle = direction.getMultiplierForDirection() * angle_val;
 
 			// rotate
-			this.hal.rotate(turn_angle, true);
+			this.hal.rotate(turn_angle);
 			// Rotate until we have seen the line again
 
 			while (!this.suppressed && this.hal.motorsAreMoving()) {
