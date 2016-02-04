@@ -302,7 +302,7 @@ public class HAL implements IHAL {
 			backwardSpeed = 350;
 			rotateSpeed = 350;
 			turnSpeedInner = 67;//50
-			turnSpeedOuter = 200;//120; diff von 70
+			turnSpeedOuter = 190;//120; diff von 70
 			break;
 			
 			

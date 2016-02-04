@@ -23,11 +23,12 @@ public class DrivebyBehaviour extends StateBehavior {
 	private static final int DELAY = 5;
 
 	private int maxTurnAngle;
+	private int turnAngleLeft;
 	private int offset;
 	private int holeOffset;
 	//TODO: MeanFilter smaller
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 6, 2, 90, 15);
+		this(sharedState, hal, 7, 2, 80,  15);
 	}
 
 	public DrivebyBehaviour(SharedState sharedState, IHAL hal, int min_dist, int offset, int maxTurnAngle, int holeOffset) {
