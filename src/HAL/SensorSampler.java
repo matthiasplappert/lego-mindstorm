@@ -11,6 +11,9 @@ import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 
 public class SensorSampler extends Thread{
+	private static final int GYRO_WINDOW_LENGTH = 5;
+	
+	private EV3GyroSensor gyro;
 	private SampleProvider gyroSampleProvider;
 	
 	private float[] meanBufferGyro;
@@ -27,17 +30,17 @@ public class SensorSampler extends Thread{
 	private Lock lock;
 
 	public SensorSampler(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-		gyroSampleProvider = gyro.getAngleMode();
-		meanFilterGyro = new MeanFilter(gyroSampleProvider, 10);
-		meanBufferGyro = new float[meanFilterGyro.sampleSize()];
-		currentBufferGyro = new float[meanFilterGyro.sampleSize()];
+		this.lock = new ReentrantLock();
+		
+		this.gyro = gyro;
+		this.gyroSampleProvider = this.gyro.getAngleMode();
+		this.resetGyro(); // this also re-creates all necessary buffers and filters
 		
 		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
 		meanBufferUltrasonic = new float[meanFilterUltrasonic.sampleSize()];
 		
 		this.colorSensor = color;
 		this.enableRedMode();
-		this.lock = new ReentrantLock();
 	}
 	
 	@Override
@@ -55,6 +58,15 @@ public class SensorSampler extends Thread{
 				break;
 			}
 		}
+	}
+	
+	public void resetGyro() {
+		lock.lock();
+			gyro.reset();
+			meanFilterGyro = new MeanFilter(gyroSampleProvider, GYRO_WINDOW_LENGTH);
+			meanBufferGyro = new float[meanFilterGyro.sampleSize()];
+			currentBufferGyro = new float[gyro.sampleSize()];
+		lock.unlock();
 	}
 	
 	public float getMeanGyro(){

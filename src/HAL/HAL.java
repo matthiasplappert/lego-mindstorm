@@ -171,7 +171,7 @@ public class HAL implements IHAL {
 	// Resets the gyroscope to zero
 	@Override
 	public void resetGyro() {
-		gyro.reset();
+		this.sensorSampler.resetGyro();
 	}
 
 	// Returns the current angle(degrees) measured by the gyroscope
@@ -311,9 +311,9 @@ public class HAL implements IHAL {
 
 	@Override
 	public void performCourseFollowingStep() {
-		float currentAngle = this.getCurrentGyro();			
+		float currentAngle = this.getCurrentGyro();
 		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1){
-			this.turn((int)(this.courseFollowingAngle - currentAngle));
+			this.turn((int)(currentAngle - this.courseFollowingAngle));
 		} else{
 			this.forward();
 		}
