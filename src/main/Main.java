@@ -45,19 +45,17 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		// Create initial shared state.
+		IHAL hal = new HAL();
+		
+		// Create initial shared state.		
 		State[] states = new State[State.values().length];
 		TextMenu menu = Main.createMenu(states);
 		int initialStateIndex = menu.select();
 		LCD.clear();
 		
-		SharedState sharedState = new SharedState(states[initialStateIndex]);
+		SharedState sharedState = new SharedState(states[initialStateIndex]);	
 
-		IHAL hal = new HAL();
-
-		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
-		
-
+		ArrayList<Behavior> behaviors = new ArrayList<Behavior>();		
 		behaviors.add(new LineSearchBehavior(sharedState, hal));
 		behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 		behaviors.add(new BridgeBehaviour(sharedState, hal));
