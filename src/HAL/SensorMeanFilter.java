@@ -1,5 +1,9 @@
 package HAL;
 
+//import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -17,33 +21,27 @@ public class SensorMeanFilter extends Thread{
 	private EV3ColorSensor colorSensor;
 	private ColorMode colorMode;
 
-
-
-
-
-
+	private Lock lock;
 
 	public SensorMeanFilter(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-		int sampleCount = 10;
-		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), sampleCount);
-		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), sampleCount);	
+		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), 10);
+		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
 		
 		meanBufferGyro = new float[meanFilterGyro.sampleSize()];
 		meanBufferUltrasonic = new float[meanFilterUltrasonic.sampleSize()];
 		this.colorSensor = color;
 		this.enableRedMode();
-		
+		this.lock = new ReentrantLock();
 	}
-	
-	
-	
 	
 	@Override
 	public void run(){
 		while(true){
-			meanFilterGyro.fetchSample(meanBufferGyro, 0);
-			meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
-			meanFilterColor.fetchSample(meanBufferColor, 0);
+			lock.lock();
+				meanFilterGyro.fetchSample(meanBufferGyro, 0);
+				meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
+				meanFilterColor.fetchSample(meanBufferColor, 0);
+			lock.unlock();
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -53,19 +51,27 @@ public class SensorMeanFilter extends Thread{
 	}
 	
 	public float getMeanGyro(){
-		return meanBufferGyro[0];
+		lock.lock();
+		final float value = meanBufferGyro[0];
+		lock.unlock();
+		return value;
 	}
 	
 	public float getMeanUltrasonic(){
-		if(!Float.isNaN(meanBufferUltrasonic[0]))
-			return meanBufferUltrasonic[0];
+		lock.lock();
+		final float value = meanBufferUltrasonic[0];
+		lock.unlock();
+		if(!Float.isNaN(value))
+			return value;
 		else
-			return Float.POSITIVE_INFINITY;
-						
+			return 100;
 	}
 	
 	public float getMeanColorValue(){
-		return meanBufferColor[0];
+		lock.lock();
+		final float val = meanBufferColor[0];
+		lock.unlock();
+		return val;
 	}
 	
 	public void enableRedMode(){
