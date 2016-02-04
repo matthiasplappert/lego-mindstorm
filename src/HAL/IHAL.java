@@ -20,6 +20,21 @@ public interface IHAL {
 	boolean motorsAreMoving();
 	boolean isRotating();
 	
+	/**
+	 * Course-based navigation.
+	 * 
+	 * Usage:
+	 * this.hal.setCourseFollowingAngle(10);
+	 * while (!this.suppressed) {
+	 *     this.hal.performCourseFollowingStep();
+	 *     if (someCondition) {
+	 *         break;
+	 *     }
+	 * }
+	 */
+	void setCourseFollowingAngle(int followAngle);
+	void performCourseFollowingStep();
+	
 //	float getRGB();
 	float getMeanDistance();	
 	void resetGyro();
