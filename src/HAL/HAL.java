@@ -36,9 +36,7 @@ public class HAL implements IHAL {
 	private int turnSpeedInner;
 	private int turnSpeedOuter;
 	
-	private final int rotationStep = 1;	
-
-	private SensorMeanFilter meanFilter;
+	private SensorSampler sensorSampler;
 	private float courseFollowingAngle;
 	
 	public HAL() {
@@ -51,8 +49,8 @@ public class HAL implements IHAL {
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
 		this.motorUltrasonic.setSpeed(50);
 		//SensorMeanFilter spans a new thread for continoous measurements
-		meanFilter = new SensorMeanFilter(gyro, ultrasonic, colorsensor);
-		meanFilter.start();
+		sensorSampler = new SensorSampler(gyro, ultrasonic, colorsensor);
+		sensorSampler.start();
 		
 		this.setSpeed(Speed.Fast);
 	}
@@ -138,14 +136,12 @@ public class HAL implements IHAL {
 	@Override
 
 	public float getMeanDistance() {
-		return meanFilter.getMeanUltrasonic() * 100.f;
+		return sensorSampler.getMeanUltrasonic() * 100.f;
 	}
 
 	@Override
 	public float getCurrentGyro() {
-		float[] sample = new float[1];
-		this.gyro.getAngleMode().fetchSample(sample, 0);
-		return sample[0];
+		return sensorSampler.getCurrentGyro();
 	}
 	
 	/*
@@ -181,7 +177,7 @@ public class HAL implements IHAL {
 	// Returns the current angle(degrees) measured by the gyroscope
 	@Override
 	public float getMeanGyro() {
-		return meanFilter.getMeanGyro();
+		return sensorSampler.getMeanGyro();
 	}
 
 	@Override
@@ -199,20 +195,20 @@ public class HAL implements IHAL {
 	}
 	@Override
 	public float getMeanColor(){
-		return this.meanFilter.getMeanColorValue();
+		return this.sensorSampler.getMeanColorValue();
 
 	}
 	@Override
 	public void setColorMode(ColorMode cm){
 		switch(cm){
 		case COLORID:
-			this.meanFilter.enableColorIDMode();
+			this.sensorSampler.enableColorIDMode();
 			break;
 		case RED:
-			this.meanFilter.enableRedMode();
+			this.sensorSampler.enableRedMode();
 			break;
 		case RGB:
-			this.meanFilter.enableRGBMode();
+			this.sensorSampler.enableRGBMode();
 			break;
 		default:
 			break;
@@ -221,7 +217,7 @@ public class HAL implements IHAL {
 	
 	@Override
 	public ColorMode getColorMode(){
-		return this.meanFilter.getColorMode();
+		return this.sensorSampler.getColorMode();
 	}
 	
 	@Override

@@ -7,11 +7,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 
-public class SensorMeanFilter extends Thread{
-
+public class SensorSampler extends Thread{
+	private SampleProvider gyroSampleProvider;
+	
 	private float[] meanBufferGyro;
+	private float[] currentBufferGyro;
 	private float[] meanBufferUltrasonic;
 	private float[] meanBufferColor;
 
@@ -23,12 +26,15 @@ public class SensorMeanFilter extends Thread{
 
 	private Lock lock;
 
-	public SensorMeanFilter(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), 10);
-		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
-		
+	public SensorSampler(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
+		gyroSampleProvider = gyro.getAngleMode();
+		meanFilterGyro = new MeanFilter(gyroSampleProvider, 10);
 		meanBufferGyro = new float[meanFilterGyro.sampleSize()];
+		currentBufferGyro = new float[meanFilterGyro.sampleSize()];
+		
+		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
 		meanBufferUltrasonic = new float[meanFilterUltrasonic.sampleSize()];
+		
 		this.colorSensor = color;
 		this.enableRedMode();
 		this.lock = new ReentrantLock();
@@ -39,6 +45,7 @@ public class SensorMeanFilter extends Thread{
 		while(true){
 			lock.lock();
 				meanFilterGyro.fetchSample(meanBufferGyro, 0);
+				gyroSampleProvider.fetchSample(currentBufferGyro, 0);
 				meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
 				meanFilterColor.fetchSample(meanBufferColor, 0);
 			lock.unlock();
@@ -53,6 +60,13 @@ public class SensorMeanFilter extends Thread{
 	public float getMeanGyro(){
 		lock.lock();
 		final float value = meanBufferGyro[0];
+		lock.unlock();
+		return value;
+	}
+	
+	public float getCurrentGyro() {
+		lock.lock();
+		final float value = currentBufferGyro[0];
 		lock.unlock();
 		return value;
 	}
