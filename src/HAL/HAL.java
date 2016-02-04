@@ -322,7 +322,6 @@ public class HAL implements IHAL {
 		this.motorRight.forward();
 		if (!immediateReturn) {// block until rotation is done			
 			do {
-
 				Delay.msDelay(10);
 			} while (Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(angle));
 			this.stop();
