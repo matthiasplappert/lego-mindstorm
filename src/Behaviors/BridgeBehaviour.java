@@ -32,10 +32,12 @@ public class BridgeBehaviour extends StateBehavior {
 		// RELEASE THE KRAKEN (and wait for it)
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN);
 		
-		// Warm up for a couple of steps to get a stable signal.
-		for (int i = 0; i < 10; i++) {
-			this.getDistance();
+		// Wait until we have a stable signal. We at least wait for 10 iterations and ensure
+		// that we initially cannot see the dropoff.
+		int initializationSteps = 0;
+		while (!this.suppressed && (initializationSteps < 10 || this.canSeeDropoff(this.getDistance()))) {
 			Delay.msDelay(STEP_DELAY_MS);
+			initializationSteps++;
 		}
 		
 		// Configure the follow angle. We use this initially before we have found the edge
@@ -54,7 +56,10 @@ public class BridgeBehaviour extends StateBehavior {
 		// Turn to the left until we can barely see the edge anymore and go go go.
 		Sound.beep();
 		this.hal.rotate(-MAX_TURN_ANGLE);
-		while (!this.suppressed && this.canSeeDropoff(this.getDistance()));
+		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
+			Delay.msDelay(STEP_DELAY_MS);
+		}
+		this.hal.stop();
 		
 		// Our strategy is the following: We just keep going until we reach the drop-off.
 		// We then start to regulate the motors such that we keep a safe distance to the drop-off.
