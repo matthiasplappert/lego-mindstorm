@@ -29,9 +29,9 @@ public class SensorMeanFilter extends Thread{
 
 
 	public SensorMeanFilter(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
-		int sampleCount = 5	;
-		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), sampleCount);
-		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), sampleCount);	
+//		int sampleCount = 5	;
+		meanFilterGyro = new MeanFilter(gyro.getAngleMode(), 10);
+		meanFilterUltrasonic = new MeanFilter(ultrasonic.getDistanceMode(), 5);	
 		
 		meanBufferGyro = new float[meanFilterGyro.sampleSize()];
 		meanBufferUltrasonic = new float[meanFilterUltrasonic.sampleSize()];
@@ -62,7 +62,6 @@ public class SensorMeanFilter extends Thread{
 	
 	public float getMeanGyro(){
 		lock.lock();
-		
 		final float value = meanBufferGyro[0];
 		lock.unlock();
 		return value;
