@@ -44,16 +44,17 @@ public class LineSearchBehavior extends StateBehavior {
 		this.hal.resetGyro();
 		
 		while(!suppressed){
+			this.hal.resetGyro();
 			this.hal.rotateTo(90);
 			
 			while (this.hal.isRotating() && !this.suppressed) {
 				Delay.msDelay(10);
-				this.hal.printOnDisplay("Gyro: " + this.hal.getMeanColor(), 2, 10);
+				this.hal.printOnDisplay("Gyro: " + this.hal.getMeanGyro(), 2, 10);
 			}
 			
 			this.hal.stop();
-			Sound.beep();
-			this.hal.printOnDisplay("Gyro: " + this.hal.getMeanColor(), 2, 10);
+			Sound.beep();	
+			this.hal.printOnDisplay("Gyro: " + this.hal.getMeanGyro(), 2, 10);
 			
 			Delay.msDelay(1000);
 		}
