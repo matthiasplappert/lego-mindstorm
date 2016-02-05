@@ -149,8 +149,10 @@ public class LineSearchBehavior extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		this.findLineBehav.suppress();
-		this.barcodeBehav.suppress();
+		if (this.findLineBehav != null)
+			this.findLineBehav.suppress();
+		if (this.barcodeBehav != null)
+			this.barcodeBehav.suppress();
 		this.suppressed = true;
 	}
 }
