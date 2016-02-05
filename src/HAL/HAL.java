@@ -369,7 +369,7 @@ public class HAL implements IHAL {
 		// The gyro angle is exactly opposite to the motor rotation angle
 		float currentAngle = this.getCurrentGyro();
 		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1) {
-			this.turn((int) (currentAngle - this.courseFollowingAngle));
+			this.turn((int) (this.courseFollowingAngle - currentAngle));
 		} else {
 			this.forward();
 		}

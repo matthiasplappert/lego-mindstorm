@@ -35,7 +35,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		}
 		this.hal.setSpeed(Speed.Slow);
 		difference = 200;
-		while (Math.abs(difference) >0.2f && this.hal.getCurrentDistance() < 12.f && !suppressed) {
+		while (Math.abs(difference) > 0.2f && this.hal.getCurrentDistance() < 20.f && !suppressed) {
 			this.hal.forward();
 			Delay.msDelay(400);
 			difference = this.hal.getMeanDistance() - distance;
@@ -51,7 +51,6 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		Delay.msDelay(100);
 		this.hal.setCourseFollowingAngle((int)this.hal.getMeanGyro());
 		while (!this.suppressed)
-
 		{
 			//LCD.clear();
 			//this.hal.printOnDisplay(String.valueOf(this.hal.getCurrentGyro()), 2, 100);
