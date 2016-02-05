@@ -12,6 +12,7 @@ public enum State {
 	RockerState,
 	RollBoxState,
 	FindLineState,
+	DriveByState, 
 	SensorDataState;
 	public static State getInitState(){
 		// TODO: change this

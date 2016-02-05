@@ -18,6 +18,10 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 	private boolean suppressed = false;
 	
+
+	
+	
+	
 	@Override
 	public void action() {
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
