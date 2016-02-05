@@ -32,7 +32,7 @@ import lejos.utility.TextMenu;
 
 
 public class Main {
-	private static TextMenu createMenu(State[] states) {
+	public static TextMenu createMenu(State[] states) {
 		// Allow to pick initial state using the GUI. This code ensures that the default
 		// state is always at the top of the list, hence the somewhat lengthy code.
 		states[0] = State.getInitState();
@@ -60,12 +60,10 @@ public class Main {
 		LCD.clear();
 		
 		// Create initial shared state.		
-		State[] states = new State[State.values().length];
-		TextMenu menu = Main.createMenu(states);
-		Sound.twoBeeps();
-		int initialStateIndex = menu.select();
+		State[] states = new State[State.values().length];				
+		int initialStateIndex = 0;
 		if (initialStateIndex < 0) {
-			return;
+			System.exit(0);
 		}
 		LCD.clear();
 		
@@ -89,10 +87,19 @@ public class Main {
 		//behaviors.add(new DrivebyBehaviour(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
-		behaviors.add(new ShutdownBehavior());
+		behaviors.add(new ShutdownBehavior(sharedState, hal));
+
+		//call menu
+		Sound.twoBeeps();
+		TextMenu menu = Main.createMenu(states);
+		initialStateIndex = menu.select();
+		if (initialStateIndex < 0) {
+			System.exit(0);
+		}
 		
 		try {
 			Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), false);
+			sharedState.setState(states[initialStateIndex]);
 			a.start();
 		} catch (Exception e) {
 			FileWriter fw = new FileWriter("/home/lejos/latest_exception.txt", false);
