@@ -35,12 +35,10 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 		// Follow line
 		// After loosing the line
-		
-	
-		
+
 		float distance = this.hal.getMeanDistance();
 		while (distance > 15.f) {
-			//Linesearch
+			// Linesearch
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			LineType line_state = this.hal.getLineType();
 
@@ -75,7 +73,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			default:
 				break;
 			// this.hal.testMotor();
-			//End Linesearch
+			// End Linesearch
 			}
 			distance = this.hal.getMeanDistance();
 		}
@@ -86,18 +84,17 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		float diff = 0;
 		int steps = 0;
 		boolean enough = false;
-		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed)
-		{
+		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed) {
 			steps++;
 			this.hal.forward();
-			Delay.msDelay(450);
+			Delay.msDelay(300);
 			difference = this.hal.getMeanDistance() - distance;
 			diff += difference;
 			if (steps > 5 && diff / 5 < 0.1) {
 				enough = true;
-			}
-			if (Math.abs(difference) > 0.3f) {
+			} else if (Math.abs(difference) > 0.3f) {
 				this.hal.turn((int) Math.signum(difference));
+				//Maybe even higher
 				Delay.msDelay(150);
 			}
 		}
@@ -165,13 +162,13 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		suppressed = true;
 	}
 
-//	private boolean isTooFar(float distance) {
-//		return distance > this.target_dist + this.offset;
-//	}
-//
-//	private boolean isTooClose(float distance) {
-//		return distance < this.target_dist;
-//	}
+	// private boolean isTooFar(float distance) {
+	// return distance > this.target_dist + this.offset;
+	// }
+	//
+	// private boolean isTooClose(float distance) {
+	// return distance < this.target_dist;
+	// }
 
 	private void reactToFindLine(FindLineReturnState state) {
 		switch (state) {
