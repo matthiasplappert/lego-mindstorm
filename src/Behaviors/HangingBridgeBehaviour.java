@@ -18,6 +18,10 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 	private boolean suppressed = false;
 	
+
+	
+	
+	
 	@Override
 	public void action() {
 		float difference;

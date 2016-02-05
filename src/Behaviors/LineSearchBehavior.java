@@ -89,7 +89,7 @@ public class LineSearchBehavior extends StateBehavior {
 				this.hal.printOnDisplay("Search found BLACK at " + searchStage, 1, 0);
 				switch (searchStage) {
 				case 0:
-					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection.getOppositeDirection());
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection);
 					this.findLineBehav.action();
 					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());
@@ -99,7 +99,7 @@ public class LineSearchBehavior extends StateBehavior {
 					this.searchStage++; //remove this line if todo is finished, only increase searchStage on failed behaviour
 					//break; TODO wieder einkommentieren wenn Barcode drinne ist
 				case 2:
-					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection.getOppositeDirection());
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection);
 					this.findLineBehav.action();
 					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());

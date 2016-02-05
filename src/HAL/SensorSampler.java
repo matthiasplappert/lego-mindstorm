@@ -50,6 +50,7 @@ public class SensorSampler extends Thread{
 		
 		this.colorSensor = color;
 		this.enableRedMode();
+		this.lock = new ReentrantLock();
 	}
 	
 	@Override
