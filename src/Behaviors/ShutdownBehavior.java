@@ -34,13 +34,9 @@ public class ShutdownBehavior extends StateBehavior {
 			
 			if(Button.UP.isDown()){
 				Sound.beep();
-				State[] states = new State[State.values().length];
-				TextMenu menu = Main.createMenu(states);
-				int newStateIndex = menu.select();
-				if (newStateIndex < 0) {
-					System.exit(0);
-				}
-				sharedState.setState(states[newStateIndex]);
+				
+				//this lets the arbitrator exit and the main while-loop continues
+				sharedState.setState(State.ExitState);
 				
 				exit = true;
 			}else if(Button.DOWN.isDown()){
