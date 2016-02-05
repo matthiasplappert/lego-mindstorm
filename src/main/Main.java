@@ -12,6 +12,7 @@ import Behaviors.FreeTrackBehaviour;
 import Behaviors.HangingBridgeBehaviour;
 import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
+import Behaviors.RockerBehaviour;
 import Behaviors.SensorDataBehaviour;
 import Behaviors.RollBoxBehaviour;
 import Behaviors.ShutdownBehavior;
@@ -79,6 +80,7 @@ public class Main {
 		behaviors.add(new MazeBehaviour(sharedState, hal));
 		behaviors.add(new SensorDataBehaviour(sharedState, hal));
 		behaviors.add(new RollBoxBehaviour(sharedState, hal));
+		behaviors.add(new RockerBehaviour(sharedState, hal));
 		behaviors.add(new DrivebyBehaviour(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
