@@ -3,6 +3,7 @@ package HAL;
 import java.util.Objects;
 
 import Behaviors.LineType;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -440,5 +441,23 @@ public class HAL implements IHAL {
 	@Override
 	public float getCurrentDistance() {
 		return sensorSampler.getCurrentUltrasonic() * 100.f;
+	}
+
+	@Override
+	public void testMotor() {
+		for(int i = 10; i< 21; i++){
+			this.motorLeft.setSpeed(50*i);
+			this.motorRight.setSpeed(50*i);
+
+			this.motorLeft.startSynchronization();
+			this.motorLeft.forward();
+			this.motorRight.forward();
+			this.motorLeft.endSynchronization();
+			Sound.beep();
+			Delay.msDelay(3000);
+			this.printOnDisplay("i = " + i, 2, 0);
+		}
+			this.stop();
+		
 	}
 }
