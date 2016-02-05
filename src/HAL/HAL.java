@@ -49,7 +49,7 @@ public class HAL implements IHAL {
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		this.colorsensor = new EV3ColorSensor(SensorPort.S1);
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
-		this.motorUltrasonic.setSpeed(50);
+		this.motorUltrasonic.setSpeed(150);
 		// SensorMeanFilter spans a new thread for continoous measurements
 		sensorSampler = new SensorSampler(gyro, ultrasonic, colorsensor);
 		sensorSampler.start();
