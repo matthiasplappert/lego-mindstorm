@@ -15,6 +15,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 
+
 public class HAL implements IHAL {
 	private RegulatedMotor motorLeft;
 	private RegulatedMotor motorRight;
@@ -194,6 +195,8 @@ public class HAL implements IHAL {
 		case UP:
 		default:
 			angle = 0;
+		case Labyrinth:
+			angle = -10;
 		}
 		this.moveDistanceSensorToPosition(angle);
 	}
@@ -334,7 +337,17 @@ public class HAL implements IHAL {
 			rotateSpeed = 350;
 			turnSpeedInner = 340;
 			turnSpeedOuter = 400;
+			break;	
+			
+		case Labyrinth: 
+			forwardSpeed = 350;					
+			backwardSpeed = 350;
+			rotateSpeed = 350;
+			turnSpeedInner = 67;//50
+			turnSpeedOuter = 190;//120; diff von 70
 			break;
+			
+			
 		case Fast:
 		default:
 			forwardSpeed = 300;

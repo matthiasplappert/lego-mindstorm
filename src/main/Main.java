@@ -6,14 +6,14 @@ import java.util.List;
 import Behaviors.BarcodeBehavior;
 import Behaviors.BossBehaviour;
 import Behaviors.BridgeBehaviour;
+import Behaviors.DrivebyBehaviour;
 import Behaviors.ElevatorBehaviour;
 import Behaviors.FreeTrackBehaviour;
 import Behaviors.HangingBridgeBehaviour;
 import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
-import Behaviors.RockerBehaviour;
-import Behaviors.RollBoxBehaviour;
 import Behaviors.SensorDataBehaviour;
+import Behaviors.RollBoxBehaviour;
 import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
@@ -77,8 +77,9 @@ public class Main {
 		behaviors.add(new ElevatorBehaviour(sharedState, hal));
 		behaviors.add(new FreeTrackBehaviour(sharedState, hal));
 		behaviors.add(new MazeBehaviour(sharedState, hal));
-		behaviors.add(new RockerBehaviour(sharedState, hal));
+		behaviors.add(new SensorDataBehaviour(sharedState, hal));
 		behaviors.add(new RollBoxBehaviour(sharedState, hal));
+		behaviors.add(new DrivebyBehaviour(sharedState, hal));
 		
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());

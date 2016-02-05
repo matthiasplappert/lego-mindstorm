@@ -13,6 +13,7 @@ public enum State {
 	RollBoxState,
 	FindLineState,
 	SensorDataState,
+	DriveByState,
 	BarcodeState;
 	
 	public static State getFromBarcode(int barcode) {
