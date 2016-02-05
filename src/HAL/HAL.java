@@ -377,7 +377,7 @@ public class HAL implements IHAL {
 
 	@Override
 	public float convertTachoCountToDistance(int tachoCount) {
-		float factor = 0.085f; // measured by taking 100 steps, which turned out to be 8.5cm
+		float factor = 0.0423f; // measured
 		return tachoCount * factor;
 	}
 
