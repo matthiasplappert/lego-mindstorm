@@ -16,6 +16,8 @@ public class BarcodeBehavior extends StateBehavior {
 	
 	private boolean suppressed = false;
 	
+	public int scannedBarcode = -1;
+	
 	public BarcodeBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 	}
@@ -72,21 +74,25 @@ public class BarcodeBehavior extends StateBehavior {
 		if (barcode == 0) {
 			Sound.buzz();
 			
-			// Did not find barcode, back up to initial pose
+			// Did not find barcode, back up to initial pose.
 			this.hal.resetGyro();
 			this.hal.setCourseFollowingAngle(0);
 			this.hal.resetLeftTachoCount();
 			this.hal.resetRightTachoCount();
 			while (!this.suppressed && this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
+				LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
 				this.hal.performCourseFollowingStep(true);
 				Delay.msDelay(STEP_DELAY_MS);
 			}
 		} else {
 			Sound.beepSequenceUp();
 		}
+		this.scannedBarcode = barcode;
 		
-		this.sharedState.setLatestBarcode(barcode);
-		this.sharedState.setState(State.getFromBarcode(barcode));
+		// In case this is used directly.
+		if (this.sharedState != null) {
+			this.sharedState.reset(true);
+		}
 	}
 	
 	// Helper method for debugging (disabled in production).

@@ -29,6 +29,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	// 0: small rotations, 1: check for barcode, 2: large rotations
 	private int searchStage = 0;
+	private BarcodeBehavior barcodeBehav;
 
 	public LineSearchBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
@@ -62,7 +63,8 @@ public class LineSearchBehavior extends StateBehavior {
 		}*/
 		
 
-		while (!this.suppressed) {
+		boolean done = false;
+		while (!this.suppressed && !done) {
 			// Do not sample too often.
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			LineType line_state = this.hal.getLineType();
@@ -95,9 +97,19 @@ public class LineSearchBehavior extends StateBehavior {
 					reactToFindLine(findLineBehav.returnState());
 					break;
 				case 1:
-					// TODO start BarCode Behaviour 
-					this.searchStage++; //remove this line if todo is finished, only increase searchStage on failed behaviour
-					//break; TODO wieder einkommentieren wenn Barcode drinne ist
+					this.barcodeBehav = new BarcodeBehavior(sharedState, hal);
+					this.barcodeBehav.action();
+					
+					if (this.barcodeBehav.scannedBarcode > 0) {
+						// We have a valid barcode, switch behavior and stop line search.
+						State newState = State.getFromBarcode(this.barcodeBehav.scannedBarcode);
+						this.sharedState.setState(newState);
+						done = true;
+					} else {
+						// Keep looking for line
+						reactToFindLine(findLineBehav.returnState());
+					}
+					break;
 				case 2:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection);
 					this.findLineBehav.action();
@@ -137,6 +149,8 @@ public class LineSearchBehavior extends StateBehavior {
 
 	@Override
 	public void suppress() {
+		this.findLineBehav.suppress();
+		this.barcodeBehav.suppress();
 		this.suppressed = true;
 	}
 }
