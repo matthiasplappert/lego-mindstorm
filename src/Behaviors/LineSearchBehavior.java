@@ -45,6 +45,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
+		this.searchStage = 0;
 		
 		/*while(!suppressed){
 			this.hal.resetGyro();

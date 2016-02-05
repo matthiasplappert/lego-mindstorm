@@ -24,6 +24,8 @@ public class ObstacleEndBehavior extends StateBehavior {
 	
 	private static final int TURN_ANGLE = 45;
 	
+	private static final Speed TURN_SPEED = Speed.VerySlow;
+	
 	public ObstacleEndBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 	}
@@ -71,12 +73,11 @@ public class ObstacleEndBehavior extends StateBehavior {
 		boolean hasFoundLine = false;
 		
 		// Turn to the right.
+		this.hal.setSpeed(TURN_SPEED);
 		this.hal.turn(TURN_ANGLE);
-		while (!this.suppressed && this.hal.isRotating()) {
+		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() &&
+			   this.hal.getMeanDistance() > DISTANCE_THRESHOLD && !hasFoundLine) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			if (this.hal.isTouchButtonPressed() || hasFoundLine || this.hal.getMeanDistance() < DISTANCE_THRESHOLD) {
-				break;
-			}
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		if (hasFoundLine) {
@@ -85,12 +86,14 @@ public class ObstacleEndBehavior extends StateBehavior {
 		}
 		
 		// Turn to the left.
-		this.hal.turn(-2 * TURN_ANGLE);
+		this.hal.rotateTo(-TURN_ANGLE, true);
 		while (!this.suppressed && this.hal.isRotating()) {
+			Delay.msDelay(STEP_DELAY_MS);
+		}
+		this.hal.turn(-TURN_ANGLE);
+		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() &&
+			   !hasFoundLine) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			if (this.hal.isTouchButtonPressed() || hasFoundLine) {
-				break;
-			}
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		if (hasFoundLine) {
