@@ -1,5 +1,8 @@
 package main;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +52,7 @@ public class Main {
 		return menu;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		LCD.drawString("Frank the Tank", 0, 2);
 		LCD.drawString("is getting ready", 0, 3);
 		Sound.beep();
@@ -88,8 +91,16 @@ public class Main {
 		// WARNING: always keep this as the last element since it allows us to exit from the program. 
 		behaviors.add(new ShutdownBehavior());
 		
-		Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), false);
-		a.start();
+		try {
+			Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), false);
+			a.start();
+		} catch (Exception e) {
+			FileWriter fw = new FileWriter("/home/lejos/latest_exception.txt", false);
+			PrintWriter pw = new PrintWriter(fw);
+			e.printStackTrace(pw);
+			fw.close();
+			System.exit(0);
+		}
 	}
 	
 	public static Behavior[] getArrayForList(List<Behavior> behaviors){

@@ -45,13 +45,15 @@ public class ObstacleEndBehavior extends StateBehavior {
 		}
 		
 		// Okay, now perform the barcode scan.
-		this.barcodeBehavior = new BarcodeBehavior(null, this.hal);
+		this.barcodeBehavior = new BarcodeBehavior(this.sharedState, this.hal);
 		this.barcodeBehavior.action();
+		this.sharedState.setState(this.getTargetState());
 		if (this.barcodeBehavior.scannedBarcode != 2) {
 			// TODO: what do we do now?!
 			Button.LEDPattern(1);
 			for (int i = 0; i < 5; i++) {
 				Sound.beepSequence();
+				Delay.msDelay(100);
 				return;
 			}
 		}
@@ -71,7 +73,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 		this.hal.turn(TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating()) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			if (this.hal.isTouchButtonPressed() || hasFoundLine || this.hal.getMeanDistance() > DISTANCE_THRESHOLD) {
+			if (this.hal.isTouchButtonPressed() || hasFoundLine || this.hal.getMeanDistance() < DISTANCE_THRESHOLD) {
 				break;
 			}
 			Delay.msDelay(STEP_DELAY_MS);
@@ -101,8 +103,8 @@ public class ObstacleEndBehavior extends StateBehavior {
 	}
 	
 	private void didFindLine() {
-		Sound.beepSequenceUp();
 		this.hal.stop();
+		Sound.beepSequenceUp();
 		this.sharedState.setState(State.LineSearch);
 	}
 

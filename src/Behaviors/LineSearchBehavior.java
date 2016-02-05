@@ -104,8 +104,8 @@ public class LineSearchBehavior extends StateBehavior {
 						// We have a valid barcode, switch behavior and stop line search.
 						State newState = State.getFromBarcode(this.barcodeBehav.scannedBarcode);
 						this.sharedState.setState(newState);
-						done = true;
 						this.searchStage = 0;
+						done = true;
 					} else {
 						// Keep looking for line
 						this.searchStage++;
