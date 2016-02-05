@@ -12,7 +12,7 @@ import lejos.utility.Delay;
 public class BarcodeBehavior extends StateBehavior {
 	private static final int STEP_DELAY_MS = 10;
 	
-	private static final float MAX_DISTANCE_CM = 5.0f;
+	private static final float MAX_DISTANCE_CM = 10.0f;
 	
 	private boolean suppressed = false;
 	
@@ -79,7 +79,7 @@ public class BarcodeBehavior extends StateBehavior {
 			this.hal.setCourseFollowingAngle(0);
 			this.hal.resetLeftTachoCount();
 			this.hal.resetRightTachoCount();
-			while (!this.suppressed && this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
+			while (!this.suppressed && -this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
 				LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
 				this.hal.performCourseFollowingStep(true);
 				Delay.msDelay(STEP_DELAY_MS);
