@@ -69,6 +69,7 @@ public class BarcodeBehavior extends StateBehavior {
 			LCD.drawString(Integer.toString(barcode), 0, 2);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
+		this.hal.stop();
 		
 		// Handle barcode.
 		if (barcode == 0) {
@@ -84,6 +85,7 @@ public class BarcodeBehavior extends StateBehavior {
 				this.hal.performCourseFollowingStep(true);
 				Delay.msDelay(STEP_DELAY_MS);
 			}
+			this.hal.stop();
 		} else {
 			Sound.beepSequenceUp();
 		}
