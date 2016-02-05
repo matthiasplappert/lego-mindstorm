@@ -25,35 +25,32 @@ public class BarcodeBehavior extends StateBehavior {
 		LCD.clear();
 		LCD.drawString("BarcodeBehavior", 0, 0);
 		
+		// WARNING: ONLY ENABLE FOR DEBUGGING, WILL EXIT THE PROGRAM
+		// this.testTachoDistance();
+		
 		// Configure state.
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
 		this.hal.setColorMode(ColorMode.RED);
 		this.hal.resetLeftTachoCount();
+		this.hal.resetRightTachoCount();
 		int numberOfChangesFromLineToNoneLine = 0;
-		float distanceWithoutChange = 0.0f;
-		boolean hasFoundLineOnce = false;
 		
 		// Move forward and ensure that we are actually moving forward.
 		this.hal.setCourseFollowingAngle(0);
 		boolean wasOnLine = this.isOnLine();
-		while (!this.suppressed && (distanceWithoutChange < MAX_DISTANCE_CM || !hasFoundLineOnce)) {
+		while (!this.suppressed && this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
 			boolean isOnLine = this.isOnLine();
-			if (isOnLine) {
-				hasFoundLineOnce = true;
-			}
 			
 			// Keep track of number of steps without change.
 			if (isOnLine != wasOnLine) {
-				distanceWithoutChange = 0.0f;
-			} else {
-				LCD.clear(5);
-				LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
-				distanceWithoutChange += this.hal.convertTachoCountToDistance(this.hal.getLeftTachoCount());
-				LCD.clear(6);
-				LCD.drawString(Float.toString(distanceWithoutChange), 0, 6);
 				this.hal.resetLeftTachoCount();
+				this.hal.resetRightTachoCount();
 			}
+			LCD.clear(5);
+			LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
+			LCD.clear(6);
+			LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
 			
 			// Count changes from line to not on line.
 			if (wasOnLine && !isOnLine) {
@@ -68,12 +65,34 @@ public class BarcodeBehavior extends StateBehavior {
 			// Debugging
 			LCD.clear(2);
 			LCD.drawString(Integer.toString(numberOfChangesFromLineToNoneLine), 0, 2);
-			Delay.msDelay(10);
+			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
 		Sound.buzz();
 		Delay.msDelay(5000);
 		this.sharedState.reset(true);
+	}
+	
+	// Helper method for debugging.
+	private void testTachoDistance() {
+		this.hal.setSpeed(Speed.Fast);
+		this.hal.resetGyro();
+		this.hal.resetLeftTachoCount();
+		this.hal.resetRightTachoCount();
+		this.hal.setCourseFollowingAngle(0);
+		while (!this.suppressed && this.hal.getLeftTachoDistance() < 100.0f) {
+			LCD.clear(5);
+			LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
+			LCD.clear(6);
+			LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
+		}
+		Sound.buzz();
+		LCD.clear(5);
+		LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
+		LCD.clear(6);
+		LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
+		Delay.msDelay(10000);
+		System.exit(0);
 	}
 	
 	private boolean isOnLine() {
