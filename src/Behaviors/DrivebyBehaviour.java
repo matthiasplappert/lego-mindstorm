@@ -77,11 +77,11 @@ public class DrivebyBehaviour extends StateBehavior {
 						Delay.msDelay(DELAY);
 					}
 
-				} else if (isTooFar(distance) && !this.isButtonPressed()) {
+				} else if (isTooFar(distance)) {
 					this.hal.turn(this.maxTurnAngle);
 
 					while (!this.suppressed && this.hal.isRotating()) {
-						if (!this.isTooFar(this.hal.getMeanDistance())) {
+						if (!this.isTooFar(this.hal.getMeanDistance()) && !this.isButtonPressed()) {
 							break;
 						}
 						Delay.msDelay(DELAY);
@@ -104,12 +104,14 @@ public class DrivebyBehaviour extends StateBehavior {
 
 	private void targetLineFound() {
 		this.hal.stop();
-		this.hal.setSpeed(Speed.Slow);
+		this.hal.setSpeed(Speed.Medium);
 		this.hal.backward();
-		Delay.msDelay(500);
+		Delay.msDelay(750);
 	}
 
 	private void startupSequence() {
+		
+		//get inital gyro
 		this.hal.setSpeed(Speed.Medium);
 		this.hal.setCourseFollowingAngle((int) this.hal.getMeanGyro() - 2);
 		int distance_counter = 0;
