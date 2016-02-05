@@ -141,8 +141,6 @@ public class HAL implements IHAL {
 					rotationDifference -= 360;
 				}
 			}
-
-			this.printOnDisplay("RotateTo: " + rotationDifference, 7, 0);
 			rotate(rotationDifference);
 		}
 	}
@@ -280,6 +278,29 @@ public class HAL implements IHAL {
 		} else
 			return LineType.UNDEFINED;
 	}
+	
+	public void turnTo(int angle, boolean turnFastestWay) {
+		int turnDifference = (int) (angle - this.getCurrentGyro());
+
+		// only turn if necessary
+		if (Math.abs(turnDifference) > 1) {
+
+			if (turnFastestWay) {
+				turnDifference %= 360;
+
+				// dont turn left around if right around is faster
+				if (turnDifference < -180) {
+					turnDifference += 360;
+				}
+
+				// dont turn right around if left around is faster
+				if (turnDifference > 180) {
+					turnDifference -= 360;
+				}
+			}
+			turn(turnDifference);
+		}
+	}
 
 	@Override
 	/*
@@ -357,7 +378,14 @@ public class HAL implements IHAL {
 			turnSpeedOuter = 190;//120; diff von 70
 			break;
 			
-			
+		case Rocker:
+			forwardSpeed = 300;
+			backwardSpeed = 200;
+			rotateSpeed = 200;
+			turnSpeedInner = 80;
+			turnSpeedOuter = 300;
+			break;	
+						
 		case Fast:
 		default:
 			forwardSpeed = 300;

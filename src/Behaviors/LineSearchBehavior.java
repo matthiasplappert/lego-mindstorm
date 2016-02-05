@@ -18,10 +18,7 @@ public class LineSearchBehavior extends StateBehavior {
 	// TODO: update this as soon as we have proper handling in the HAL
 	public static final int DEFAULT_EXPLORATION_ANGLE_DIFF = 5;
 	public static final int CORRECTION_ANGLE = 2;
-
-	public static final int UPPER_TRESHOLD_ANGLE = 160;
 	public static final int LOOP_DELAY = 10;
-	public static final long TIMEDIFF_LAST_LINE_FINDING = 2 * 1000 * 1000 * 1000;
 
 	private boolean suppressed;
 	private FindLineBehaviour findLineBehav;
@@ -40,7 +37,6 @@ public class LineSearchBehavior extends StateBehavior {
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
-		int overdrive_angle;
 
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
