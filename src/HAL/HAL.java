@@ -49,7 +49,7 @@ public class HAL implements IHAL {
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
 		this.colorsensor = new EV3ColorSensor(SensorPort.S1);
 		this.touchSensor = new EV3TouchSensor(SensorPort.S2);
-		this.motorUltrasonic.setSpeed(50);
+		this.motorUltrasonic.setSpeed(150);
 		// SensorMeanFilter spans a new thread for continoous measurements
 		sensorSampler = new SensorSampler(gyro, ultrasonic, colorsensor);
 		sensorSampler.start();
@@ -289,6 +289,11 @@ public class HAL implements IHAL {
 	 * stopInnerChain = false: inner chain slows down and outer speeds up
 	 */
 	public void turn(int angle) {
+		this.turn(angle, false);
+	}
+	
+	@Override
+	public void turn(int angle, boolean reverse) {
 		rotateToAngle = angle;
 		lastGyroAngleBeforeRotation = this.getCurrentGyro();
 		int sign = (int) Math.signum(angle);
@@ -302,8 +307,13 @@ public class HAL implements IHAL {
 		}
 
 		this.motorLeft.startSynchronization();
-		this.motorLeft.forward();
-		this.motorRight.forward();
+		if (reverse) {
+			this.motorLeft.backward();
+			this.motorRight.backward();
+		} else {
+			this.motorLeft.forward();
+			this.motorRight.forward();
+		}
 		this.motorLeft.endSynchronization();
 	}
 
@@ -373,17 +383,62 @@ public class HAL implements IHAL {
 
 	@Override
 	public void performCourseFollowingStep() {
-		// The gyro angle is exactly opposite to the motor rotation angle
-		float currentAngle = this.getCurrentGyro();
-		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1) {
-			this.turn((int) (this.courseFollowingAngle - currentAngle));
-		} else {
-			this.forward();
-		}
+		this.performCourseFollowingStep(false);
 	}
 	
 	@Override
+	public void performCourseFollowingStep(boolean reverse) {
+		// The gyro angle is exactly opposite to the motor rotation angle
+		float currentAngle = this.getCurrentGyro();
+		if (Math.abs(this.courseFollowingAngle - currentAngle) >= 1) {
+			this.turn((int) (this.courseFollowingAngle - currentAngle), reverse);
+		} else {
+			if (reverse) {
+				this.backward();
+			} else {
+				this.forward();
+			}
+		}
+	}
+
+	@Override
+	public float convertTachoCountToDistance(int tachoCount) {
+		float factor = 0.0423f; // measured
+		return tachoCount * factor;
+	}
+
+	@Override
+	public int getLeftTachoCount() {
+		return this.motorLeft.getTachoCount();
+	}
+
+	@Override
+	public int getRightTachoCount() {
+		return this.motorRight.getTachoCount();
+	}
+
+	@Override
+	public void resetLeftTachoCount() {
+		this.motorLeft.resetTachoCount();
+	}
+
+	@Override
+	public void resetRightTachoCount() {
+		this.motorRight.resetTachoCount();
+	}
+
+	@Override
+	public float getLeftTachoDistance() {
+		return this.convertTachoCountToDistance(this.getLeftTachoCount());
+	}
+
+	@Override
+	public float getRightTachoDistance() {
+		return this.convertTachoCountToDistance(this.getRightTachoCount());
+	}
+
+	@Override
 	public float getCurrentDistance() {
-		return sensorSampler.getCurrentUltrasonic();
+		return sensorSampler.getCurrentUltrasonic() * 100.f;
 	}
 }
