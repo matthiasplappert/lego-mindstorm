@@ -15,7 +15,8 @@ public enum State {
 	SensorDataState,
 	DriveByState,
 	BossState,
-	ShutDownState;
+	ShutDownState,
+	ExitState;
 	
 	
 	public static State getFromBarcode(int barcode) {

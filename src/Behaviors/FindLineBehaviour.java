@@ -31,6 +31,7 @@ public class FindLineBehaviour extends StateBehavior {
 		this.suppressed = false;
 		this.searchAngle = searchAngle;
 		this.lastUsedDirection = initialDirection;
+		returnState = FindLineReturnState.LINE_NOT_FOUND;
 	}
 
 	public Direction getLastUsedDirection() {
