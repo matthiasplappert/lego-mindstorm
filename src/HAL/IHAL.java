@@ -13,7 +13,8 @@ public interface IHAL {
 	void backward();
 	void forward();
 	void stop();
-	void rotate(int angle);	
+	void rotate(int angle);
+	void rotateTo(int angle);
 	void turn(int angle);
 	
 	void moveDistanceSensorToPosition(DistanceSensorPosition position);

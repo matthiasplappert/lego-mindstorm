@@ -5,7 +5,6 @@ import HAL.IHAL;
 import State.SharedState;
 import State.State;
 import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 /**
@@ -17,85 +16,89 @@ import lejos.utility.Delay;
 public class FindLineBehaviour extends StateBehavior {
 	private boolean suppressed;
 	private FindLineReturnState returnState;
-	private final int default_exploration_angle;
-	private final int maxAngle;
-	private Direction direction;
+	private final int searchAngle;
+	private Direction lastUsedDirection;
+
 	public static final int LOOP_DELAY = 100;
 
 	public FindLineBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 170, 5);
+		this(sharedState, hal, 20, Direction.RIGHT);
 
 	}
 
-	public FindLineBehaviour(SharedState sharedState, IHAL hal, int maxAngle, int defaultExplorationAngleDiff) {
+	public FindLineBehaviour(SharedState sharedState, IHAL hal, int searchAngle, Direction initialDirection) {
 		super(sharedState, hal);
 		this.suppressed = false;
-		this.default_exploration_angle = defaultExplorationAngleDiff;
-		this.maxAngle = maxAngle;
-		this.suppressed = false;
+		this.searchAngle = searchAngle;
+		this.lastUsedDirection = initialDirection;
 	}
 
 	public Direction getLastUsedDirection() {
-		return this.direction;
+		return this.lastUsedDirection;
 	}
 
 	@Override
 	public void action() {
-		 this.hal.resetGyro();
-//		 final float initGyro = this.hal.getMeanGyro();
-		this.direction = Utils.drawDirection();
-		int line_search_angle_diff = this.default_exploration_angle;
-		int counter = 1;
+		this.hal.resetGyro();
+		boolean bothDirectionsChecked = false;
+		int sign;
 
 		if (!this.hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
-		LCD.drawString("Start Line Search", 0, 0);
+
 		while (!this.suppressed) {
-			// check if we have rotate for more than 180 degree
+			// check if we have found a line
 			LineType line_state = this.hal.getLineType();
-			LCD.drawString("LineType: " + line_state.toString(), 1, 0);
+			this.hal.printOnDisplay("FindLine: " + line_state.toString(), 4, 0);
 			if (line_state == LineType.LINE) {
-				this.returnState = FindLineReturnState.Line_FOUND;
-				return;
-			}
-
-			int angle_val = counter * line_search_angle_diff;
-			if (Math.abs(angle_val) > this.maxAngle) {
-				// then abort line search. It is the callers responsibility
-				// to fix this situation
 				this.hal.stop();
-				LCD.drawString("Angle overflow", 0, 1);
-				Sound.beepSequence();
-				Delay.msDelay(1000);
-
-				this.returnState = FindLineReturnState.ROTATION_LIMIT_ERROR;
+				this.returnState = FindLineReturnState.LINE_FOUND;
+				this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
 				return;
 			}
-			// Get the right direction for the turn
-			final int turn_angle = direction.getMultiplierForDirection() * angle_val;
 
-			// rotate
-			this.hal.rotate(turn_angle);
-			// Rotate until we have seen the line again
-
-			while (!this.suppressed && this.hal.motorsAreMoving()) {
+			// if right sign = 1, if left sign = -1
+			if(lastUsedDirection == Direction.RIGHT){				
+				sign = 1;
+				this.hal.printOnDisplay("TURN RIGHT", 6, 0);
+			}else{
+				sign = -1;
+				this.hal.printOnDisplay("TURN LEFT", 6, 0);
+			}
+			// rotate to angle			
+			this.hal.rotateTo(sign * searchAngle);
+			// Rotate until we have seen the line again or we reached the
+			// searchAngle
+			while (!this.suppressed && this.hal.isRotating()) {
 				if (this.hal.getLineType() == LineType.LINE) {
 					this.hal.stop();
-					break;
+					this.returnState = FindLineReturnState.LINE_FOUND;
+					this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
+					return;
 				}
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY/2);
+				Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
 			}
+
+			// we turned left and right and did not found a line
+			if (bothDirectionsChecked) {
+				this.returnState = FindLineReturnState.LINE_NOT_FOUND;
+				this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 0);
+				// we restore the Direction we were looking before
+				Sound.buzz();
+				this.hal.rotateTo(0);
+				while (!this.suppressed && this.hal.isRotating()) {
+					Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
+				}
+				return;
+			}
+			
 			// invert direction and increase counter: In the next step explore
 			// the other direction
-			direction = direction.getOppositeDirection();
-			counter++;
-			Delay.msDelay(FindLineBehaviour.LOOP_DELAY);
-
+			lastUsedDirection = lastUsedDirection.getOppositeDirection();
+			bothDirectionsChecked = true;
 		}
 	}
-
-	
 
 	public FindLineReturnState returnState() {
 		return this.returnState;

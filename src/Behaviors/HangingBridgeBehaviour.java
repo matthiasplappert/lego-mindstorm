@@ -22,6 +22,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 	public void action() {
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
 		
+		this.hal.resetGyro();
 		this.hal.setSpeed(Speed.Medium);
 		this.hal.setCourseFollowingAngle((int)this.hal.getMeanGyro());
 		while (!this.suppressed) {

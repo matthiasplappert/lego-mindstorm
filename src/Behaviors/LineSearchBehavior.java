@@ -5,6 +5,7 @@ import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
 import State.State;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
@@ -24,77 +25,110 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private boolean suppressed;
 	private FindLineBehaviour findLineBehav;
+	private Direction lastDirection = Direction.LEFT;
+
+	// 0: small rotations, 1: check for barcode, 2: large rotations
+	private int searchStage = 0;
 
 	public LineSearchBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 		this.suppressed = false;
-		this.findLineBehav = new FindLineBehaviour(sharedState, hal, 170, 5);
 	}
 
 	@Override
-	public void action() {
-
-		Direction overdrive_direction = Direction.LEFT;
-		if(!hal.isRedColorMode())
+	public void action() {		
+		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
+		int overdrive_angle;
+
+		this.hal.setSpeed(Speed.Fast);
+		this.hal.resetGyro();
 		
-		this.hal.setSpeed(Speed.Medium);
+		/*while(!suppressed){
+			this.hal.resetGyro();
+			this.hal.rotateTo(90);
+			
+			while (this.hal.isRotating() && !this.suppressed) {
+				Delay.msDelay(10);
+				this.hal.printOnDisplay("Gyro: " + this.hal.getMeanGyro(), 2, 10);
+			}
+			
+			this.hal.stop();
+			Sound.beep();	
+			this.hal.printOnDisplay("Gyro: " + this.hal.getMeanGyro(), 2, 10);
+			
+			Delay.msDelay(1000);
+		}*/
 		
+
 		while (!this.suppressed) {
 			// Do not sample too often.
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			LineType line_state = this.hal.getLineType();
-
-			long timestamp_for_correction = 0;
+			
 			switch (line_state) {
 			case LINE:
-				// clear some variables				
+				// clear some variables
+				this.hal.printOnDisplay("Search found LINE", 1, 0);
 				this.hal.forward();
+				Delay.msDelay(100);
 				break;
 			case BORDER:
-				// filter for time
-				final long time_diff = Math.abs(System.nanoTime() - timestamp_for_correction);
-				if (time_diff < TIMEDIFF_LAST_LINE_FINDING && timestamp_for_correction > 0) {
-					this.driveAndCorrectToDirection(overdrive_direction);
-				}
+				/*Sound.beep();
+				this.hal.printOnDisplay("Search found BORDER", 1, 0);
+				this.hal.forward();
+				overdrive_angle = Utils.considerDirectionForRotation(CORRECTION_ANGLE, this.lastDirection);
+				this.hal.turn(overdrive_angle);
 
-				break;
-			case BLACK:
-				findLineBehav.action();
-				switch(findLineBehav.returnState()){
-				case Line_FOUND:
-					overdrive_direction = findLineBehav.getLastUsedDirection();
-					break;
-				case ROTATION_LIMIT_ERROR:
-					this.hal.stop();
-					LCD.drawString("Overotation. Please manually set this robot on a better position", 0, 0);
-					
-					break;
-				default:
-					break;
-				
+				while (this.hal.isRotating() && !this.suppressed) {
+					Delay.msDelay(10);
 				}
-			case UNDEFINED:
+				break;*/
+			case BLACK:
+				this.hal.printOnDisplay("Search found BLACK at " + searchStage, 1, 0);
+				switch (searchStage) {
+				case 0:
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection);
+					this.findLineBehav.action();
+					this.lastDirection = this.findLineBehav.getLastUsedDirection();
+					reactToFindLine(findLineBehav.returnState());
+					break;
+				case 1:
+					// TODO start BarCode Behaviour 
+					this.searchStage++; //remove this line if todo is finished, only increase searchStage on failed behaviour
+					//break; TODO wieder einkommentieren wenn Barcode drinne ist
+				case 2:
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection);
+					this.findLineBehav.action();
+					this.lastDirection = this.findLineBehav.getLastUsedDirection();
+					reactToFindLine(findLineBehav.returnState());
+					break;
+				case 3: 
+					//Error nothing ever found
+					Sound.buzz(); 
+					searchStage = 0; //TODO remove this here
+				}			
 				break;
 			default:
 				break;
-				}
-				break;
 			}
-
-	}
-
-	private void driveAndCorrectToDirection(Direction OverrideDirection) {
-		int overdrive_angle = Utils.considerDirectionForRotation(CORRECTION_ANGLE, OverrideDirection);
-		this.hal.turn(overdrive_angle);
-		
-		while(this.hal.isRotating() && !this.suppressed){
-			Delay.msDelay(10);
 		}
 	}
 
-
+	private void reactToFindLine(FindLineReturnState state) {				
+		switch(state){
+		case LINE_FOUND:
+			this.hal.printOnDisplay("Result is LINE_FOUND at " + this.searchStage, 2, 0);
+			this.hal.forward();
+			this.searchStage = 0; //reset search stage
+			break;
+		case LINE_NOT_FOUND:	
+			this.hal.printOnDisplay("Result is LINE_NOT_FOUND at " + this.searchStage, 2, 0);
+			this.searchStage++;
+			break;
+		}
+	}
 
 	@Override
 	State getTargetState() {
