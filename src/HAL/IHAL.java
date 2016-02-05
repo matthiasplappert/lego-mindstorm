@@ -70,7 +70,5 @@ public interface IHAL {
 	float getLeftTachoDistance();
 	float getRightTachoDistance();
 	
-	void testMotor();
-	
 	float convertTachoCountToDistance(int tachoCount);
 }

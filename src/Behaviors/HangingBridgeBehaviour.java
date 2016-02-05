@@ -165,13 +165,13 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		suppressed = true;
 	}
 
-	private boolean isTooFar(float distance) {
-		return distance > this.target_dist + this.offset;
-	}
-
-	private boolean isTooClose(float distance) {
-		return distance < this.target_dist;
-	}
+//	private boolean isTooFar(float distance) {
+//		return distance > this.target_dist + this.offset;
+//	}
+//
+//	private boolean isTooClose(float distance) {
+//		return distance < this.target_dist;
+//	}
 
 	private void reactToFindLine(FindLineReturnState state) {
 		switch (state) {
