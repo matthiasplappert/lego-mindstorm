@@ -15,7 +15,7 @@ public class MazeBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
-		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
+		this.hal.printOnDisplay("MazeBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			
 			

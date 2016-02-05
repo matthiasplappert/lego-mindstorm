@@ -25,7 +25,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 	@Override
 	public void action() {
 		float difference;
-		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
+		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 0);
 
 		// Follow line
 		// After loosing the line
