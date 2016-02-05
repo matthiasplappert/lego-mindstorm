@@ -15,7 +15,7 @@ public class FreeTrackBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
-		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 1000);
+		this.hal.printOnDisplay("FreeTrackBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			
 			

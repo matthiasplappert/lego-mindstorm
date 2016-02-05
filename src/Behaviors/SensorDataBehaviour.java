@@ -19,7 +19,7 @@ public class SensorDataBehaviour extends StateBehavior {
 	public void action() {
 		LCD.drawString("Sensor Data Test", 0, 0);
 
-		this.hal.printOnDisplay("Sensor Data", 0, 1000);
+		this.hal.printOnDisplay("Sensor Data", 0, 0);
 		Sound.beepSequence();
 		Delay.msDelay(1000);
 		Sound.beep();
