@@ -16,7 +16,8 @@ public enum State {
 	DriveByState,
 	ObstacleEndState,
 	BossState,
-	ShutDownState;
+	ShutDownState,
+	ExitState;
 	
 	public static State getFromBarcode(int barcode) {
 		switch (barcode) {
