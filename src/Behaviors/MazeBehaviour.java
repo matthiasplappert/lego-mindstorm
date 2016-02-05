@@ -22,45 +22,54 @@ public class MazeBehaviour extends StateBehavior {
 	private static final Speed DefaultSpeed = Speed.Labyrinth;
 	private static final int DELAY = 5;
 
-	final private int maxTurnAngle;
-	final private int offset;
 	final private int holeOffset;
-	final private int initDistance;
+	final private int min_speed;
+	final private int max_speed;
+	final private int basic_speed;
+	final static private int LeftTurnAngle = 80;
+	private static final float DISTANCE_UPPER_BOUND = 30;
 
 	// TODO: MeanFilter smaller
 	public MazeBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 5, 2, 80, 15, 15);
+		this(sharedState, hal, 10, 150, 50, 50, 30);
 	}
 
-	public MazeBehaviour(SharedState sharedState, IHAL hal, int target_dist, int offset, int maxTurnAngle,
-			int holeOffset, int initDistance) {
+	public MazeBehaviour(SharedState sharedState, IHAL hal, int target_dist, int basic_speed, int max_speed_diff,
+			int min_speed_diff, int holeOffset) {
 		super(sharedState, hal);
 		this.suppressed = false;
 		this.target_dist = target_dist;
-		this.offset = offset;
-		this.maxTurnAngle = maxTurnAngle;
 		this.holeOffset = holeOffset;
-		this.initDistance = initDistance;
+		// this.initDistance = initDistance;
+		this.basic_speed = basic_speed;
+		this.min_speed = basic_speed - min_speed_diff;
+		this.max_speed = basic_speed + max_speed_diff;
+	}
+
+	private int getSpeedInLimit(int speed) {
+//		return Math.min(Math.max(this.min_speed, speed), this.max_speed);
+		
+		
+		
+		return Math.max(Math.min(speed, this.max_speed),this.min_speed);
 	}
 
 	@Override
 	public void action() {
-		LCD.drawString("DriveByBehaviour", 0, 0);
-		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
-		this.hal.getMeanDistance();
-		Sound.beep();
-		Delay.msDelay(3000);
+		LCD.drawString("Maze", 0, 0);
+//		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
+		// this.hal.getMeanDistance();
+		// Sound.beep();
+		Delay.msDelay(1000);
 		Sound.twoBeeps();
 		float initial_degree = this.hal.getMeanGyro();
-		
-		this.startupSequence(initial_degree);
-		this.hal.setSpeed(DefaultSpeed);
-		while (!this.suppressed && this.hal.getLineType() != LineType.LINE) {
+
+		// this.startupSequence(initial_degree);
+		// this.hal.setSpeed(DefaultSpeed);
+		while (!this.suppressed /* && this.hal.getLineType() != LineType.LINE */) {
 
 			// Get (filtered) distance
-			float distance = this.hal.getMeanDistance();
-			LCD.drawString("dist to wall: " + distance, 0, 1);
-			if (isButtonPressed()) {
+			if (this.hal.isTouchButtonPressed()) {
 				if (this.hal.getMeanDistance() > this.holeOffset) {
 					moveBackAndTurn(Direction.RIGHT);
 				} else {
@@ -68,100 +77,75 @@ public class MazeBehaviour extends StateBehavior {
 				}
 				this.hal.stop();
 			} else {
-				// Robot control.
-				if (isTooClose(distance)) {
-					this.hal.turn(-this.maxTurnAngle);
+				float distance = Math.min(this.hal.getCurrentDistance(), DISTANCE_UPPER_BOUND);
+				LCD.drawString("dist to wall: " + distance, 0, 1);
+				int diff = Math.round(distance - this.target_dist) * 2;
+				// target_dist
 
-					while (!this.suppressed && this.hal.isRotating()) {
-						if (!this.isTooClose(this.hal.getMeanDistance()) && !this.isButtonPressed()) {
-							break;
-						}
-						Delay.msDelay(DELAY);
-					}
+				int outerChain = this.getSpeedInLimit(this.basic_speed + diff);
+				int innerChain = this.getSpeedInLimit(this.basic_speed - (diff));
 
-				} else if (isTooFar(distance)) {
-					this.hal.turn(this.maxTurnAngle);
+				LCD.drawString("Outer chain: " + outerChain + "   ", 0, 2);
+				LCD.drawString("Inner chain: " + innerChain + "   ", 0, 3);
+				LCD.drawString("Diff: " + diff + "   ", 0, 4);
+//				this.hal.forward(outerChain, innerChain);
 
-					while (!this.suppressed && this.hal.isRotating()) {
-						if (!this.isTooFar(this.hal.getMeanDistance()) && !this.isButtonPressed()) {
-							break;
-						}
-						Delay.msDelay(DELAY);
-					}
-				} else {
-					this.hal.forward();
-				}
+				Delay.msDelay(10);
+				this.sharedState.reset(true);
 			}
-			Delay.msDelay(10);
-
 		}
 		if (this.hal.getLineType() == LineType.LINE) {
 			Sound.beepSequence();
-			targetLineFound(initial_degree);
 		}
-		this.hal.stop();
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
+		this.hal.stop();
 		this.sharedState.reset(true);
 	}
 
 	private void targetLineFound(final float initalDegree) {
 		this.hal.stop();
-		//compute roation degree
+		// compute roation degree
 		float currentDegree = this.hal.getMeanGyro();
-		//compute degree that have been left to achieve final position
-		float diff_degree = (initalDegree+180-currentDegree);
-		
-		this.hal.rotate((int)diff_degree);
-		
-		this.hal.setSpeed(Speed.Medium);
-		this.hal.backward();
-		Delay.msDelay(750);
-	}
+		// compute degree that have been left to achieve final position
+		float diff_degree = (initalDegree + 180 - currentDegree);
 
-	private void startupSequence(final float initalDegree) {
-		
-		//get inital gyro
-		
-		this.hal.setSpeed(Speed.Medium);
-		
-		this.hal.setCourseFollowingAngle((int) initalDegree + 90);
-//		long ts = System.currentTimeMillis();
-		
-		//follow course until we hit the wall
-		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
-			this.hal.performCourseFollowingStep();
-			Delay.msDelay(10);
-		}
-		//now rotate to the left
-		moveBackAndTurn(Direction.LEFT);
+}
 
-	}
+	// private void startupSequence(final float initalDegree) {
+	//
+	// // get inital gyro
+	//
+	// this.hal.setSpeed(Speed.Fast);
+	// this.hal.forward();
+	// Delay.msDelay(250);
+	// this.hal.setCourseFollowingAngle((int) initalDegree + 45);
+	// // long ts = System.currentTimeMillis();
+	//
+	// // follow course until we hit the wall
+	// float diff = this.hal.getCurrentDistance() - (0.5f * this.target_dist);
+	// while (!this.suppressed && !(diff < this.offset)) {
+	// this.hal.performCourseFollowingStep();
+	// Delay.msDelay(10);
+	// diff = this.hal.getCurrentDistance() - (0.5f * this.target_dist);
+	// }
+	// // now rotate to the left
+	// moveBackAndTurn(Direction.LEFT);
+	//
+	// }
 
 	private void moveBackAndTurn(Direction dir) {
-		this.hal.setSpeed(Speed.Medium);
+		this.hal.setSpeed(Speed.Fast);
 		this.hal.backward();
 		Delay.msDelay(1000);
 		this.hal.stop();
 		this.hal.setSpeed(DefaultSpeed);
 
-		this.hal.rotate(dir.getMultiplierForDirection() * maxTurnAngle);
+		this.hal.rotate(dir.getMultiplierForDirection() * LeftTurnAngle);
 		while (this.hal.isRotating()) {
 			Delay.msDelay(10);
 		}
 		this.hal.stop();
 
-	}
-
-	private boolean isButtonPressed() {
-		return this.hal.isTouchButtonPressed();
-	}
-
-	private boolean isTooFar(float distance) {
-		return distance > this.target_dist + this.offset;
-	}
-
-	private boolean isTooClose(float distance) {
-		return distance < this.target_dist;
 	}
 
 	@Override
@@ -172,7 +156,7 @@ public class MazeBehaviour extends StateBehavior {
 
 	@Override
 	State getTargetState() {
-		return State.DriveByState;
+		return State.mazeState;
 	}
 
 }

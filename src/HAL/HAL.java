@@ -78,7 +78,16 @@ public class HAL implements IHAL {
 		this.motorRight.forward();
 		this.motorLeft.endSynchronization();
 	}
+	@Override
+	public void forward(int  outerSpeed, int innerSpeed) {
+		this.motorLeft.setSpeed(outerSpeed);
+		this.motorRight.setSpeed(innerSpeed);
 
+		this.motorLeft.startSynchronization();
+		this.motorLeft.forward();
+		this.motorRight.forward();
+		this.motorLeft.endSynchronization();
+	}
 	@Override
 	public void backward() {
 		this.motorLeft.setSpeed(backwardSpeed);
@@ -377,6 +386,6 @@ public class HAL implements IHAL {
 	
 	@Override
 	public float getCurrentDistance() {
-		return sensorSampler.getCurrentUltrasonic();
+		return sensorSampler.getCurrentUltrasonic()*100f;
 	}
 }

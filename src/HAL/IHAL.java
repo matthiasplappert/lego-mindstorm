@@ -60,4 +60,6 @@ public interface IHAL {
 	void setColorMode(ColorMode cm);
 
 	boolean isRedColorMode();
+
+	void forward(int outerSpeed, int innerSpeed);
 }
