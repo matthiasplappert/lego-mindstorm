@@ -14,7 +14,8 @@ public enum State {
 	FindLineState,
 	SensorDataState,
 	DriveByState,
-	BarcodeState;
+	BarcodeState,
+	ObstacleEndState;
 	
 	public static State getFromBarcode(int barcode) {
 		switch (barcode) {
