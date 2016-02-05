@@ -346,7 +346,14 @@ public class HAL implements IHAL {
 			turnSpeedInner = 67;//50
 			turnSpeedOuter = 190;//120; diff von 70
 			break;
-			
+		
+		case HangingBridge:
+			forwardSpeed = 350;					
+			backwardSpeed = 350;
+			rotateSpeed = 350;
+			turnSpeedInner = 170;//50
+			turnSpeedOuter = 190;//120; diff von 70
+			break;
 			
 		case Fast:
 		default:
