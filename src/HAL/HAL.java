@@ -41,8 +41,8 @@ public class HAL implements IHAL {
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
 		this.motorRight = new EV3LargeRegulatedMotor(MotorPort.B);
-		this.motorLeft.synchronizeWith(new RegulatedMotor[] {this.motorRight});
-		
+		this.motorLeft.synchronizeWith(new RegulatedMotor[] { this.motorRight });
+
 		this.motorUltrasonic = new EV3MediumRegulatedMotor(MotorPort.C);
 		this.gyro = new EV3GyroSensor(SensorPort.S4);
 		this.ultrasonic = new EV3UltrasonicSensor(SensorPort.S3);
@@ -121,23 +121,27 @@ public class HAL implements IHAL {
 	}
 
 	@Override
-	public void rotateTo(int angle) {
+	public void rotateTo(int angle, boolean rotateFastestWay) {
 		int rotationDifference = (int) (angle - this.getCurrentGyro());
-		
-		//only turn if necessary
-		if (Math.abs(rotationDifference) > 4) {
-			rotationDifference %= 360;
 
-			//dont turn left around if right around is faster
-			if (rotationDifference < -180) {
-				rotationDifference += 360;
-			}
-			
-			//dont turn right around if left around is faster
-			if (rotationDifference > 180) {
-				rotationDifference -= 360;
+		// only turn if necessary
+		if (Math.abs(rotationDifference) > 1) {
+
+			if (rotateFastestWay) {
+				rotationDifference %= 360;
+
+				// dont turn left around if right around is faster
+				if (rotationDifference < -180) {
+					rotationDifference += 360;
+				}
+
+				// dont turn right around if left around is faster
+				if (rotationDifference > 180) {
+					rotationDifference -= 360;
+				}
 			}
 
+			this.printOnDisplay("RotateTo: " + rotationDifference, 7, 0);
 			rotate(rotationDifference);
 		}
 	}
@@ -333,7 +337,7 @@ public class HAL implements IHAL {
 			break;
 		case Fast:
 		default:
-			forwardSpeed = 200;
+			forwardSpeed = 300;
 			backwardSpeed = 200;
 			rotateSpeed = 200;
 			turnSpeedInner = 180;
