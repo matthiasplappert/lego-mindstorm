@@ -105,13 +105,14 @@ public class LineSearchBehavior extends StateBehavior {
 						State newState = State.getFromBarcode(this.barcodeBehav.scannedBarcode);
 						this.sharedState.setState(newState);
 						done = true;
+						this.searchStage = 0;
 					} else {
 						// Keep looking for line
-						reactToFindLine(findLineBehav.returnState());
+						this.searchStage++;
 					}
 					break;
 				case 2:
-					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection);
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100, this.lastDirection);
 					this.findLineBehav.action();
 					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());

@@ -1,5 +1,6 @@
 package Behaviors;
 
+import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
@@ -19,6 +20,8 @@ public class ObstacleEndBehavior extends StateBehavior {
 	
 	private static final float FORWARD_DISTANCE = 5.0f;
 	
+	private static final float DISTANCE_THRESHOLD = 10.0f;
+	
 	private static final int TURN_ANGLE = 45;
 	
 	public ObstacleEndBehavior(SharedState sharedState, IHAL hal) {
@@ -35,6 +38,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 		this.hal.resetRightTachoCount();
 		this.hal.setCourseFollowingAngle(0);
 		this.hal.setSpeed(Speed.Fast);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		while (!this.suppressed && -this.hal.getLeftTachoDistance() < BACKUP_DISTANCE) {
 			this.hal.performCourseFollowingStep(true);
 			Delay.msDelay(STEP_DELAY_MS);
@@ -67,7 +71,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 		this.hal.turn(TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating()) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			if (this.hal.isTouchButtonPressed() || hasFoundLine) {
+			if (this.hal.isTouchButtonPressed() || hasFoundLine || this.hal.getMeanDistance() > DISTANCE_THRESHOLD) {
 				break;
 			}
 			Delay.msDelay(STEP_DELAY_MS);
@@ -90,9 +94,14 @@ public class ObstacleEndBehavior extends StateBehavior {
 			this.didFindLine();
 			return;
 		}
+		
+		// Just keep going, maybe we'll find it eventually...
+		Sound.buzz();
+		this.didFindLine();
 	}
 	
 	private void didFindLine() {
+		Sound.beepSequenceUp();
 		this.hal.stop();
 		this.sharedState.setState(State.LineSearch);
 	}
