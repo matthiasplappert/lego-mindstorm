@@ -4,24 +4,32 @@ package State;
 public class SharedState {
 	private State state;
 	
+	private int latestBarcode;
+	
 	public SharedState(State initialState) {
 		this.state = initialState;
+		this.latestBarcode = 0;
 	}
-
-	
 
 	public State getState() {
 		return this.state;
 	}
 	
 	public void setState(State state) {
-//		State oldState = this.state;
 		this.state = state;
+	}
+	
+	public void setLatestBarcode(int barcode) {
+		this.latestBarcode = barcode;
+	}
+	
+	public int getLatestBarcode() {
+		return this.latestBarcode;
 	}
 	
 	public void reset(boolean yield){
 		this.ensureState(State.getInitState());
-		if(yield)
+		if (yield)
 			Thread.yield();
 	}
 	/**
@@ -49,6 +57,5 @@ public class SharedState {
 	public void switchState(State newState){
 		this.setState(newState);
 		Thread.yield();
-
 	}
 }
