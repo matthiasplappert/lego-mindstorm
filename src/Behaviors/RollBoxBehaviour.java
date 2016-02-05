@@ -17,14 +17,13 @@ public class RollBoxBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
-		this.hal.printOnDisplay("RollBoxBehaviour started", 0, 1000);
+		this.hal.printOnDisplay("RollBoxBehaviour started", 0, 0);
 		while (!this.suppressed && !this.finished) {
 
 			this.hal.resetGyro();
 			this.hal.setSpeed(Speed.VeryFast);
 			this.hal.setCourseFollowingAngle((int) this.hal.getMeanGyro());
-			while (!this.suppressed && this.hal.getLineType() != LineType.LINE)
-			{
+			while (!this.suppressed && this.hal.getLineType() != LineType.LINE) {
 				this.hal.performCourseFollowingStep();
 				Delay.msDelay(10);
 
@@ -32,7 +31,7 @@ public class RollBoxBehaviour extends StateBehavior {
 			this.hal.stop();
 			finished = true;
 		}
-		
+
 		this.sharedState.reset(true);
 		Thread.yield();
 	}

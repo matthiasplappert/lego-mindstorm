@@ -2,19 +2,21 @@ package State;
 
 public enum State {
 	
-	BossState,
+	LineSearch,
+	BarcodeState,
 	BridgeState,
 	ElevatorState,
 	FreeTrackState,
 	HangingBridgeState,
-	LineSearch,
-	MazeState,
 	RockerState,
 	RollBoxState,
+	MazeState,
 	FindLineState,
 	SensorDataState,
 	DriveByState,
-	BarcodeState;
+	BossState,
+	ShutDownState;
+	
 	
 	public static State getFromBarcode(int barcode) {
 		switch (barcode) {
@@ -35,6 +37,6 @@ public enum State {
 	
 	public static State getInitState(){
 		// TODO: change this
-		return State.SensorDataState;
+		return State.LineSearch;
 	}
 }
