@@ -12,9 +12,11 @@ import lejos.utility.Delay;
 public class BarcodeBehavior extends StateBehavior {
 	private static final int STEP_DELAY_MS = 10;
 	
-	private static final float MAX_DISTANCE_CM = 5.0f;
+	private static final float MAX_DISTANCE_CM = 10.0f;
 	
 	private boolean suppressed = false;
+	
+	public int scannedBarcode = -1;
 	
 	public BarcodeBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
@@ -67,26 +69,32 @@ public class BarcodeBehavior extends StateBehavior {
 			LCD.drawString(Integer.toString(barcode), 0, 2);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
+		this.hal.stop();
 		
 		// Handle barcode.
 		if (barcode == 0) {
 			Sound.buzz();
 			
-			// Did not find barcode, back up to initial pose
+			// Did not find barcode, back up to initial pose.
 			this.hal.resetGyro();
 			this.hal.setCourseFollowingAngle(0);
 			this.hal.resetLeftTachoCount();
 			this.hal.resetRightTachoCount();
-			while (!this.suppressed && this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
+			while (!this.suppressed && -this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
+				LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
 				this.hal.performCourseFollowingStep(true);
 				Delay.msDelay(STEP_DELAY_MS);
 			}
+			this.hal.stop();
 		} else {
 			Sound.beepSequenceUp();
 		}
+		this.scannedBarcode = barcode;
 		
-		this.sharedState.setLatestBarcode(barcode);
-		this.sharedState.setState(State.getFromBarcode(barcode));
+		// In case this is used directly.
+		if (this.sharedState != null) {
+			this.sharedState.reset(true);
+		}
 	}
 	
 	// Helper method for debugging (disabled in production).
