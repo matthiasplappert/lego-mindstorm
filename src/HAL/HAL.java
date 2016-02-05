@@ -432,6 +432,6 @@ public class HAL implements IHAL {
 
 	@Override
 	public float getCurrentDistance() {
-		return sensorSampler.getCurrentUltrasonic();
+		return sensorSampler.getCurrentUltrasonic() * 100.f;
 	}
 }
