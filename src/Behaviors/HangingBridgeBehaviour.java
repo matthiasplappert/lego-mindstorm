@@ -35,8 +35,12 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 		// Follow line
 		// After loosing the line
+		
+	
+		
 		float distance = this.hal.getMeanDistance();
 		while (distance > 15.f) {
+			//Linesearch
 			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			LineType line_state = this.hal.getLineType();
 
@@ -71,30 +75,22 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			default:
 				break;
 			// this.hal.testMotor();
+			//End Linesearch
 			}
 			distance = this.hal.getMeanDistance();
 		}
 
 		this.hal.resetGyro();
-		// // Follow line
-		// // After loosing the line
-
-		// // if (distance > 10) {
-		// // search line
-		// // }
-		// this.hal.setSpeed(Speed.Slow);
 		this.hal.setSpeed(Speed.Medium);
 		this.hal.forward();
-		// Delay.msDelay(1000);
 		float diff = 0;
 		int steps = 0;
 		boolean enough = false;
 		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed)
-
 		{
 			steps++;
 			this.hal.forward();
-			Delay.msDelay(500);
+			Delay.msDelay(450);
 			difference = this.hal.getMeanDistance() - distance;
 			diff += difference;
 			if (steps > 5 && diff / 5 < 0.1) {
@@ -102,7 +98,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			}
 			if (Math.abs(difference) > 0.3f) {
 				this.hal.turn((int) Math.signum(difference));
-				Delay.msDelay(200);
+				Delay.msDelay(150);
 			}
 		}
 		this.hal.stop();
