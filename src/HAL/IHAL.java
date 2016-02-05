@@ -44,6 +44,7 @@ public interface IHAL {
 	void resetGyro();
 	float getCurrentGyro();
 	float getMeanGyro();
+	float getCurrentDistance();
 	
 	EV3ColorSensor getColorSensor(); //remove later
 	EV3UltrasonicSensor getUltrasonicSensor();
