@@ -51,7 +51,9 @@ public class MazeBehaviour extends StateBehavior {
 		Sound.beep();
 		Delay.msDelay(3000);
 		Sound.twoBeeps();
-		this.startupSequence();
+		float initial_degree = this.hal.getMeanGyro();
+		
+		this.startupSequence(initial_degree);
 		this.hal.setSpeed(DefaultSpeed);
 		while (!this.suppressed && this.hal.getLineType() != LineType.LINE) {
 
@@ -95,40 +97,48 @@ public class MazeBehaviour extends StateBehavior {
 		}
 		if (this.hal.getLineType() == LineType.LINE) {
 			Sound.beepSequence();
-			targetLineFound();
+			targetLineFound(initial_degree);
 		}
 		this.hal.stop();
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		this.sharedState.reset(true);
 	}
 
-	private void targetLineFound() {
+	private void targetLineFound(final float initalDegree) {
 		this.hal.stop();
+		//compute roation degree
+		float currentDegree = this.hal.getMeanGyro();
+		//compute degree that have been left to achieve final position
+		float diff_degree = (initalDegree+180-currentDegree);
+		
+		this.hal.rotate((int)diff_degree);
+		
 		this.hal.setSpeed(Speed.Medium);
 		this.hal.backward();
 		Delay.msDelay(750);
 	}
 
-	private void startupSequence() {
+	private void startupSequence(final float initalDegree) {
 		
 		//get inital gyro
+		
 		this.hal.setSpeed(Speed.Medium);
-		this.hal.setCourseFollowingAngle((int) this.hal.getMeanGyro() - 2);
-		int distance_counter = 0;
-		while (!this.suppressed && distance_counter < 3) {
+		
+		this.hal.setCourseFollowingAngle((int) initalDegree + 90);
+//		long ts = System.currentTimeMillis();
+		
+		//follow course until we hit the wall
+		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
 			this.hal.performCourseFollowingStep();
-			if (this.hal.getMeanDistance() < this.initDistance) {
-				distance_counter++;
-			} else {
-				distance_counter = 0;
-			}
 			Delay.msDelay(10);
 		}
+		//now rotate to the left
+		moveBackAndTurn(Direction.LEFT);
 
 	}
 
 	private void moveBackAndTurn(Direction dir) {
-		this.hal.setSpeed(Speed.Slow);
+		this.hal.setSpeed(Speed.Medium);
 		this.hal.backward();
 		Delay.msDelay(1000);
 		this.hal.stop();
