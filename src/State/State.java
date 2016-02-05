@@ -35,7 +35,6 @@ public enum State {
 	}
 	
 	public static State getInitState(){
-		// TODO: change this
-		return State.SensorDataState;
+		return State.ObstacleEndState;
 	}
 }

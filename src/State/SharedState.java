@@ -4,11 +4,8 @@ package State;
 public class SharedState {
 	private State state;
 	
-	private int latestBarcode;
-	
 	public SharedState(State initialState) {
 		this.state = initialState;
-		this.latestBarcode = 0;
 	}
 
 	public State getState() {
@@ -17,14 +14,6 @@ public class SharedState {
 	
 	public void setState(State state) {
 		this.state = state;
-	}
-	
-	public void setLatestBarcode(int barcode) {
-		this.latestBarcode = barcode;
-	}
-	
-	public int getLatestBarcode() {
-		return this.latestBarcode;
 	}
 	
 	public void reset(boolean yield){
