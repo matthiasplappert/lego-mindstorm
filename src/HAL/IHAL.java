@@ -16,6 +16,7 @@ public interface IHAL {
 	void rotate(int angle);
 	void rotateTo(int angle, boolean rotateFastestWay);
 	void turn(int angle);
+	void turn(int angle, boolean reverse);
 	
 	void moveDistanceSensorToPosition(DistanceSensorPosition position);
 	void moveDistanceSensorToPosition(int angle);
@@ -38,6 +39,7 @@ public interface IHAL {
 	 */
 	void setCourseFollowingAngle(int followAngle);
 	void performCourseFollowingStep();
+	void performCourseFollowingStep(boolean reverse);
 	
 //	float getRGB();
 	float getMeanDistance();	

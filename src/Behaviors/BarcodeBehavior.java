@@ -26,7 +26,7 @@ public class BarcodeBehavior extends StateBehavior {
 		LCD.drawString("BarcodeBehavior", 0, 0);
 		
 		// WARNING: ONLY ENABLE FOR DEBUGGING, WILL EXIT THE PROGRAM
-		this.testTachoDistance();
+		//this.testTachoDistance();
 		
 		// Configure state.
 		this.hal.setSpeed(Speed.Fast);
@@ -68,7 +68,23 @@ public class BarcodeBehavior extends StateBehavior {
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
-		Sound.buzz();
+		// Handle barcode.
+		if (barcode == 0) {
+			Sound.buzz();
+			
+			// Did not find barcode, back up to initial pose
+			this.hal.resetGyro();
+			this.hal.setCourseFollowingAngle(0);
+			this.hal.resetLeftTachoCount();
+			this.hal.resetRightTachoCount();
+			while (!this.suppressed && this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
+				this.hal.performCourseFollowingStep(true);
+				Delay.msDelay(STEP_DELAY_MS);
+			}
+		} else {
+			Sound.beepSequenceUp();
+		}
+		
 		this.sharedState.setLatestBarcode(barcode);
 		this.sharedState.setState(State.getFromBarcode(barcode));
 	}
