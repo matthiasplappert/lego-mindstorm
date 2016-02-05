@@ -104,6 +104,9 @@ public class Main {
 				Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), true);
 				sharedState.setState(states[initialStateIndex]);
 				a.start();
+				a.stop();
+				a = null;
+				System.gc();
 			} catch (Exception e) {
 				FileWriter fw = new FileWriter("/home/lejos/latest_exception.txt", false);
 				PrintWriter pw = new PrintWriter(fw);

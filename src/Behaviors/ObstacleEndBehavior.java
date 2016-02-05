@@ -7,6 +7,7 @@ import State.SharedState;
 import State.State;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class ObstacleEndBehavior extends StateBehavior {
@@ -60,6 +61,8 @@ public class ObstacleEndBehavior extends StateBehavior {
 				return;
 			}
 		}
+		LCD.clear();
+		this.hal.printOnDisplay("ObstacleEndBehavior", 0, 0);
 		
 		// Move forward a bit and then start search sequence.
 		this.hal.resetGyro();
@@ -73,6 +76,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 		boolean hasFoundLine = false;
 		
 		// Turn to the right.
+		this.hal.printOnDisplay("TURN: right", 1, 1000);
 		this.hal.setSpeed(TURN_SPEED);
 		this.hal.turn(TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() &&
@@ -84,12 +88,16 @@ public class ObstacleEndBehavior extends StateBehavior {
 			this.didFindLine();
 			return;
 		}
+		this.hal.stop();
 		
 		// Turn to the left.
-		this.hal.rotateTo(-TURN_ANGLE, true);
+		this.hal.printOnDisplay("TURN: left", 1, 1000);
+		this.hal.rotateTo(0, true);
 		while (!this.suppressed && this.hal.isRotating()) {
+			this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
+		this.hal.stop();
 		this.hal.turn(-TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() &&
 			   !hasFoundLine) {
@@ -107,9 +115,11 @@ public class ObstacleEndBehavior extends StateBehavior {
 	}
 	
 	private void didFindLine() {
+		this.hal.printOnDisplay("did find line", 2, 0);
 		this.hal.stop();
 		Sound.beepSequenceUp();
-		this.sharedState.setState(State.LineSearch);
+		Delay.msDelay(5000);
+		this.sharedState.setState(State.LineSearchState);
 	}
 
 	@Override

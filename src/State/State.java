@@ -2,7 +2,7 @@ package State;
 
 public enum State {
 	
-	LineSearch,
+	LineSearchState,
 	BarcodeState,
 	BridgeState,
 	ElevatorState,
@@ -32,7 +32,7 @@ public enum State {
 		case 1:
 			return State.FreeTrackState;
 		default:
-			return State.LineSearch;
+			return State.LineSearchState;
 		}
 	}
 	

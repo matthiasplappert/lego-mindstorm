@@ -90,11 +90,6 @@ public class BarcodeBehavior extends StateBehavior {
 			Sound.beepSequenceUp();
 		}
 		this.scannedBarcode = barcode;
-		
-		// In case this is used directly.
-		if (this.sharedState != null) {
-			this.sharedState.reset(true);
-		}
 	}
 	
 	// Helper method for debugging (disabled in production).
