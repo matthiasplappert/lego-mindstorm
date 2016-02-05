@@ -31,8 +31,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		}
 		this.hal.setSpeed(Speed.Slow);
 		difference = 200;
-		// while(Math.abs(difference) >0.2){
-		while (Math.abs(difference) >0.2 && this.hal.getCurrentDistance() < 12.f && !suppressed) {
+		while (Math.abs(difference) >0.2f && this.hal.getCurrentDistance() < 12.f && !suppressed) {
 			this.hal.forward();
 			Delay.msDelay(400);
 			difference = this.hal.getMeanDistance() - distance;
