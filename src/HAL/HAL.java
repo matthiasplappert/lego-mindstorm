@@ -382,8 +382,8 @@ public class HAL implements IHAL {
 			forwardSpeed = 300;
 			backwardSpeed = 200;
 			rotateSpeed = 200;
-			turnSpeedInner = 80;
-			turnSpeedOuter = 300;
+			turnSpeedInner = 50;
+			turnSpeedOuter = 400;
 			break;	
 						
 		case Fast:
