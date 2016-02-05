@@ -34,7 +34,7 @@ public class BarcodeBehavior extends StateBehavior {
 		this.hal.setColorMode(ColorMode.RED);
 		this.hal.resetLeftTachoCount();
 		this.hal.resetRightTachoCount();
-		int numberOfChangesFromLineToNoneLine = 0;
+		int barcode = 0;
 		
 		// Move forward and ensure that we are actually moving forward.
 		this.hal.setCourseFollowingAngle(0);
@@ -54,7 +54,7 @@ public class BarcodeBehavior extends StateBehavior {
 			
 			// Count changes from line to not on line.
 			if (wasOnLine && !isOnLine) {
-				numberOfChangesFromLineToNoneLine++;
+				barcode++;
 				Sound.beep();
 			}
 			
@@ -64,16 +64,16 @@ public class BarcodeBehavior extends StateBehavior {
 			
 			// Debugging
 			LCD.clear(2);
-			LCD.drawString(Integer.toString(numberOfChangesFromLineToNoneLine), 0, 2);
+			LCD.drawString(Integer.toString(barcode), 0, 2);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		
 		Sound.buzz();
-		Delay.msDelay(5000);
-		this.sharedState.reset(true);
+		this.sharedState.setLatestBarcode(barcode);
+		this.sharedState.setState(State.getFromBarcode(barcode));
 	}
 	
-	// Helper method for debugging.
+	// Helper method for debugging (disabled in production).
 	private void testTachoDistance() {
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
