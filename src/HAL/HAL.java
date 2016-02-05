@@ -383,4 +383,14 @@ public class HAL implements IHAL {
 	public void resetRightTachoCount() {
 		this.motorRight.resetTachoCount();
 	}
+
+	@Override
+	public float getLeftTachoDistance() {
+		return this.convertTachoCountToDistance(this.getLeftTachoCount());
+	}
+
+	@Override
+	public float getRightTachoDistance() {
+		return this.convertTachoCountToDistance(this.getRightTachoCount());
+	}
 }

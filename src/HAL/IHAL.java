@@ -64,6 +64,8 @@ public interface IHAL {
 	void resetRightTachoCount();
 	int getLeftTachoCount();
 	int getRightTachoCount();
+	float getLeftTachoDistance();
+	float getRightTachoDistance();
 	
 	float convertTachoCountToDistance(int tachoCount);
 }
