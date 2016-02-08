@@ -3,7 +3,7 @@ package Behaviors;
 import HAL.ColorMode;
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
@@ -20,7 +20,7 @@ public class FindLineBehaviour extends StateBehavior {
 	private Direction lastUsedDirection;
 	private final boolean useRotation; // if true rotate, if false turn
 
-	public static final int LOOP_DELAY = 100;
+	public static final int LOOP_DELAY = 5;
 
 	public FindLineBehaviour(SharedState sharedState, IHAL hal) {
 		this(sharedState, hal, 20, Direction.RIGHT, true);
@@ -38,6 +38,7 @@ public class FindLineBehaviour extends StateBehavior {
 		this.searchAngle = searchAngle;
 		this.lastUsedDirection = initialDirection;
 		this.useRotation = useRotation;
+		this.returnState = FindLineReturnState.LINE_NOT_FOUND;
 	}
 
 	public Direction getLastUsedDirection() {
@@ -46,6 +47,8 @@ public class FindLineBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.resetGyro();
 		boolean bothDirectionsChecked = false;
 		int sign;
@@ -88,7 +91,7 @@ public class FindLineBehaviour extends StateBehavior {
 					return;
 				}
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
+				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			}
 
 			// we turned left and right and did not found a line
@@ -105,7 +108,7 @@ public class FindLineBehaviour extends StateBehavior {
 				}
 
 				while (!this.suppressed && this.hal.isRotating()) {
-					Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
+					Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 				}
 				return;
 			}
@@ -128,8 +131,8 @@ public class FindLineBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.FindLineState;
+	MyState getTargetState() {
+		return MyState.FindLineState;
 	}
 
 }

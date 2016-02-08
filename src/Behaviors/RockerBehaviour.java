@@ -3,12 +3,11 @@ package Behaviors;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
 public class RockerBehaviour extends StateBehavior {
-
 	public RockerBehaviour(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 	}
@@ -32,6 +31,8 @@ public class RockerBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.suppressed = false;
+
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 0);
 		long currentTime;
 
@@ -90,11 +91,9 @@ public class RockerBehaviour extends StateBehavior {
 			default:
 				break;
 			}
-
 		}
 
 		this.sharedState.reset(true);
-		Thread.yield();
 	}
 
 	private void reactToFindLine(FindLineReturnState state) {
@@ -112,8 +111,8 @@ public class RockerBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.RockerState;
+	MyState getTargetState() {
+		return MyState.RockerState;
 	}
 
 	@Override
