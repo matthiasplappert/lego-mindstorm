@@ -10,7 +10,9 @@ public final class Communication {
 
 	public static ComModule getModule() {
 		try {
-			URL baseUrl = new URL("http://192.168.0.5:5000");
+//			URL baseUrl = new URL("http://5:5000");
+			URL baseUrl = new URL("http://192.168.0.100:5000");
+
 			return new ComModule(baseUrl);
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException("programming error, please revise hard coded URL");
