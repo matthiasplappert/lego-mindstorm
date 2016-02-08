@@ -126,7 +126,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 		this.hal.printOnDisplay("did find line", 2, 0);
 		this.hal.stop();
 		Sound.beepSequenceUp();
-		this.sharedState.setState(MyState.LineSearchState);
+		this.sharedState.setState(MyState.LineFollowState);
 	}
 
 	@Override

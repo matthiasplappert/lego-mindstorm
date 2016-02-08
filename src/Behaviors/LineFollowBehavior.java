@@ -146,7 +146,7 @@ public class LineFollowBehavior extends StateBehavior {
 
 	@Override
 	MyState getTargetState() {
-		return MyState.LineSearchState;
+		return MyState.LineFollowState;
 	}
 
 	@Override
