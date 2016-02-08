@@ -28,6 +28,7 @@ public class HAL implements IHAL {
 	float rotateToAngle = 0.f;
 	public static final float THRESHOLD_BLACK = 0.09f;
 	public static final float THRESHOLD_BORDER = 0.20f;
+	private static final float MEAN_AMBIENT_TRESHOLD = 0.15f;
 
 	private int forwardSpeed;
 	private int backwardSpeed;
@@ -236,14 +237,12 @@ public class HAL implements IHAL {
 	@Override
 	public void setColorMode(ColorMode cm) {
 		switch (cm) {
-		case COLORID:
-			this.sensorSampler.enableColorIDMode();
-			break;
+
 		case RED:
 			this.sensorSampler.enableRedMode();
 			break;
-		case RGB:
-			this.sensorSampler.enableRGBMode();
+		case AMBIENT_LIGHT:
+			this.sensorSampler.enableAmbientMode();
 			break;
 		default:
 			break;
@@ -456,5 +455,10 @@ public class HAL implements IHAL {
 	@Override
 	public float getCurrentDistance() {
 		return sensorSampler.getCurrentUltrasonic() * 100.f;
+	}
+	
+	@Override
+	public boolean isAmbientLightOn(){
+		return sensorSampler.getMeanAmbientLight() > MEAN_AMBIENT_TRESHOLD;
 	}
 }
