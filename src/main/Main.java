@@ -72,25 +72,28 @@ public class Main {
 			SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 			ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
+			
+			// Just for testing/debugging
 			behaviors.add(new SensorDataBehaviour(sharedState, hal));
 			behaviors.add(new BarcodeBehavior(sharedState, hal));
-			behaviors.add(new LineSearchBehavior(sharedState, hal));
+			
+			// Behaviors for each station in the parcour.
 			behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 			behaviors.add(new BridgeBehaviour(sharedState, hal));
 			behaviors.add(new BossBehaviour(sharedState, hal));
 			behaviors.add(new ElevatorBehaviour(sharedState, hal));
 			behaviors.add(new FreeTrackBehaviour(sharedState, hal));
 			behaviors.add(new MazeBehaviour(sharedState, hal));
-			behaviors.add(new SensorDataBehaviour(sharedState, hal));
 			behaviors.add(new RollBoxBehaviour(sharedState, hal));
 			behaviors.add(new RockerBehaviour(sharedState, hal));
+			
+			// Shared behaviors.
+			behaviors.add(new LineSearchBehavior(sharedState, hal));
 			behaviors.add(new ObstacleEndBehavior(sharedState, hal));
-			// behaviors.add(new DrivebyBehaviour(sharedState, hal));
 
 			// WARNING: always keep this as the last element since it allows us to
 			// exit from the program.
 			behaviors.add(new ShutdownBehavior(sharedState, hal));
-			
 			
 			// call menu
 			Sound.twoBeeps();
