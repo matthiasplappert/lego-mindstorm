@@ -57,6 +57,17 @@ public class HAL implements IHAL {
 		this.setSpeed(Speed.Fast);
 	}
 
+	public void destroy(){
+		this.motorLeft.close();
+		this.motorRight.close();
+		this.motorUltrasonic.close();
+		
+		sensorSampler.suppress();
+		this.gyro.close();
+		this.ultrasonic.close();
+		this.colorsensor.close();
+		this.touchSensor.close();
+	}
 	@Override
 	public void printOnDisplay(String text, int row, final long waitDuration) {
 		LCD.clear(row);
@@ -184,15 +195,20 @@ public class HAL implements IHAL {
 	public void moveDistanceSensorToPosition(DistanceSensorPosition position) {
 		int angle;
 		switch (position) {
+		case Labyrinth:
+			angle = -10;
+			break;
 		case DOWN:
 			angle = -90;
+			break;
+		case SAFE:
+			angle = 35;
 			break;
 		// alternative: angle=90 if deployed on the left-hand side of the robot
 		case UP:
 		default:
 			angle = 0;
-		case Labyrinth:
-			angle = -10;
+			break;
 		}
 		this.moveDistanceSensorToPosition(angle);
 	}
@@ -359,8 +375,8 @@ public class HAL implements IHAL {
 			turnSpeedOuter = 180;
 			break;
 		case VeryFast:
-			forwardSpeed = 350;
-			backwardSpeed = 350;
+			forwardSpeed = 600;
+			backwardSpeed = 600;
 			rotateSpeed = 350;
 			turnSpeedInner = 340;
 			turnSpeedOuter = 400;
@@ -373,6 +389,15 @@ public class HAL implements IHAL {
 			turnSpeedInner = 67;// 50
 			turnSpeedOuter = 190;// 120; diff von 70
 			break;
+		
+		case HangingBridge:
+			forwardSpeed = 350;					
+			backwardSpeed = 350;
+			rotateSpeed = 350;
+			turnSpeedInner = 170;//50
+			turnSpeedOuter = 190;//120; diff von 70
+			break;
+
 		case Rocker:
 			forwardSpeed = 300;
 			backwardSpeed = 200;

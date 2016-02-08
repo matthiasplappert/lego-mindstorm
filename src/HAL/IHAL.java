@@ -74,4 +74,6 @@ public interface IHAL {
 	float convertTachoCountToDistance(int tachoCount);
 
 	boolean isAmbientLightOn();
+	
+	void destroy();
 }

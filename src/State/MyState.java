@@ -30,9 +30,9 @@ public enum MyState {
 			return MyState.RockerState;
 		case 5:
 			return MyState.HangingBridgeState;
-		case 6:
-			return MyState.RollBoxState;
 		case 1:
+			return MyState.RollBoxState;
+		case 6:
 			return MyState.FreeTrackState;
 		default:
 			return MyState.LineSearchState;

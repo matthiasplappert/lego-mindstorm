@@ -35,6 +35,8 @@ public class SensorSampler extends Thread{
 	private EV3ColorSensor colorSensor;
 	private ColorMode colorMode;
 
+	private boolean suppressed = false;
+	
 	private Lock lock;
 
 	public SensorSampler(EV3GyroSensor gyro, EV3UltrasonicSensor ultrasonic, EV3ColorSensor color) {
@@ -58,7 +60,8 @@ public class SensorSampler extends Thread{
 	
 	@Override
 	public void run(){
-		while(true){
+		suppressed = false;
+		while(!suppressed){
 			lock.lock();
 				meanFilterGyro.fetchSample(meanBufferGyro, 0);
 				gyroSampleProvider.fetchSample(currentBufferGyro, 0);
@@ -92,7 +95,11 @@ public class SensorSampler extends Thread{
 			currentBufferGyro = new float[gyro.sampleSize()];
 		lock.unlock();
 	}
+	 
 	
+	public void suppress(){
+		this.suppressed = true;
+	}
 	public float getMeanGyro(){
 		lock.lock();
 		final float value = meanBufferGyro[0];

@@ -40,6 +40,7 @@ public class ShutdownBehavior extends StateBehavior {
 				
 				exit = true;
 			}else if(Button.DOWN.isDown()){
+				this.hal.destroy();
 				System.exit(0);				
 			}			
 		}			
