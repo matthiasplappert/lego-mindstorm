@@ -56,6 +56,17 @@ public class HAL implements IHAL {
 		this.setSpeed(Speed.Fast);
 	}
 
+	public void destroy(){
+		this.motorLeft.close();
+		this.motorRight.close();
+		this.motorUltrasonic.close();
+		
+		sensorSampler.suppress();
+		this.gyro.close();
+		this.ultrasonic.close();
+		this.colorsensor.close();
+		this.touchSensor.close();
+	}
 	@Override
 	public void printOnDisplay(String text, int row, final long waitDuration) {
 		LCD.clear(row);

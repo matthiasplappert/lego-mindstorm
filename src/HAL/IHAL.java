@@ -72,4 +72,6 @@ public interface IHAL {
 	float getRightTachoDistance();
 	
 	float convertTachoCountToDistance(int tachoCount);
+	
+	void destroy();
 }

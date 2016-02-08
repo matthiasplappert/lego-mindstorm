@@ -100,6 +100,7 @@ public class Main {
 			TextMenu menu = Main.createMenu(states);
 			initialStateIndex = menu.select();
 			if (initialStateIndex < 0) {
+				hal.destroy();
 				System.exit(0);
 			}
 
@@ -120,6 +121,8 @@ public class Main {
 				hal.printOnDisplay("Stacktrace was written to", 1, 0);
 				hal.printOnDisplay("/home/lejos/latest_exception.txt", 2, 0);
 				hal.printOnDisplay("will go back to menu soon", 4, 10000);
+				
+				hal.destroy();
 			}
 		}
 	}

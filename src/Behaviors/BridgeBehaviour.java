@@ -14,6 +14,7 @@ public class BridgeBehaviour extends StateBehavior {
 	
 	private static final int STEP_DELAY_MS = 10;
 	
+	private static final int INITIAL_FORWARD_DISTANCE = 15;
 	private static final int MAX_TURN_ANGLE = 45;
 	
 	// The initial offset angle. Should be in the direction of the sensor.
@@ -41,6 +42,14 @@ public class BridgeBehaviour extends StateBehavior {
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
 		}
+		
+		this.hal.resetLeftTachoCount();
+		this.hal.forward();
+		while(!suppressed && this.hal.getLeftTachoDistance() < INITIAL_FORWARD_DISTANCE){
+			Delay.msDelay(10);
+		}
+		
+		
 		
 		// Configure the follow angle. We use this initially before we have found the edge
 		// for the first time. 
