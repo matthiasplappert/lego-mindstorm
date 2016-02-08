@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.robotics.subsumption.Behavior;
 
 abstract public class StateBehavior implements Behavior {
@@ -22,5 +22,5 @@ abstract public class StateBehavior implements Behavior {
 //	public void suppress() {
 //		this.sharedState.reset();
 //	}
-	abstract State getTargetState();
+	abstract MyState getTargetState();
 }

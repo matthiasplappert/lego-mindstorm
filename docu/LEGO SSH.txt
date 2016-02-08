@@ -1,0 +1,9 @@
+IP: 10.0.1.1
+ID:root
+PW:lego16
+
+ps
+
+kill pid
+oder
+kill -9 pid

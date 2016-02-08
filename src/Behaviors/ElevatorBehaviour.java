@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 
 public class ElevatorBehaviour extends StateBehavior {	
 	
@@ -10,13 +10,15 @@ public class ElevatorBehaviour extends StateBehavior {
 		super(sharedState, hal);
 	}
 
-	private boolean surpressed =  false;
+	private boolean suppressed =  false;
 	private boolean finished = false;
 	
 	@Override
 	public void action() {
-		this.hal.printOnDisplay("HangingBridgeBehaviour started", 1000);
-		while(!this.surpressed && !this.finished){
+		this.suppressed = false;
+		
+		this.hal.printOnDisplay("ElevatorBehaviour started", 0, 0);
+		while(!this.suppressed && !this.finished){
 			
 			
 			finished = true;
@@ -28,12 +30,12 @@ public class ElevatorBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.ElevatorState;
+	MyState getTargetState() {
+		return MyState.ElevatorState;
 	}
 
 	@Override
 	public void suppress() {
-		surpressed = true;
+		suppressed = true;
 	}
 }
