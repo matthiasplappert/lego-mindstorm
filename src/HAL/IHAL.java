@@ -69,6 +69,6 @@ public interface IHAL {
 	int getRightTachoCount();
 	float getLeftTachoDistance();
 	float getRightTachoDistance();
-	
+	MyColorID getColorID();
 	float convertTachoCountToDistance(int tachoCount);
 }

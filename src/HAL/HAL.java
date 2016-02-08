@@ -428,4 +428,14 @@ public class HAL implements IHAL {
 	public float getCurrentDistance() {
 		return sensorSampler.getCurrentUltrasonic() * 100.f;
 	}
+
+	@Override
+	public MyColorID getColorID() {
+		if(sensorSampler.getColorMode() == ColorMode.COLORID){
+			return sensorSampler.getColorID();
+		}
+		else{
+			MyColorID.UNDEF;
+		}
+	}
 }
