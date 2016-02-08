@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -41,8 +41,8 @@ public class SensorDataBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.SensorDataState;
+	MyState getTargetState() {
+		return MyState.SensorDataState;
 	}
 
 	@Override

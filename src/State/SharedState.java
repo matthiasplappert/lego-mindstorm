@@ -4,30 +4,30 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SharedState {
-	private State state;
+	private MyState state;
 	
 	private Lock lock;
 	
-	public SharedState(State initialState) {
+	public SharedState(MyState initialState) {
 		this.lock = new ReentrantLock();
 		this.state = initialState;
 	}
 
-	public State getState() {
+	public MyState getState() {
 		this.lock.lock();
-		final State state = this.state;
+		final MyState state = this.state;
 		this.lock.unlock();
 		return state;
 	}
 	
-	public void setState(State state) {
+	public void setState(MyState state) {
 		this.lock.lock();
 		this.state = state;
 		this.lock.unlock();
 	}
 	
 	public void reset(boolean yield){
-		this.setState(State.getInitState());
+		this.setState(MyState.getInitState());
 		if (yield)
 			Thread.yield();
 	}

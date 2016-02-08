@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 
 public class RollBoxBehaviour  extends StateBehavior {	
 	
@@ -30,8 +30,8 @@ public class RollBoxBehaviour  extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.RollBoxState;
+	MyState getTargetState() {
+		return MyState.RollBoxState;
 	}
 
 	@Override

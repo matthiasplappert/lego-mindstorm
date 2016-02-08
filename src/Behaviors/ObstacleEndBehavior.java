@@ -4,7 +4,7 @@ import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -121,7 +121,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 		this.hal.stop();
 		Sound.beepSequenceUp();
 		Delay.msDelay(5000);
-		this.sharedState.setState(State.LineSearchState);
+		this.sharedState.setState(MyState.LineSearchState);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class ObstacleEndBehavior extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.ObstacleEndState;
+	MyState getTargetState() {
+		return MyState.ObstacleEndState;
 	}
 }

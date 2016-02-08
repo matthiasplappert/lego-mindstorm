@@ -15,7 +15,6 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 
-
 public class HAL implements IHAL {
 	private RegulatedMotor motorLeft;
 	private RegulatedMotor motorRight;
@@ -125,26 +124,22 @@ public class HAL implements IHAL {
 	public void rotateTo(int angle, boolean rotateFastestWay) {
 		int rotationDifference = (int) (angle - this.getCurrentGyro());
 
-		// only turn if necessary
-		if (Math.abs(rotationDifference) > 1) {
+		if (rotateFastestWay) {
+			rotationDifference %= 360;
 
-			if (rotateFastestWay) {
-				rotationDifference %= 360;
-
-				// dont turn left around if right around is faster
-				if (rotationDifference < -180) {
-					rotationDifference += 360;
-				}
-
-				// dont turn right around if left around is faster
-				if (rotationDifference > 180) {
-					rotationDifference -= 360;
-				}
+			// dont turn left around if right around is faster
+			if (rotationDifference < -180) {
+				rotationDifference += 360;
 			}
 
-			this.printOnDisplay("RotateTo: " + rotationDifference, 7, 0);
-			rotate(rotationDifference);
+			// dont turn right around if left around is faster
+			if (rotationDifference > 180) {
+				rotationDifference -= 360;
+			}
 		}
+
+		this.printOnDisplay("RotateTo: " + rotationDifference, 7, 0);
+		rotate(rotationDifference);
 	}
 
 	@Override
@@ -229,7 +224,8 @@ public class HAL implements IHAL {
 	}
 
 	public boolean isRotating() {
-		return Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(rotateToAngle);
+		final float offset = 3;  // stop rotation earlier b/c the motors take some time to shut down
+		return Math.abs(this.getCurrentGyro() - lastGyroAngleBeforeRotation) < Math.abs(rotateToAngle) - offset;
 	}
 
 	@Override
@@ -291,7 +287,7 @@ public class HAL implements IHAL {
 	public void turn(int angle) {
 		this.turn(angle, false);
 	}
-	
+
 	@Override
 	public void turn(int angle, boolean reverse) {
 		rotateToAngle = angle;
@@ -347,17 +343,16 @@ public class HAL implements IHAL {
 			rotateSpeed = 350;
 			turnSpeedInner = 340;
 			turnSpeedOuter = 400;
-			break;	
-			
-		case Labyrinth: 
-			forwardSpeed = 350;					
+			break;
+
+		case Labyrinth:
+			forwardSpeed = 350;
 			backwardSpeed = 350;
 			rotateSpeed = 350;
-			turnSpeedInner = 67;//50
-			turnSpeedOuter = 190;//120; diff von 70
+			turnSpeedInner = 67;// 50
+			turnSpeedOuter = 190;// 120; diff von 70
 			break;
-			
-			
+
 		case Fast:
 		default:
 			forwardSpeed = 300;
@@ -378,7 +373,7 @@ public class HAL implements IHAL {
 	public void performCourseFollowingStep() {
 		this.performCourseFollowingStep(false);
 	}
-	
+
 	@Override
 	public void performCourseFollowingStep(boolean reverse) {
 		// The gyro angle is exactly opposite to the motor rotation angle

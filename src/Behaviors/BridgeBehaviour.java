@@ -4,7 +4,7 @@ import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -128,8 +128,8 @@ public class BridgeBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.BridgeState;
+	MyState getTargetState() {
+		return MyState.BridgeState;
 	}
 
 	@Override

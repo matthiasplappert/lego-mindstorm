@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 
 public class MazeBehaviour extends StateBehavior {	
 	
@@ -30,8 +30,8 @@ public class MazeBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.MazeState;
+	MyState getTargetState() {
+		return MyState.MazeState;
 	}
 
 	@Override

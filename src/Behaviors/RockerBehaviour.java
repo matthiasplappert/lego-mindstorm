@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 
 public class RockerBehaviour extends StateBehavior {	
 	
@@ -30,8 +30,8 @@ public class RockerBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.RockerState;
+	MyState getTargetState() {
+		return MyState.RockerState;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package State;
 
-public enum State {
+public enum MyState {
 	
 	LineSearchState,
 	BarcodeState,
@@ -19,24 +19,24 @@ public enum State {
 	ShutDownState,
 	ExitState;
 	
-	public static State getFromBarcode(int barcode) {
+	public static MyState getFromBarcode(int barcode) {
 		switch (barcode) {
 		case 3:
-			return State.BridgeState;
+			return MyState.BridgeState;
 		case 4:
-			return State.RockerState;
+			return MyState.RockerState;
 		case 5:
-			return State.HangingBridgeState;
+			return MyState.HangingBridgeState;
 		case 6:
-			return State.RollBoxState;
+			return MyState.RollBoxState;
 		case 1:
-			return State.FreeTrackState;
+			return MyState.FreeTrackState;
 		default:
-			return State.LineSearchState;
+			return MyState.LineSearchState;
 		}
 	}
 	
-	public static State getInitState(){
-		return State.ObstacleEndState;
+	public static MyState getInitState(){
+		return MyState.ObstacleEndState;
 	}
 }

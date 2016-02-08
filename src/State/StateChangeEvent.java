@@ -1,11 +1,11 @@
 package State;
 
 public class StateChangeEvent {
-	private State oldState, newState;
-	public StateChangeEvent(State oldState, State newState){
+	private MyState oldState, newState;
+	public StateChangeEvent(MyState oldState, MyState newState){
 		this.oldState = oldState;
 		this.newState = newState;
 	}
-	public State getOldState(){ return this.oldState;}
-	public State getNewState(){ return this.newState;}
+	public MyState getOldState(){ return this.oldState;}
+	public MyState getNewState(){ return this.newState;}
 }

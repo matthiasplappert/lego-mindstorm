@@ -3,7 +3,7 @@ package Behaviors;
 import HAL.ColorMode;
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
@@ -114,8 +114,8 @@ public class FindLineBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.FindLineState;
+	MyState getTargetState() {
+		return MyState.FindLineState;
 	}
 
 }

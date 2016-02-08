@@ -23,23 +23,23 @@ import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.StateArbitrator;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
-import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.TextMenu;
 
 public class Main {
-	public static TextMenu createMenu(State[] states) {
+	public static TextMenu createMenu(MyState[] states) {
 		// Allow to pick initial state using the GUI. This code ensures that the
 		// default
 		// state is always at the top of the list, hence the somewhat lengthy
 		// code.
-		states[0] = State.getInitState();
+		states[0] = MyState.getInitState();
 		int j = 1;
-		for (State state : State.values()) {
-			if (state.equals(State.getInitState())) {
+		for (MyState state : MyState.values()) {
+			if (state.equals(MyState.getInitState())) {
 				continue;
 			}
 			states[j] = state;
@@ -61,7 +61,7 @@ public class Main {
 		LCD.clear();
 
 		// Create initial shared state.
-		State[] states = new State[State.values().length];
+		MyState[] states = new MyState[MyState.values().length];
 		int initialStateIndex = 0;
 		if (initialStateIndex < 0) {
 			System.exit(0);
@@ -104,7 +104,7 @@ public class Main {
 			}
 
 			try {
-				Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), true);
+				StateArbitrator a = new StateArbitrator(Main.getArrayForList(behaviors), sharedState);
 				sharedState.setState(states[initialStateIndex]);
 				a.start();
 				a.stop();
