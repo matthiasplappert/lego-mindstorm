@@ -21,7 +21,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 	private boolean suppressed = false;
 	private float target_dist;
 	private float offset = 0f;
-	private static final int DELAY = 5;
+	private static final int DELAY = 10;
 
 	private int searchStage = 0;
 
@@ -43,7 +43,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		float distance = this.hal.getMeanDistance();
 		while (distance > 15.f) {
 			// Linesearch
-			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+			Delay.msDelay(HangingBridgeBehaviour.DELAY);
 			LineType line_state = this.hal.getLineType();
 
 			switch (line_state) {

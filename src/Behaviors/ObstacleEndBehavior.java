@@ -19,14 +19,6 @@ public class ObstacleEndBehavior extends StateBehavior {
 	
 	private static final float BACKUP_DISTANCE = 3.0f;
 	
-	private static final float FORWARD_DISTANCE = 5.0f;
-	
-	private static final float DISTANCE_THRESHOLD = 10.0f;
-	
-	private static final int TURN_ANGLE = 45;
-	
-	private static final Speed TURN_SPEED = Speed.Slow;
-	
 	public ObstacleEndBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 	}
@@ -64,76 +56,17 @@ public class ObstacleEndBehavior extends StateBehavior {
 			}
 		}
 		LCD.clear();
-		this.hal.printOnDisplay("ObstacleEndBehavior", 0, 0);
 		
-		// Move forward a bit and then start search sequence.
-		this.hal.resetGyro();
-		this.hal.resetLeftTachoCount();
-		this.hal.resetRightTachoCount();
-		while (!this.suppressed && this.hal.getLeftTachoDistance() < FORWARD_DISTANCE) {
-			this.hal.performCourseFollowingStep();
-			Delay.msDelay(STEP_DELAY_MS);
-		}
-		
-		boolean hasFoundLine = false;
-		
-		// Turn to the right.
-		this.hal.printOnDisplay("TURN: right", 1, 0);
-		this.hal.setSpeed(TURN_SPEED);
-		this.hal.turn(TURN_ANGLE);
-		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() &&
-			   this.hal.getMeanDistance() > DISTANCE_THRESHOLD && !hasFoundLine) {
-			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			Delay.msDelay(STEP_DELAY_MS);
-		}
-		if (hasFoundLine) {
-			this.didFindLine();
-			return;
-		}
-		this.hal.stop();
-		
-		// Turn to the left.
-		this.hal.printOnDisplay("TURN: left", 1, 0);
-		this.hal.rotateTo(0, true);
-		while (!this.suppressed && this.hal.isRotating()) {
-			this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
-			Delay.msDelay(STEP_DELAY_MS);
-		}
-		this.hal.stop();
-		this.hal.turn(-TURN_ANGLE);
-		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() &&
-			   !hasFoundLine) {
-			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			Delay.msDelay(STEP_DELAY_MS);
-		}
-		if (hasFoundLine) {
-			this.didFindLine();
-			return;
-		}
-		
-		// Just keep going, maybe we'll find it eventually...
-		Sound.buzz();
-		this.hal.forward();
-		while (!this.suppressed && !this.hal.isTouchButtonPressed() &&
-			   !hasFoundLine) {
-			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			Delay.msDelay(STEP_DELAY_MS);
-		}
-		this.didFindLine();
-	}
-	
-	private void didFindLine() {
-		this.hal.printOnDisplay("did find line", 2, 0);
-		this.hal.stop();
-		Sound.beepSequenceUp();
+		// Next step: search the line
 		this.sharedState.setState(MyState.LineSearchState);
 	}
-
+	
 	@Override
 	public void suppress() {
-		this.barcodeBehavior.suppress();
+		if (this.barcodeBehavior != null) {
+			this.barcodeBehavior.suppress();
+		}
 		this.suppressed = true;
-		
 	}
 
 	@Override

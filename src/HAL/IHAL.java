@@ -17,6 +17,7 @@ public interface IHAL {
 	void rotateTo(int angle, boolean rotateFastestWay);
 	void turn(int angle);
 	void turn(int angle, boolean reverse);
+	void turnTo(int angle, boolean turnFastestWay);
 	
 	void moveDistanceSensorToPosition(DistanceSensorPosition position);
 	void moveDistanceSensorToPosition(int angle);
