@@ -12,7 +12,7 @@ public class RockerBehaviour extends StateBehavior {
 		super(sharedState, hal);
 	}
 
-	public static final int DEFAULT_EXPLORATION_ANGLE_DIFF = 5;
+	//public static final int DEFAULT_EXPLORATION_ANGLE_DIFF = 5;
 	public static final int LOOP_DELAY = 10;
 	public static final int SEARCH_COURSE_ANGLE = -45;
 	public static final int STRAIGHT_LINE_THRESHOLD = 1000; // in ms
@@ -20,17 +20,16 @@ public class RockerBehaviour extends StateBehavior {
 	private boolean suppressed = false;
 
 	private FindLineBehaviour findLineBehav;
-	private Direction lastDirection = Direction.RIGHT; // opposite of first
-														// direction
-	private LineFollowBehavior lineSearchBehav;
+	private Direction lastDirection = Direction.LEFT;
 
 	@Override
 	public void action() {
 		this.suppressed = false;
+		
+		this.hal.resetLeftTachoCount();
+		this.hal.resetRightTachoCount();
 
 		this.hal.printOnDisplay("RockerBehaviour started", 0, 0);
-		long currentTime;
-		
 		this.hal.printOnDisplay("Searching for line", 1, 0);
 		this.hal.resetGyro();
 		this.hal.setCourseFollowingAngle(SEARCH_COURSE_ANGLE);
@@ -42,10 +41,8 @@ public class RockerBehaviour extends StateBehavior {
 		this.hal.stop();
 		Delay.msDelay(5000);
 		
-		this.lineSearchBehav = new LineFollowBehavior(this.sharedState, this.hal);
-		this.lineSearchBehav.action();
-		
-		/*// At this point, we are on the line.
+		// At this point, we are on the line.
+		long currentTime;
 		long lastTimeLineFound = Long.MAX_VALUE;
 		// 0 = search line, 1 = full speed, but did not leave line yet, 2 = left
 		// line, next is barcode
@@ -53,15 +50,13 @@ public class RockerBehaviour extends StateBehavior {
 		this.hal.printOnDisplay("Line found", 1, 0);
 		this.hal.setSpeed(Speed.Rocker);
 		this.hal.resetGyro();
-		while (!this.suppressed) {
+		boolean lineFollowDone = false;
+		while (!this.suppressed && !lineFollowDone) {
 			switch (this.hal.getLineType()) {
 			case LINE:
 				if (fullSpeedMode == 2) {
+					lineFollowDone = true;
 					this.hal.stop();
-					Sound.buzz();
-					Delay.msDelay(5000);
-					this.sharedState.setState(MyState.ObstacleEndState);
-					return;
 				} else {
 					currentTime = System.currentTimeMillis();
 					lastTimeLineFound = Math.min(lastTimeLineFound, currentTime);
@@ -72,7 +67,6 @@ public class RockerBehaviour extends StateBehavior {
 						this.hal.setSpeed(Speed.VeryFast);
 						fullSpeedMode = 1;
 					}
-
 					this.hal.forward();
 				}
 				break;
@@ -98,9 +92,18 @@ public class RockerBehaviour extends StateBehavior {
 				break;
 			}
 			Delay.msDelay(RockerBehaviour.LOOP_DELAY);
-		}*/
-
-		this.sharedState.reset(true);
+		}
+		
+		// Just keep going straight until the end of the bridge. We ignore the barcode.
+		this.hal.resetGyro();
+		this.hal.setCourseFollowingAngle(0);
+		while (!this.suppressed && this.hal.getLeftTachoDistance() < 120.0f) {
+			this.hal.performCourseFollowingStep();
+		}
+		this.hal.stop();
+		
+		// Find the line again.
+		this.sharedState.setState(MyState.FindLineState);
 	}
 
 	@Override
@@ -112,9 +115,6 @@ public class RockerBehaviour extends StateBehavior {
 	public void suppress() {
 		if (this.findLineBehav != null) {
 			this.findLineBehav.suppress();
-		}
-		if (this.lineSearchBehav != null) {
-			this.lineSearchBehav.suppress();
 		}
 		suppressed = true;
 	}

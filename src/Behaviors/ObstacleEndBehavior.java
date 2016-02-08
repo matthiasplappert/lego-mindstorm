@@ -63,9 +63,10 @@ public class ObstacleEndBehavior extends StateBehavior {
 	
 	@Override
 	public void suppress() {
-		this.barcodeBehavior.suppress();
+		if (this.barcodeBehavior != null) {
+			this.barcodeBehavior.suppress();
+		}
 		this.suppressed = true;
-		
 	}
 
 	@Override
