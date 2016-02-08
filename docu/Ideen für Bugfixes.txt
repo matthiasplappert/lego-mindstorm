@@ -1,0 +1,47 @@
+
+rotateTo(...)
+// only turn if necessary
+if (Math.abs(rotationDifference) > 1) {
+
+das entfernen, weil das ja eigentlich Aufrufer sicherstellen muss
+
+turn right...
+nicht mehr rotateTo(0), sondern rotate(-this.hal.getCurrentGyro())
+Dann stehen wir auch wieder gerade
+
+isRotating()
+	anpassen sodass er nicht bis zu dem vollen Winkel dreht, sondern ein paar Grad (2-5) vorher schon false zurück gibt.
+	Bsp. fahre bis 90, gebe ab ~87 schon false zurück, sodass die Motoren noch Zeit haben zu stoppen und der Roboter nicht zu stark überdreht
+	
+Warum kommt das Menü manchmal?
+--> Standard State ist vielleicht der Idle State? Nein
+--> ShutDownBehaviour hat höchste Priorität, evtl. wird hier der ExitState gesetzt (eher unwahrscheinlich)
+
+Idee: Am Anfang jeder action() Methode einmal this.suppressed = false; setzen
+--> könnte sehr viele Probleme beheben
+
+
+BarCodeBehaviour:
+Zeile 126: warum nicht switch(lineType)?
+
+ObstacleEndBehaviour
+BarCodeBehaviour setzt selbst niemals den sharedStateNeu!
+Zeile 54:	Ist es notwendig hier nach dann den sharedState zu ändern?
+Zeile 127: Macht das hier vielleicht Probleme? this.barcodeBehavior.suppress();
+			auch potentielle Nullpointer Exception ohne if (this.barcodeBehavior != null)
+
+
+Arbitrator:
+2. Suppress the active behavior if its priority is less than highest priority. These two taska are performed the Arbitrator's internal Monitor thread.
+--> Wird hier was beendet?
+3. When the action() method exits, call action() on the Behavior of highest priority.
+--> Wird hier vielleicht der ShutDownBehaviour aufgerufen
+
+
+Behaviour Priorität ordnen!
+
+
+  public void stop() {
+	  // TODO: Method stops the Monitor thread and exits the start() loop.
+  }
+  ?????????????????? scheint ok zu sein, aber ist halt einfach leer
