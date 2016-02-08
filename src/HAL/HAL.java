@@ -184,17 +184,20 @@ public class HAL implements IHAL {
 	public void moveDistanceSensorToPosition(DistanceSensorPosition position) {
 		int angle;
 		switch (position) {
+		case Labyrinth:
+			angle = -10;
+			break;
 		case DOWN:
 			angle = -90;
 			break;
 		case SAFE:
 			angle = 35;
+			break;
 		// alternative: angle=90 if deployed on the left-hand side of the robot
 		case UP:
 		default:
 			angle = 0;
-		case Labyrinth:
-			angle = -10;
+			break;
 		}
 		this.moveDistanceSensorToPosition(angle);
 	}

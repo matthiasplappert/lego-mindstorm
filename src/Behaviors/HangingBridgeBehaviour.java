@@ -37,9 +37,15 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		float difference;
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 0);
 
+		
+		LineSearchBehavior linesearch = new LineSearchBehavior(sharedState, hal);
+		linesearch.action();
+		
 		// Follow line
 		// After loosing the line
 
+		this.hal.setSpeed(Speed.Fast);
+		
 		float distance = this.hal.getMeanDistance();
 		while (distance > 15.f) {
 			// Linesearch
@@ -86,13 +92,15 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		this.hal.setSpeed(Speed.Medium);
 		this.hal.forward();
 		float diff = 0;
-		int steps = 0;
+		//int steps = 0;
 		int i = 0;
 		float[] last_diff = new float[5];
 		for (int k = 0; k < last_diff.length; k++) {
 			last_diff[k] = 200;
 		}
 		boolean enough = false;
+		float minimum_distance = 10;
+		this.hal.resetLeftTachoCount();
 		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed) {
 			this.hal.forward();
 			Delay.msDelay(200);
@@ -102,7 +110,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			for (int k = 0; k < last_diff.length; k++) {
 				diff += last_diff[k];
 			}
-			if (steps > 6 && Math.abs(diff / last_diff.length) <= 0.2f) {
+			if (minimum_distance <= this.hal.getLeftTachoDistance() && Math.abs(diff / last_diff.length) <= 0.2f) {
 				enough = true;
 				Sound.buzz();
 			} else if (Math.abs(difference) > 0.2f) {
@@ -111,7 +119,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			// Maybe even higher
 			Delay.msDelay(100);
 			this.hal.stop();
-			steps++;
+			//steps++;
 			i = (i + 1)%last_diff.length;
 			//Sound.beep();
 			// }
