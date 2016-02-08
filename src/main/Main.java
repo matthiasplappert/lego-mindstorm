@@ -1,5 +1,8 @@
 package main;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,7 @@ import Behaviors.FreeTrackBehaviour;
 import Behaviors.HangingBridgeBehaviour;
 import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
+import Behaviors.ObstacleEndBehavior;
 import Behaviors.RockerBehaviour;
 import Behaviors.SensorDataBehaviour;
 import Behaviors.RollBoxBehaviour;
@@ -19,23 +23,23 @@ import Behaviors.ShutdownBehavior;
 import HAL.HAL;
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.StateArbitrator;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
-import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.TextMenu;
 
 public class Main {
-	public static TextMenu createMenu(State[] states) {
+	public static TextMenu createMenu(MyState[] states) {
 		// Allow to pick initial state using the GUI. This code ensures that the
 		// default
 		// state is always at the top of the list, hence the somewhat lengthy
 		// code.
-		states[0] = State.getInitState();
+		states[0] = MyState.getInitState();
 		int j = 1;
-		for (State state : State.values()) {
-			if (state.equals(State.getInitState())) {
+		for (MyState state : MyState.values()) {
+			if (state.equals(MyState.getInitState())) {
 				continue;
 			}
 			states[j] = state;
@@ -48,8 +52,8 @@ public class Main {
 		TextMenu menu = new TextMenu(stateStrings);
 		return menu;
 	}
-
-	public static void main(String[] args) {
+	
+	public static void main(String[] args) throws IOException {
 		LCD.drawString("Frank the Tank", 0, 2);
 		LCD.drawString("is getting ready", 0, 3);
 		Sound.beep();
@@ -57,38 +61,39 @@ public class Main {
 		LCD.clear();
 
 		// Create initial shared state.
-		State[] states = new State[State.values().length];
+		MyState[] states = new MyState[MyState.values().length];
 		int initialStateIndex = 0;
 		if (initialStateIndex < 0) {
 			System.exit(0);
 		}
 		LCD.clear();
 
-		
-
 		while (true) {
 			SharedState sharedState = new SharedState(states[initialStateIndex]);
 
 			ArrayList<Behavior> behaviors = new ArrayList<Behavior>();
+			
+			// Just for testing/debugging
 			behaviors.add(new SensorDataBehaviour(sharedState, hal));
 			behaviors.add(new BarcodeBehavior(sharedState, hal));
-
-			behaviors.add(new LineSearchBehavior(sharedState, hal));
+			
+			// Behaviors for each station in the parcour.
 			behaviors.add(new HangingBridgeBehaviour(sharedState, hal));
 			behaviors.add(new BridgeBehaviour(sharedState, hal));
 			behaviors.add(new BossBehaviour(sharedState, hal));
 			behaviors.add(new ElevatorBehaviour(sharedState, hal));
 			behaviors.add(new FreeTrackBehaviour(sharedState, hal));
 			behaviors.add(new MazeBehaviour(sharedState, hal));
-			behaviors.add(new SensorDataBehaviour(sharedState, hal));
 			behaviors.add(new RollBoxBehaviour(sharedState, hal));
 			behaviors.add(new RockerBehaviour(sharedState, hal));
-			// behaviors.add(new DrivebyBehaviour(sharedState, hal));
+			
+			// Shared behaviors.
+			behaviors.add(new LineSearchBehavior(sharedState, hal));
+			behaviors.add(new ObstacleEndBehavior(sharedState, hal));
 
 			// WARNING: always keep this as the last element since it allows us to
 			// exit from the program.
 			behaviors.add(new ShutdownBehavior(sharedState, hal));
-			
 			
 			// call menu
 			Sound.twoBeeps();
@@ -98,9 +103,20 @@ public class Main {
 				System.exit(0);
 			}
 
-			Arbitrator a = new Arbitrator(Main.getArrayForList(behaviors), true);
-			sharedState.setState(states[initialStateIndex]);
-			a.start();
+			try {
+				StateArbitrator a = new StateArbitrator(Main.getArrayForList(behaviors), sharedState);
+				sharedState.setState(states[initialStateIndex]);
+				a.start();
+				a.stop();
+				a = null;
+				System.gc();
+			} catch (Exception e) {
+				FileWriter fw = new FileWriter("/home/lejos/latest_exception.txt", false);
+				PrintWriter pw = new PrintWriter(fw);
+				e.printStackTrace(pw);
+				fw.close();
+				System.exit(0);
+			}
 		}
 	}
 

@@ -1,10 +1,12 @@
 package Behaviors;
 
+import org.junit.rules.DisableOnDebug;
+
 import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -30,6 +32,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.suppressed = false;
+
 		float difference;
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 0);
 
@@ -84,29 +88,32 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		float diff = 0;
 		int steps = 0;
 		int i = 0;
-		float[] last_diff = new float[3];
-		last_diff[0] = 200;
-		last_diff[1] = 200;
-		last_diff[2] = 200;
+		float[] last_diff = new float[5];
+		for (int k = 0; k < last_diff.length; k++) {
+			last_diff[k] = 200;
+		}
 		boolean enough = false;
 		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed) {
 			this.hal.forward();
-			Delay.msDelay(400);
+			Delay.msDelay(200);
 			difference = this.hal.getMeanDistance() - distance;
 			last_diff[i] = difference;
-			diff = last_diff[0] + last_diff[1] + last_diff[2];
-			if (steps > 15 && Math.abs(diff / 3) <= 0.2f) {
+			diff = 0;
+			for (int k = 0; k < last_diff.length; k++) {
+				diff += last_diff[k];
+			}
+			if (steps > 6 && Math.abs(diff / last_diff.length) <= 0.2f) {
 				enough = true;
+				Sound.buzz();
 			} else if (Math.abs(difference) > 0.2f) {
 				this.hal.turn((int) Math.signum(difference));
 			}
 			// Maybe even higher
-			Delay.msDelay(200);
+			Delay.msDelay(100);
 			this.hal.stop();
 			steps++;
-			i++;
-			if (i > 2)
-				i = 0;
+			i = (i + 1)%last_diff.length;
+			//Sound.beep();
 			// }
 		}
 		this.hal.stop();
@@ -147,6 +154,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		// this.hal.stop();
 		// this.hal.setSpeed(Speed.Medium);
 		Sound.beep();
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 		// this.hal.resetGyro();
 		this.hal.setSpeed(Speed.VeryFast);
 		Delay.msDelay(100);
@@ -157,6 +165,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			this.hal.performCourseFollowingStep();
 			Delay.msDelay(10);
 		}
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		this.hal.stop();
 		this.sharedState.reset(true);
 		Thread.yield();
@@ -164,8 +173,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.HangingBridgeState;
+	MyState getTargetState() {
+		return MyState.HangingBridgeState;
 	}
 
 	@Override
