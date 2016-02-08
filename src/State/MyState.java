@@ -2,7 +2,8 @@ package State;
 
 public enum MyState {
 	
-	LineSearchState,
+	LineSearchState,  // searches for a line, e.g. after an obstacle
+	LineFollowState,  // follows a line
 	BarcodeState,
 	BridgeState,
 	ElevatorState,
@@ -21,6 +22,8 @@ public enum MyState {
 	
 	public static MyState getFromBarcode(int barcode) {
 		switch (barcode) {
+		case 2:
+			return MyState.LineSearchState;
 		case 3:
 			return MyState.BridgeState;
 		case 4:

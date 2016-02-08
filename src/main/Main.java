@@ -13,7 +13,7 @@ import Behaviors.BridgeBehaviour;
 import Behaviors.ElevatorBehaviour;
 import Behaviors.FreeTrackBehaviour;
 import Behaviors.HangingBridgeBehaviour;
-import Behaviors.LineSearchBehavior;
+import Behaviors.LineFollowBehavior;
 import Behaviors.MazeBehaviour;
 import Behaviors.ObstacleEndBehavior;
 import Behaviors.RockerBehaviour;
@@ -88,7 +88,7 @@ public class Main {
 			behaviors.add(new RockerBehaviour(sharedState, hal));
 			
 			// Shared behaviors.
-			behaviors.add(new LineSearchBehavior(sharedState, hal));
+			behaviors.add(new LineFollowBehavior(sharedState, hal));
 			behaviors.add(new ObstacleEndBehavior(sharedState, hal));
 
 			// WARNING: always keep this as the last element since it allows us to
@@ -115,7 +115,11 @@ public class Main {
 				PrintWriter pw = new PrintWriter(fw);
 				e.printStackTrace(pw);
 				fw.close();
-				System.exit(0);
+				
+				hal.printOnDisplay("Exception caught", 0, 0);
+				hal.printOnDisplay("Stacktrace was written to", 1, 0);
+				hal.printOnDisplay("/home/lejos/latest_exception.txt", 2, 0);
+				hal.printOnDisplay("will go back to menu soon", 4, 10000);
 			}
 		}
 	}

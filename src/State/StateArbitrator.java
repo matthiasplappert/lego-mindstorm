@@ -47,8 +47,9 @@ public class StateArbitrator {
 	private class Monitor extends Thread {
 		public void run() {
 			while (keepRunning) {
-				if (Button.ESCAPE.isDown()) {
-					_activeBehavior.suppress();
+				Behavior b = _activeBehavior;
+				if (b != null && Button.ESCAPE.isDown()) {
+					b.suppress();
 					_sharedState.setState(MyState.ShutDownState);
 				}
 				Thread.yield();

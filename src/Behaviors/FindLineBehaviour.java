@@ -18,19 +18,26 @@ public class FindLineBehaviour extends StateBehavior {
 	private FindLineReturnState returnState;
 	private final int searchAngle;
 	private Direction lastUsedDirection;
+	private final boolean useRotation; // if true rotate, if false turn
 
 	public static final int LOOP_DELAY = 5;
 
 	public FindLineBehaviour(SharedState sharedState, IHAL hal) {
-		this(sharedState, hal, 20, Direction.RIGHT);
+		this(sharedState, hal, 20, Direction.RIGHT, true);
 
 	}
 
 	public FindLineBehaviour(SharedState sharedState, IHAL hal, int searchAngle, Direction initialDirection) {
+		this(sharedState, hal, searchAngle, initialDirection, true);
+	}
+
+	public FindLineBehaviour(SharedState sharedState, IHAL hal, int searchAngle, Direction initialDirection,
+			boolean useRotation) {
 		super(sharedState, hal);
 		this.suppressed = false;
 		this.searchAngle = searchAngle;
 		this.lastUsedDirection = initialDirection;
+		this.useRotation = useRotation;
 		this.returnState = FindLineReturnState.LINE_NOT_FOUND;
 	}
 
@@ -61,15 +68,19 @@ public class FindLineBehaviour extends StateBehavior {
 			}
 
 			// if right sign = 1, if left sign = -1
-			if(lastUsedDirection == Direction.RIGHT){				
+			if (lastUsedDirection == Direction.RIGHT) {
 				sign = 1;
 				this.hal.printOnDisplay("TURN RIGHT", 6, 0);
-			}else{
+			} else {
 				sign = -1;
 				this.hal.printOnDisplay("TURN LEFT", 6, 0);
 			}
-			// rotate to angle			
-			this.hal.rotateTo(sign * searchAngle, false);
+			// rotate/turn to angle
+			if (this.useRotation) {
+				this.hal.rotateTo(sign * searchAngle, false);
+			} else { // use turn
+				this.hal.turnTo(sign * searchAngle, false);
+			}
 			// Rotate until we have seen the line again or we reached the
 			// searchAngle
 			while (!this.suppressed && this.hal.isRotating()) {
@@ -80,7 +91,7 @@ public class FindLineBehaviour extends StateBehavior {
 					return;
 				}
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+				Delay.msDelay(LineFollowBehavior.LOOP_DELAY);
 			}
 
 			// we turned left and right and did not found a line
@@ -89,13 +100,19 @@ public class FindLineBehaviour extends StateBehavior {
 				this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 0);
 				// we restore the Direction we were looking before
 				Sound.buzz();
-				this.hal.rotateTo(0, true);
+
+				if (this.useRotation) {
+					this.hal.rotateTo(0, true);
+				} else { // use turn
+					this.hal.turnTo(0, true);
+				}
+
 				while (!this.suppressed && this.hal.isRotating()) {
-					Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+					Delay.msDelay(LineFollowBehavior.LOOP_DELAY);
 				}
 				return;
 			}
-			
+
 			// invert direction and increase counter: In the next step explore
 			// the other direction
 			lastUsedDirection = lastUsedDirection.getOppositeDirection();
