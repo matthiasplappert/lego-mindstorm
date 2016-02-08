@@ -13,7 +13,7 @@ import lejos.utility.Delay;
 //Change to three level detection: white, border, line. 
 //Behaviour: increasing rotation angle as closer the measurements comes to the border
 
-public class LineSearchBehavior extends StateBehavior {
+public class LineFollowBehavior extends StateBehavior {
 
 	// TODO: update this as soon as we have proper handling in the HAL
 	public static final int DEFAULT_EXPLORATION_ANGLE_DIFF = 5;
@@ -28,7 +28,7 @@ public class LineSearchBehavior extends StateBehavior {
 	private int searchStage = 0;
 	private BarcodeBehavior barcodeBehav;
 
-	public LineSearchBehavior(SharedState sharedState, IHAL hal) {
+	public LineFollowBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 		this.suppressed = false;
 	}
@@ -67,7 +67,7 @@ public class LineSearchBehavior extends StateBehavior {
 		boolean done = false;
 		while (!this.suppressed && !done) {
 			// Do not sample too often.
-			Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+			Delay.msDelay(LineFollowBehavior.LOOP_DELAY);
 			LineType line_state = this.hal.getLineType();
 			
 			switch (line_state) {

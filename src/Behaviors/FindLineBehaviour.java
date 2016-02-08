@@ -91,7 +91,7 @@ public class FindLineBehaviour extends StateBehavior {
 					return;
 				}
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+				Delay.msDelay(LineFollowBehavior.LOOP_DELAY);
 			}
 
 			// we turned left and right and did not found a line
@@ -108,7 +108,7 @@ public class FindLineBehaviour extends StateBehavior {
 				}
 
 				while (!this.suppressed && this.hal.isRotating()) {
-					Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
+					Delay.msDelay(LineFollowBehavior.LOOP_DELAY);
 				}
 				return;
 			}
