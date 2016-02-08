@@ -83,20 +83,31 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		this.hal.forward();
 		float diff = 0;
 		int steps = 0;
+		int i = 0;
+		float[] last_diff = new float[3];
+		last_diff[0] = 200;
+		last_diff[1] = 200;
+		last_diff[2] = 200;
 		boolean enough = false;
 		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed) {
-			steps++;
 			this.hal.forward();
-			Delay.msDelay(300);
+			Delay.msDelay(400);
 			difference = this.hal.getMeanDistance() - distance;
-			diff += difference;
-			if (steps > 5 && diff / 5 < 0.1) {
+			last_diff[i] = difference;
+			diff = last_diff[0] + last_diff[1] + last_diff[2];
+			if (steps > 15 && Math.abs(diff / 3) <= 0.2f) {
 				enough = true;
-			} else if (Math.abs(difference) > 0.3f) {
+			} else if (Math.abs(difference) > 0.2f) {
 				this.hal.turn((int) Math.signum(difference));
-				//Maybe even higher
-				Delay.msDelay(150);
 			}
+			// Maybe even higher
+			Delay.msDelay(200);
+			this.hal.stop();
+			steps++;
+			i++;
+			if (i > 2)
+				i = 0;
+			// }
 		}
 		this.hal.stop();
 		//
@@ -135,7 +146,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		// }
 		// this.hal.stop();
 		// this.hal.setSpeed(Speed.Medium);
-		Sound.buzz();
+		Sound.beep();
 		// this.hal.resetGyro();
 		this.hal.setSpeed(Speed.VeryFast);
 		Delay.msDelay(100);
