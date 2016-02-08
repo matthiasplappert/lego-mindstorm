@@ -40,6 +40,8 @@ public class FindLineBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.resetGyro();
 		boolean bothDirectionsChecked = false;
 		int sign;

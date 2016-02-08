@@ -15,6 +15,8 @@ public class RockerBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.printOnDisplay("HangingBRockerBehaviourridgeBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			

@@ -13,17 +13,19 @@ public class SensorDataBehaviour extends StateBehavior {
 		super(sharedState, hal);
 	}
 
-	private boolean surpressed =  false;
+	private boolean suppressed = false;
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		LCD.drawString("Sensor Data Test", 0, 0);
 
 		this.hal.printOnDisplay("Sensor Data", 0, 0);
 		Sound.beepSequence();
 		Delay.msDelay(1000);
 		Sound.beep();
-		while(!this.surpressed){
+		while(!this.suppressed){
 //			float value = this.hal.getMeanDistance();
 			LCD.drawString("Distance value:" + this.hal.getMeanDistance(), 0, 1);
 			LCD.drawString("Curr gyro:" + this.hal.getCurrentGyro(), 0, 2);
@@ -45,6 +47,6 @@ public class SensorDataBehaviour extends StateBehavior {
 
 	@Override
 	public void suppress() {
-		surpressed = true;
+		suppressed = true;
 	}
 }

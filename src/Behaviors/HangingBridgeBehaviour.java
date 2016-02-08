@@ -24,6 +24,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		float difference;
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 0);
 

@@ -15,6 +15,8 @@ public class ElevatorBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.printOnDisplay("ElevatorBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			

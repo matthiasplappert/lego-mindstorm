@@ -45,6 +45,8 @@ public class DrivebyBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		LCD.drawString("DriveByBehaviour", 0, 0);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
 		this.hal.getMeanDistance();

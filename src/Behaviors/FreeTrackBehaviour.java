@@ -15,6 +15,8 @@ public class FreeTrackBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.printOnDisplay("FreeTrackBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			

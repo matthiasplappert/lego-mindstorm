@@ -15,6 +15,8 @@ public class RollBoxBehaviour  extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.printOnDisplay("RollBoxBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			

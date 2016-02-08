@@ -28,6 +28,8 @@ public class BridgeBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		LCD.drawString("BridgeBehavior", 0, 0);
 		
 		// RELEASE THE KRAKEN (and wait for it)

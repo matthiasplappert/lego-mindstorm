@@ -38,6 +38,8 @@ public class LineSearchBehavior extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();

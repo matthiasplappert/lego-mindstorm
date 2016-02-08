@@ -33,6 +33,8 @@ public class ObstacleEndBehavior extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		// This method starts with the following assumption: The previous running
 		// code drove the robot until it can barely see the line and then immediately stops.
 		// So what we do now is back up a bit, then perform a barcode scan and hopefully see two lines.
