@@ -4,7 +4,7 @@ import HAL.ColorMode;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -37,14 +37,18 @@ public class LineSearchBehavior extends StateBehavior {
 	}
 
 	@Override
-	public void action() {		
+	public void action() {
+		this.suppressed = false;
+		
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
-		int overdrive_angle;
+		this.hal.printOnDisplay("LineSearchBehavior called", 0, 0);
 
+		Sound.beepSequence();
 		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetGyro();
+		this.searchStage = 0;
 		
 		/*while(!suppressed){
 			this.hal.resetGyro();
@@ -88,8 +92,8 @@ public class LineSearchBehavior extends StateBehavior {
 				}
 				break;*/
 			case BLACK:
-				this.hal.printOnDisplay("Search found BLACK at " + searchStage, 1, 0);
-				switch (searchStage) {
+				this.hal.printOnDisplay("Search found BLACK at " + this.searchStage, 1, 0);
+				switch (this.searchStage) {
 				case 0:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection);
 					this.findLineBehav.action();
@@ -102,16 +106,17 @@ public class LineSearchBehavior extends StateBehavior {
 					
 					if (this.barcodeBehav.scannedBarcode > 0) {
 						// We have a valid barcode, switch behavior and stop line search.
-						State newState = State.getFromBarcode(this.barcodeBehav.scannedBarcode);
+						MyState newState = MyState.getFromBarcode(this.barcodeBehav.scannedBarcode);
 						this.sharedState.setState(newState);
+						this.searchStage = 0;
 						done = true;
 					} else {
 						// Keep looking for line
-						reactToFindLine(findLineBehav.returnState());
+						this.searchStage++;
 					}
 					break;
 				case 2:
-					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100,  this.lastDirection);
+					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100, this.lastDirection);
 					this.findLineBehav.action();
 					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());
@@ -119,7 +124,7 @@ public class LineSearchBehavior extends StateBehavior {
 				case 3: 
 					//Error nothing ever found
 					Sound.buzz(); 
-					searchStage = 0; //TODO remove this here
+					this.searchStage = 0; //TODO remove this here
 				}			
 				break;
 			default:
@@ -143,8 +148,8 @@ public class LineSearchBehavior extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.LineSearch;
+	MyState getTargetState() {
+		return MyState.LineSearchState;
 	}
 
 	@Override

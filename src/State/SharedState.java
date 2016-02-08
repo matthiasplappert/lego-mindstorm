@@ -1,61 +1,34 @@
 package State;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SharedState {
-	private State state;
+	private MyState state;
 	
-	private int latestBarcode;
+	private Lock lock;
 	
-	public SharedState(State initialState) {
+	public SharedState(MyState initialState) {
+		this.lock = new ReentrantLock();
 		this.state = initialState;
-		this.latestBarcode = 0;
 	}
 
-	public State getState() {
-		return this.state;
+	public MyState getState() {
+		this.lock.lock();
+		final MyState state = this.state;
+		this.lock.unlock();
+		return state;
 	}
 	
-	public void setState(State state) {
+	public void setState(MyState state) {
+		this.lock.lock();
 		this.state = state;
-	}
-	
-	public void setLatestBarcode(int barcode) {
-		this.latestBarcode = barcode;
-	}
-	
-	public int getLatestBarcode() {
-		return this.latestBarcode;
+		this.lock.unlock();
 	}
 	
 	public void reset(boolean yield){
-		this.ensureState(State.getInitState());
+		this.setState(MyState.getInitState());
 		if (yield)
 			Thread.yield();
-	}
-	/**
-	 * If the internal state is equals to the expectedState, set the internal state to newState. Otherwise do nothing.
-	 * @param expectedState
-	 * @param newState
-	 */
-	public void setAndCheckState(State expectedState, State newState){
-		if(this.state.equals(expectedState))
-			this.setState(newState);
-	}
-	/**
-	 * Ensure that the internal state is set to expectedState. The variable content is only changed if the internal state is not expectedState.
-	 * @param expectedState
-	 */
-	public void ensureState(State expectedState){
-		if(!this.state.equals(expectedState))
-			this.setState(expectedState);
-	}
-	/**
-	 * Use this method if you want to set the state within an Behavior.
-	 * Switch the state to the given one and yield current thread. 
-	 * @param newState
-	 */
-	public void switchState(State newState){
-		this.setState(newState);
-		Thread.yield();
 	}
 }

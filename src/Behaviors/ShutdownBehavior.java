@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -36,7 +36,7 @@ public class ShutdownBehavior extends StateBehavior {
 				Sound.beep();
 				
 				//this lets the arbitrator exit and the main while-loop continues
-				sharedState.setState(State.ExitState);
+				sharedState.setState(MyState.ExitState);
 				
 				exit = true;
 			}else if(Button.DOWN.isDown()){
@@ -51,8 +51,8 @@ public class ShutdownBehavior extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
+	MyState getTargetState() {
 		// TODO Auto-generated method stub
-		return State.ShutDownState;
+		return MyState.ShutDownState;
 	}
 }

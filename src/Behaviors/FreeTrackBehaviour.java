@@ -2,7 +2,7 @@ package Behaviors;
 
 import HAL.IHAL;
 import State.SharedState;
-import State.State;
+import State.MyState;
 
 public class FreeTrackBehaviour extends StateBehavior {	
 	
@@ -15,6 +15,8 @@ public class FreeTrackBehaviour extends StateBehavior {
 	
 	@Override
 	public void action() {
+		this.suppressed = false;
+		
 		this.hal.printOnDisplay("FreeTrackBehaviour started", 0, 0);
 		while(!this.suppressed && !this.finished){
 			
@@ -28,8 +30,8 @@ public class FreeTrackBehaviour extends StateBehavior {
 	}
 
 	@Override
-	State getTargetState() {
-		return State.FreeTrackState;
+	MyState getTargetState() {
+		return MyState.FreeTrackState;
 	}
 
 	@Override
