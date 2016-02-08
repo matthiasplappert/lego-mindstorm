@@ -3,6 +3,7 @@ package Behaviors;
 import java.io.IOException;
 
 import HAL.ColorMode;
+import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
@@ -14,8 +15,8 @@ import State.MyState;
 
 public class ElevatorBehaviour extends StateBehavior {
 
-	private static final int ELEVATOR_MOVING_DURATION = 15;
-	private static final Speed forwardSpeed = Speed.Medium;
+	private static final int ELEVATOR_MOVING_DURATION = 10;
+	private static final Speed forwardSpeed = Speed.Fast;
 	private ComModule comm;
 
 	public ElevatorBehaviour(SharedState sharedState, IHAL hal) {
@@ -35,6 +36,7 @@ public class ElevatorBehaviour extends StateBehavior {
 			while (!this.suppressed && !this.finished) {//HERE IS outer loop!
 				//wait for status=true
 				boolean status = false;
+				this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);//Here we do not need Distance Sensor
 				do{
 					status = this.comm.requestStatus();
 					LCD.drawString("status is false       " , 1, 0);
@@ -65,6 +67,7 @@ public class ElevatorBehaviour extends StateBehavior {
 						
 						this.move_until_line();
 						new ObstacleEndBehavior(this.sharedState, this.hal).action();
+						return;
 					}
 					else{
 						//TODO: Move back to safe position and go to outer loop
@@ -104,7 +107,12 @@ public class ElevatorBehaviour extends StateBehavior {
 			this.hal.forward();
 			Delay.msDelay(10);
 		}
-		this.hal.stop();		
+		this.hal.stop();
+		this.hal.setSpeed(Speed.Medium);
+		this.hal.backward();
+		Delay.msDelay(10);		
+		this.hal.stop();	
+		this.hal.setSpeed(forwardSpeed);
 	}
 
 	private void wait_for_ambient_light_on() {
