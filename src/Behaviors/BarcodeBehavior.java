@@ -27,7 +27,7 @@ public class BarcodeBehavior extends StateBehavior {
 		this.suppressed = false;
 		
 		LCD.clear();
-		LCD.drawString("BarcodeBehavior", 0, 0);
+		this.hal.printOnDisplay("BarcodeBehavior", 0, 0);
 		
 		// WARNING: ONLY ENABLE FOR DEBUGGING, WILL EXIT THE PROGRAM
 		//this.testTachoDistance();
@@ -51,10 +51,9 @@ public class BarcodeBehavior extends StateBehavior {
 				this.hal.resetLeftTachoCount();
 				this.hal.resetRightTachoCount();
 			}
-			LCD.clear(5);
-			LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
-			LCD.clear(6);
-			LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
+
+			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
+			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 			
 			// Count changes from line to not on line.
 			if (wasOnLine && !isOnLine) {
@@ -67,8 +66,7 @@ public class BarcodeBehavior extends StateBehavior {
 			wasOnLine = isOnLine;
 			
 			// Debugging
-			LCD.clear(2);
-			LCD.drawString(Integer.toString(barcode), 0, 2);
+			this.hal.printOnDisplay(Integer.toString(barcode), 2, 0);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		this.hal.stop();
@@ -83,7 +81,7 @@ public class BarcodeBehavior extends StateBehavior {
 			this.hal.resetLeftTachoCount();
 			this.hal.resetRightTachoCount();
 			while (!this.suppressed && -this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
-				LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
+				this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 				this.hal.performCourseFollowingStep(true);
 				Delay.msDelay(STEP_DELAY_MS);
 			}
@@ -103,17 +101,14 @@ public class BarcodeBehavior extends StateBehavior {
 		this.hal.setCourseFollowingAngle(0);
 		while (!this.suppressed && this.hal.getLeftTachoDistance() < 100.0f) {
 			this.hal.performCourseFollowingStep();
-			LCD.clear(5);
-			LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
-			LCD.clear(6);
-			LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
+			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
+			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 		}
 		this.hal.stop();
 		Sound.buzz();
-		LCD.clear(5);
-		LCD.drawString(Float.toString(this.hal.getLeftTachoCount()), 0, 5);
-		LCD.clear(6);
-		LCD.drawString(Float.toString(this.hal.getLeftTachoDistance()), 0, 6);
+
+		this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
+		this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 		Delay.msDelay(10000);
 		System.exit(0);
 	}
@@ -122,8 +117,7 @@ public class BarcodeBehavior extends StateBehavior {
 		LineType lineType = this.hal.getLineType();
 		
 		// Debugging
-		LCD.clear(1);
-		LCD.drawString("Line type: " + lineType, 0, 1);
+		this.hal.printOnDisplay("Line type: " + lineType, 1, 0);
 		
 		switch (this.hal.getLineType()) {
 		case LINE:

@@ -43,7 +43,7 @@ public class LineSearchBehavior extends StateBehavior {
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
 		LCD.clear();
-		this.hal.printOnDisplay("LineSearchBehavior called", 0, 5000);
+		this.hal.printOnDisplay("LineSearchBehavior called", 0, 0);
 
 		Sound.beepSequence();
 		this.hal.setSpeed(Speed.Fast);
@@ -101,12 +101,12 @@ public class LineSearchBehavior extends StateBehavior {
 					reactToFindLine(findLineBehav.returnState());
 					break;
 				case 1:
-					/*this.barcodeBehav = new BarcodeBehavior(sharedState, hal);
+					this.barcodeBehav = new BarcodeBehavior(sharedState, hal);
 					this.barcodeBehav.action();
 					
 					if (this.barcodeBehav.scannedBarcode > 0) {
 						// We have a valid barcode, switch behavior and stop line search.
-						State newState = State.getFromBarcode(this.barcodeBehav.scannedBarcode);
+						MyState newState = MyState.getFromBarcode(this.barcodeBehav.scannedBarcode);
 						this.sharedState.setState(newState);
 						this.searchStage = 0;
 						done = true;
@@ -114,7 +114,7 @@ public class LineSearchBehavior extends StateBehavior {
 						// Keep looking for line
 						this.searchStage++;
 					}
-					break;*/
+					break;
 				case 2:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100, this.lastDirection);
 					this.findLineBehav.action();

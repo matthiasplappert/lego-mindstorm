@@ -19,7 +19,7 @@ public class FindLineBehaviour extends StateBehavior {
 	private final int searchAngle;
 	private Direction lastUsedDirection;
 
-	public static final int LOOP_DELAY = 100;
+	public static final int LOOP_DELAY = 5;
 
 	public FindLineBehaviour(SharedState sharedState, IHAL hal) {
 		this(sharedState, hal, 20, Direction.RIGHT);
@@ -80,7 +80,7 @@ public class FindLineBehaviour extends StateBehavior {
 					return;
 				}
 				// Again, do not sample too often here.
-				Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
+				Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 			}
 
 			// we turned left and right and did not found a line
@@ -91,7 +91,7 @@ public class FindLineBehaviour extends StateBehavior {
 				Sound.buzz();
 				this.hal.rotateTo(0, true);
 				while (!this.suppressed && this.hal.isRotating()) {
-					Delay.msDelay(LineSearchBehavior.LOOP_DELAY / 2);
+					Delay.msDelay(LineSearchBehavior.LOOP_DELAY);
 				}
 				return;
 			}

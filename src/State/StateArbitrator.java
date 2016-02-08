@@ -19,7 +19,6 @@ public class StateArbitrator {
 
 		monitor = new Monitor();
 		monitor.setDaemon(true);
-		System.out.println("Arbitrator created");
 	}
 
 	public void start() {

@@ -231,7 +231,6 @@ public class HAL implements IHAL {
 	@Override
 	public float getMeanColor() {
 		return this.sensorSampler.getMeanColorValue();
-
 	}
 
 	@Override
