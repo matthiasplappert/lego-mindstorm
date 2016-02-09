@@ -47,7 +47,6 @@ public class FindLineBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
-		this.hal.printOnDisplay("In FindLineBehaviour", 3, 0);
 		this.suppressed = false;
 		
 		this.hal.resetGyro();
