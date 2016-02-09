@@ -11,12 +11,16 @@ public class LineSearchBehavior extends StateBehavior {
 	private boolean suppressed = false;
 
 	private static final int STEP_DELAY_MS = 10;
-	
+
 	private static final float FORWARD_DISTANCE = 5.0f;
+
+	private static final float FORWARD_SEARCH_DISTANCE = 30.0f;
 
 	private static final float DISTANCE_THRESHOLD = 10.0f;
 
-	private static final int TURN_ANGLE = 45;
+	private static final int TURN_ANGLE = 60;
+
+	private static final int ROTATE_TO_ANGLE = -70;
 
 	private static final Speed TURN_SPEED = Speed.Slow;
 
@@ -42,7 +46,7 @@ public class LineSearchBehavior extends StateBehavior {
 		// Turn to the right.
 		this.hal.printOnDisplay("TURN: right", 1, 0);
 		this.hal.setSpeed(TURN_SPEED);
-		this.hal.turn(TURN_ANGLE);
+		this.hal.rotate(TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed()
 				&& this.hal.getMeanDistance() > DISTANCE_THRESHOLD && !hasFoundLine) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
@@ -54,19 +58,38 @@ public class LineSearchBehavior extends StateBehavior {
 		}
 		this.hal.stop();
 
+		this.hal.resetLeftTachoCount();
+		this.hal.forward();
+		while (!suppressed && this.hal.getLeftTachoDistance() < FORWARD_SEARCH_DISTANCE
+				&& !this.hal.isTouchButtonPressed() && this.hal.getMeanDistance() > DISTANCE_THRESHOLD
+				&& !hasFoundLine) {
+			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
+			Delay.msDelay(10);
+		}
+
 		// Turn to the left.
 		this.hal.printOnDisplay("TURN: left", 1, 0);
-		this.hal.rotateTo(0, true);
+		this.hal.rotateTo(ROTATE_TO_ANGLE, true);
 		while (!this.suppressed && this.hal.isRotating()) {
 			this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		this.hal.stop();
-		this.hal.turn(-TURN_ANGLE);
-		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() && !hasFoundLine) {
+		this.hal.resetLeftTachoCount();
+		this.hal.forward();
+		while (!suppressed && this.hal.getLeftTachoDistance() < FORWARD_SEARCH_DISTANCE
+				&& !this.hal.isTouchButtonPressed() && this.hal.getMeanDistance() > DISTANCE_THRESHOLD
+				&& !hasFoundLine) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
-			Delay.msDelay(STEP_DELAY_MS);
+			Delay.msDelay(10);
 		}
+		
+		
+		//this.hal.turn(-TURN_ANGLE);
+//		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed() && !hasFoundLine) {
+//			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
+//			Delay.msDelay(STEP_DELAY_MS);
+//		}
 		if (hasFoundLine) {
 			this.didFindLine();
 			return;
