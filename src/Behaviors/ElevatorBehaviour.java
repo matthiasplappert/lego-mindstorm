@@ -18,7 +18,7 @@ import State.MyState;
 public class ElevatorBehaviour extends StateBehavior {
 
 	private static final int ELEVATOR_MOVING_DURATION = 8;
-	private static final int ANGLE = -35;
+	private static final int ANGLE = -30;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
 	private static final int BACK_DISTANCE_ON_PLATOON = -10;
 	private static final float MIN_DIST = 1.5f;
@@ -149,25 +149,26 @@ public class ElevatorBehaviour extends StateBehavior {
 			this.hal.forward();
 			Delay.msDelay(10);
 		}
-		
+		this.hal.setSpeed(Speed.VeryFast);
+		this.hal.forward();
 		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
 			// Get (filtered) distance
-			float distance = this.hal.getCurrentDistance();
+//			float distance = this.hal.getCurrentDistance();
 
-			this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
+//			this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
 
 			// Keep distance to wall.
-			if (distance > MIN_DIST+ DISTANCE_TOLERANCE) {
-				this.hal.turn(TURN_ANGLE);
-			}
-			
-			
-			else if (distance < MIN_DIST) {
-				this.hal.turn(-TURN_ANGLE);
-			} 
-			else {
-				this.hal.forward();
-			}
+//			if (distance > MIN_DIST+ DISTANCE_TOLERANCE) {
+//				this.hal.turn(TURN_ANGLE);
+//			}
+//			
+//			
+//			else if (distance < MIN_DIST) {
+//				this.hal.turn(-TURN_ANGLE);
+//			} 
+//			else {
+//				this.hal.forward();
+//			}
 			Delay.msDelay(10);
 
 		}
