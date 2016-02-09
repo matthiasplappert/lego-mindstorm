@@ -15,7 +15,7 @@ public class BridgeBehaviour extends StateBehavior {
 	private static final int STEP_DELAY_MS = 10;
 
 	private static final int INITIAL_FORWARD_DISTANCE = 30;
-	private static final int ELEVATOR_FORWARD_DISTANCE = 15;
+	private static final int ELEVATOR_FORWARD_DISTANCE = 12;
 	private static final int MAX_TURN_ANGLE = 45;
 
 	// The initial offset angle. Should be in the direction of the sensor.
@@ -117,7 +117,7 @@ public class BridgeBehaviour extends StateBehavior {
 		this.hal.resetGyro();
 		this.hal.stop();
 		Sound.buzz();
-		this.hal.rotate(-45);
+		this.hal.rotate(-40);
 		while (!suppressed && this.hal.isRotating()) {
 			Delay.msDelay(10);
 		}
@@ -126,7 +126,7 @@ public class BridgeBehaviour extends StateBehavior {
 		while (!suppressed && this.hal.getLeftTachoDistance() < ELEVATOR_FORWARD_DISTANCE) {
 			Delay.msDelay(10);
 		}
-		this.hal.rotate(45);
+		this.hal.rotate(40);
 		while (!suppressed && this.hal.isRotating()) {
 			Delay.msDelay(10);
 		}
@@ -147,7 +147,8 @@ public class BridgeBehaviour extends StateBehavior {
 		// Restore state
 		LCD.clear();
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
-		this.sharedState.reset(true);
+		
+		this.sharedState.setState(MyState.ElevatorState);
 	}
 
 	private float getDistance() {

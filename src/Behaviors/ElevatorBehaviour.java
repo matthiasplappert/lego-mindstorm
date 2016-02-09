@@ -9,6 +9,7 @@ import HAL.Speed;
 import State.SharedState;
 import communication.ComModule;
 import communication.Communication;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import State.MyState;
@@ -33,10 +34,13 @@ public class ElevatorBehaviour extends StateBehavior {
 		try {
 			LCD.clear();
 			this.hal.printOnDisplay("ElevatorBehaviour started", 0, 0);
+			
+			
 			while (!this.suppressed && !this.finished) {//HERE IS outer loop!
 				//wait for status=true
 				boolean status = false;
-				this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);//Here we do not need Distance Sensor
+				this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);//Here we do not need Distance Sensor
+				
 				do{
 					status = this.comm.requestStatus();
 					LCD.drawString("status is false       " , 1, 0);
@@ -66,8 +70,9 @@ public class ElevatorBehaviour extends StateBehavior {
 						LCD.drawString("                           " ,2, 0);
 						
 						this.move_until_line();
-						new ObstacleEndBehavior(this.sharedState, this.hal).action();
-						return;
+						finished = true;
+						this.sharedState.reset(true);
+//						new ObstacleEndBehavior(this.sharedState, this.hal).action();
 					}
 					else{
 						//TODO: Move back to safe position and go to outer loop
@@ -83,10 +88,8 @@ public class ElevatorBehaviour extends StateBehavior {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		finished = true;
 
-		this.sharedState.reset(true);
-		Thread.yield();
+//		Thread.yield();
 
 	}
 
@@ -102,15 +105,38 @@ public class ElevatorBehaviour extends StateBehavior {
 	}
 
 	private void move_forward_till_button() {
+		this.hal.resetGyro();
 		this.hal.setSpeed(forwardSpeed);
-		while(!this.hal.isTouchButtonPressed()){
-			this.hal.forward();
+		this.hal.setCourseFollowingAngle(-5);
+		while(this.hal.getCurrentDistance() > 10){
+			this.hal.performCourseFollowingStep();
 			Delay.msDelay(10);
 		}
+		this.hal.rotate(10);
+
+		
+		while (!this.hal.isTouchButtonPressed() && !suppressed) {
+			
+			
+			
+			
+			this.hal.forward();
+			Delay.msDelay(10);
+
+		}
+		go_back();
+
+	}
+
+	private void go_back() {
 		this.hal.stop();
 		this.hal.setSpeed(Speed.Medium);
+		this.hal.resetLeftTachoCount();
+		
 		this.hal.backward();
-		Delay.msDelay(10);		
+		while(this.hal.getLeftTachoDistance() > -2){
+			Delay.msDelay(10);		
+		}
 		this.hal.stop();	
 		this.hal.setSpeed(forwardSpeed);
 	}
