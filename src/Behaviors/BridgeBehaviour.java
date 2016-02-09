@@ -114,28 +114,28 @@ public class BridgeBehaviour extends StateBehavior {
 			}
 			Delay.msDelay(STEP_DELAY_MS);
 		}
-		this.hal.resetGyro();
-		this.hal.stop();
-		Sound.buzz();
-		this.hal.rotate(-40);
-		while (!suppressed && this.hal.isRotating()) {
-			Delay.msDelay(10);
-		}
-		this.hal.resetLeftTachoCount();
-		this.hal.forward();
-		while (!suppressed && this.hal.getLeftTachoDistance() < ELEVATOR_FORWARD_DISTANCE) {
-			Delay.msDelay(10);
-		}
-		this.hal.rotate(40);
-		while (!suppressed && this.hal.isRotating()) {
-			Delay.msDelay(10);
-		}
-		
-		this.hal.forward();
-		this.hal.resetLeftTachoCount();
-		while (!suppressed && this.hal.getLeftTachoDistance() < ELEVATOR_FORWARD_DISTANCE) {
-			Delay.msDelay(10);
-		}
+//		this.hal.resetGyro();
+//		this.hal.stop();
+//		Sound.buzz();
+//		this.hal.rotate(-40);
+//		while (!suppressed && this.hal.isRotating()) {
+//			Delay.msDelay(10);
+//		}
+//		this.hal.resetLeftTachoCount();
+//		this.hal.forward();
+//		while (!suppressed && this.hal.getLeftTachoDistance() < ELEVATOR_FORWARD_DISTANCE) {
+//			Delay.msDelay(10);
+//		}
+//		this.hal.rotate(40);
+//		while (!suppressed && this.hal.isRotating()) {
+//			Delay.msDelay(10);
+//		}
+//		
+//		this.hal.forward();
+//		this.hal.resetLeftTachoCount();
+//		while (!suppressed && this.hal.getLeftTachoDistance() < ELEVATOR_FORWARD_DISTANCE) {
+//			Delay.msDelay(10);
+//		}
 		this.hal.stop();
 		// TODO: detect the end of the bridge
 
