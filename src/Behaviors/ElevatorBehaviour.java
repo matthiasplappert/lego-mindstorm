@@ -17,7 +17,7 @@ import State.MyState;
 public class ElevatorBehaviour extends StateBehavior {
 
 	private static final int ELEVATOR_MOVING_DURATION = 10;
-	private static final int ANGLE = -33;
+	private static final int ANGLE = -30;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 40;
 	private static final Speed forwardSpeed = Speed.Fast;
 	private ComModule comm;
@@ -55,7 +55,7 @@ public class ElevatorBehaviour extends StateBehavior {
 				}
 				this.hal.stop();
 				//move back
-				go_back(-7);
+				go_back(-10);
 				this.hal.rotate(Math.abs(ANGLE));
 				while(this.hal.isRotating() && !this.suppressed){
 					Delay.msDelay(10);
