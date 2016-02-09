@@ -170,12 +170,12 @@ public class ElevatorBehaviour extends StateBehavior {
 
 			// Keep distance to wall.
 			if (distance > MIN_DIST+ DISTANCE_TOLERANCE) {
-				this.hal.turn(TURN_ANGLE);
+				this.hal.turn(-TURN_ANGLE);
 			}
 			
 			
 			else if (distance < MIN_DIST) {
-				this.hal.turn(-TURN_ANGLE);
+				this.hal.turn(TURN_ANGLE);
 			} 
 			else {
 				this.hal.forward();
