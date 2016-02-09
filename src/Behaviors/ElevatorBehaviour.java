@@ -140,17 +140,6 @@ public class ElevatorBehaviour extends StateBehavior {
 
 	}
 
-//	private void move_forward_till_button() {
-//
-//		// get close to the wall
-//		this.hal.forward();
-//		while (!this.hal.isTouchButtonPressed() && !this.suppressed) {
-//			Delay.msDelay(10);
-//		}
-//		go_back(-2);
-//
-//	}
-
 	private void followWallUntilElevatorEnd() {
 		
 		Sound.beep();
@@ -182,6 +171,9 @@ public class ElevatorBehaviour extends StateBehavior {
 			Delay.msDelay(10);
 
 		}
+
+		this.hal.stop();
+		go_back(-2);
 		this.hal.stop();
 		this.hal.setSpeed(forwardSpeed);
 	}
