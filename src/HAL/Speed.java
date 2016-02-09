@@ -1,5 +1,5 @@
 package HAL;
 
 public enum Speed {
-	VerySlow, Slow, Medium, Fast, VeryFast, Labyrinth, HangingBridge, FollowLine
+	VerySlow, Slow, Medium, Fast, VeryFast, Labyrinth, HangingBridge, FollowLine, BridgeLeft, BridgeRight
 }
