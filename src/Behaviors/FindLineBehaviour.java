@@ -20,7 +20,7 @@ public class FindLineBehaviour extends StateBehavior {
 	private Direction lastUsedDirection;
 	private final boolean useRotation; // if true rotate, if false turn
 
-	public static final int LOOP_DELAY = 5;
+	public static final int LOOP_DELAY = 2;
 
 	public FindLineBehaviour(SharedState sharedState, IHAL hal) {
 		this(sharedState, hal, 20, Direction.RIGHT, true);

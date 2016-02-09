@@ -381,7 +381,15 @@ public class HAL implements IHAL {
 			turnSpeedInner = 340;
 			turnSpeedOuter = 400;
 			break;
-
+			
+		case FollowLine:
+			forwardSpeed = 500;
+			backwardSpeed = 500;
+			rotateSpeed = 250;
+			turnSpeedInner = 180;
+			turnSpeedOuter = 250;
+			break;
+			
 		case Labyrinth:
 			forwardSpeed = 350;
 			backwardSpeed = 350;

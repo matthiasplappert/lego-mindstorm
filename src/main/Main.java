@@ -105,6 +105,7 @@ public class Main {
 				hal.destroy();
 				System.exit(0);
 			}
+			LCD.clear();
 
 			try {
 				StateArbitrator a = new StateArbitrator(Main.getArrayForList(behaviors), sharedState);
