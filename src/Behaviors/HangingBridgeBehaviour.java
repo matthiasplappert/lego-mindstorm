@@ -87,6 +87,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			}
 			distance = this.hal.getMeanDistance();
 		}
+		
+		Sound.buzz();
 
 		this.hal.resetGyro();
 		this.hal.setSpeed(Speed.Medium);
@@ -99,7 +101,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			last_diff[k] = 200;
 		}
 		boolean enough = false;
-		float minimum_distance = 10;
+		float minimum_distance = 5;
 		this.hal.resetLeftTachoCount();
 		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed) {
 			this.hal.forward();
@@ -112,7 +114,11 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			}
 			if (minimum_distance <= this.hal.getLeftTachoDistance() && Math.abs(diff / last_diff.length) <= 0.2f) {
 				enough = true;
-				Sound.buzz();
+				Sound.beep();
+				Sound.beep();
+				Sound.beep();
+				Sound.beep();
+				
 			} else if (Math.abs(difference) > 0.2f) {
 				this.hal.turn((int) Math.signum(difference));
 			}
@@ -175,6 +181,11 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		}
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		this.hal.stop();
+		this.hal.backward();
+		this.hal.resetLeftTachoCount();
+		while (!suppressed && this.hal.getLeftTachoDistance() > -5) {
+			Delay.msDelay(10);
+		}
 		this.sharedState.reset(true);
 		Thread.yield();
 
