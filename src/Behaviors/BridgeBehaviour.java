@@ -26,7 +26,9 @@ public class BridgeBehaviour extends StateBehavior {
 	
 	private static final Speed EDGE_SEARCH_SPEED = Speed.Fast;
 	
-	private static final Speed EDGE_FOLLOW_SPEED = Speed.VeryFast;
+	private static final Speed EDGE_FOLLOW_SPEED_LEFT = Speed.BridgeLeft;
+	
+	private static final Speed EDGE_FOLLOW_SPEED_RIGHT = Speed.BridgeRight;
 
 	private boolean suppressed = false;
 
@@ -90,7 +92,6 @@ public class BridgeBehaviour extends StateBehavior {
 		Sound.buzz();
 		LCD.clear(3);
 		LCD.drawString("Mode: following edge", 0, 3);
-		this.hal.setSpeed(EDGE_FOLLOW_SPEED);
 		while (!this.suppressed && !this.hal.getLineType().equals(LineType.LINE)) {
 			// Get (filtered) distance
 			float distance = this.getDistance();
@@ -100,6 +101,7 @@ public class BridgeBehaviour extends StateBehavior {
 			if (canSeeDropoff) {
 				// Turn slightly to the left until we do not see the dropoff
 				// anymore.
+				this.hal.setSpeed(EDGE_FOLLOW_SPEED_LEFT);
 				this.hal.turn(-MAX_TURN_ANGLE);
 				while (!this.suppressed && this.hal.isRotating() && !this.hal.getLineType().equals(LineType.LINE)) {
 					if (!this.canSeeDropoff(this.getDistance())) {
@@ -110,6 +112,7 @@ public class BridgeBehaviour extends StateBehavior {
 			} else {
 				// Turn slightly to the right until we do not see the dropoff
 				// anymore.
+				this.hal.setSpeed(EDGE_FOLLOW_SPEED_RIGHT);
 				this.hal.turn(MAX_TURN_ANGLE);
 				while (!this.suppressed && this.hal.isRotating() && !this.hal.getLineType().equals(LineType.LINE)) {
 					if (this.canSeeDropoff(this.getDistance())) {
