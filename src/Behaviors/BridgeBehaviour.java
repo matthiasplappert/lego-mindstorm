@@ -21,6 +21,12 @@ public class BridgeBehaviour extends StateBehavior {
 	// The initial offset angle. Should be in the direction of the sensor.
 	// This avoids that we fall of the other side before reaching the edge.
 	private static final int OFFSET_ANGLE = 45;
+	
+	private static final Speed FORWARD_SPEED = Speed.VeryFast;
+	
+	private static final Speed EDGE_SEARCH_SPEED = Speed.Fast;
+	
+	private static final Speed EDGE_FOLLOW_SPEED = Speed.VeryFast;
 
 	private boolean suppressed = false;
 
@@ -34,7 +40,7 @@ public class BridgeBehaviour extends StateBehavior {
 
 		LCD.drawString("BridgeBehavior", 0, 0);
 
-		this.hal.setSpeed(Speed.VeryFast);
+		this.hal.setSpeed(FORWARD_SPEED);
 		this.hal.resetLeftTachoCount();
 		this.hal.forward();
 		while (!suppressed && this.hal.getLeftTachoDistance() < INITIAL_FORWARD_DISTANCE) {
@@ -58,7 +64,7 @@ public class BridgeBehaviour extends StateBehavior {
 		LCD.drawString("Mode: finding edge", 0, 3);
 		this.hal.resetGyro();
 		this.hal.setCourseFollowingAngle(OFFSET_ANGLE);
-		this.hal.setSpeed(Speed.Medium);
+		this.hal.setSpeed(EDGE_SEARCH_SPEED);
 		while (!this.suppressed) {
 			this.hal.performCourseFollowingStep();
 			if (this.canSeeDropoff(this.getDistance())) {
@@ -70,7 +76,7 @@ public class BridgeBehaviour extends StateBehavior {
 		// Turn to the left until we can barely see the edge anymore and go go
 		// go.
 		Sound.beep();
-		this.hal.setSpeed(Speed.Medium);
+		this.hal.setSpeed(EDGE_SEARCH_SPEED);
 		this.hal.rotate(-MAX_TURN_ANGLE);
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
@@ -84,7 +90,7 @@ public class BridgeBehaviour extends StateBehavior {
 		Sound.buzz();
 		LCD.clear(3);
 		LCD.drawString("Mode: following edge", 0, 3);
-		this.hal.setSpeed(Speed.Fast);
+		this.hal.setSpeed(EDGE_FOLLOW_SPEED);
 		while (!this.suppressed && !this.hal.getLineType().equals(LineType.LINE)) {
 			// Get (filtered) distance
 			float distance = this.getDistance();
