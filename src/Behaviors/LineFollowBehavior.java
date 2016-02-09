@@ -43,7 +43,7 @@ public class LineFollowBehavior extends StateBehavior {
 		this.hal.printOnDisplay("LineSearchBehavior called", 0, 0);
 
 		Sound.beepSequence();
-		this.hal.setSpeed(Speed.Fast);
+		this.hal.setSpeed(Speed.FollowLine);
 		this.hal.resetGyro();
 		this.searchStage = 0;
 		
@@ -75,7 +75,7 @@ public class LineFollowBehavior extends StateBehavior {
 				// clear some variables
 				this.hal.printOnDisplay("Search found LINE", 1, 0);
 				this.hal.forward();
-				Delay.msDelay(100);
+				Delay.msDelay(75);
 				break;
 			case BORDER:
 				/*Sound.beep();
