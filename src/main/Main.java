@@ -102,6 +102,7 @@ public class Main {
 			if (initialStateIndex < 0) {
 				System.exit(0);
 			}
+			LCD.clear();
 
 			try {
 				StateArbitrator a = new StateArbitrator(Main.getArrayForList(behaviors), sharedState);
