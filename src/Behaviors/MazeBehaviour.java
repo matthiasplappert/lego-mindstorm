@@ -11,11 +11,11 @@ import lejos.utility.Delay;
 
 public class MazeBehaviour extends StateBehavior {
 	
-	private static final int START_ANGLE = 10;
+	private static final int START_ANGLE = 20;
 	
-	private static final float DISTANCE_THRESHOLD = 5.f;
+	private static final float DISTANCE_THRESHOLD = 10.f;
 	
-	private static final float DISTANCE_TOLERANCE = 2.f;
+	private static final float DISTANCE_TOLERANCE = 5.f;
 	
 	private static final int TURN_ANGLE = 5;
 	
@@ -39,6 +39,9 @@ public class MazeBehaviour extends StateBehavior {
 		
 		LCD.drawString("MazeBehaviour", 0, 0);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
+		
+		// We use the same speed throughout the maze
+		this.hal.setSpeed(Speed.Labyrinth);
 		
 		// Set course slightly to the right.
 		this.hal.resetGyro();
@@ -76,7 +79,6 @@ public class MazeBehaviour extends StateBehavior {
 	}
 
 	private void moveBackAndTurn() {
-		this.hal.setSpeed(Speed.Fast);
 		this.hal.resetLeftTachoCount();
 		this.hal.backward();
 		while (!this.suppressed && -this.hal.getLeftTachoDistance() < BACKUP_DISTANCE) {
@@ -84,7 +86,6 @@ public class MazeBehaviour extends StateBehavior {
 		}
 		this.hal.stop();
 		
-		this.hal.setSpeed(DefaultSpeed);
 		this.hal.rotate(ROTATION_ANGLE);
 		while (!this.suppressed && this.hal.isRotating()) {
 			Delay.msDelay(LOOP_DELAY);
