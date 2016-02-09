@@ -1,5 +1,5 @@
 package HAL;
 
 public enum DistanceSensorPosition {
-	UP, DOWN, SAFE, Labyrinth;
+	UP, DOWN, SAFE, Labyrinth, Freetrack;
 }
