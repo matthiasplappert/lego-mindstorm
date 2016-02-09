@@ -19,7 +19,7 @@ public class ElevatorBehaviour extends StateBehavior {
 	private static final int ELEVATOR_MOVING_DURATION = 10;
 	private static final int ANGLE = -30;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 40;
-	private static final int BACK_DISTANCE_ON_PLATOON = -10;
+	private static final int BACK_DISTANCE_ON_PLATOON = -7;
 	private static final Speed forwardSpeed = Speed.Fast;
 	private ComModule comm;
 
