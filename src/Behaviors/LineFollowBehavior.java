@@ -76,7 +76,7 @@ public class LineFollowBehavior extends StateBehavior {
 				// clear some variables
 				this.hal.printOnDisplay("Search found LINE", 1, 0);
 				this.hal.forward();
-				Delay.msDelay(75);
+				Delay.msDelay(10);
 				break;
 			case BORDER:
 				/*Sound.beep();
