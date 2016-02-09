@@ -2,7 +2,6 @@ package Behaviors;
 
 import java.io.IOException;
 
-import javax.swing.text.DefaultEditorKit.BeepAction;
 
 import HAL.ColorMode;
 import HAL.DistanceSensorPosition;
