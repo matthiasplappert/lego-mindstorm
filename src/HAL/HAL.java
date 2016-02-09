@@ -150,7 +150,7 @@ public class HAL implements IHAL {
 			}
 		}
 
-		this.printOnDisplay("RotateTo: " + rotationDifference, 7, 0);
+		//this.printOnDisplay("RotateTo: " + rotationDifference, 7, 0);
 		rotate(rotationDifference);
 	}
 
@@ -399,12 +399,29 @@ public class HAL implements IHAL {
 			break;
 		
 		case HangingBridge:
-			forwardSpeed = 350;					
+			forwardSpeed = 150;					
 			backwardSpeed = 350;
 			rotateSpeed = 350;
-			turnSpeedInner = 170;
-			turnSpeedOuter = 190;
+			turnSpeedInner = 100;
+			turnSpeedOuter = 180;
 			break;
+			
+		case BridgeLeft:
+			forwardSpeed = 500;
+			backwardSpeed = 500;
+			rotateSpeed = 350;
+			turnSpeedInner = 220;
+			turnSpeedOuter = 400;
+			break;
+			
+		case BridgeRight:
+			forwardSpeed = 500;
+			backwardSpeed = 500;
+			rotateSpeed = 350;
+			turnSpeedInner = 280;
+			turnSpeedOuter = 400;
+			break;
+			
 		case Fast:
 		default:
 			forwardSpeed = 300;

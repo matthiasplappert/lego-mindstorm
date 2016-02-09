@@ -31,20 +31,24 @@ public class LineSearchBehavior extends StateBehavior {
 	@Override
 	public void action() {
 		this.suppressed = false;
-
+		boolean hasFoundLine = false;
 		// Move forward a bit and then start search sequence.
 		this.hal.resetGyro();
 		this.hal.resetLeftTachoCount();
 		this.hal.resetRightTachoCount();
-		while (!this.suppressed && this.hal.getLeftTachoDistance() < FORWARD_DISTANCE) {
+		while (!this.suppressed && this.hal.getLeftTachoDistance() < FORWARD_DISTANCE && !hasFoundLine) {
 			this.hal.performCourseFollowingStep();
+			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
-
-		boolean hasFoundLine = false;
+		if (hasFoundLine) {
+			this.didFindLine();
+			return;
+		}
+		this.hal.stop();
 
 		// Turn to the right.
-		this.hal.printOnDisplay("TURN: right", 1, 0);
+		//this.hal.printOnDisplay("TURN: right", 1, 0);
 		this.hal.setSpeed(TURN_SPEED);
 		this.hal.rotate(TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed()
@@ -66,15 +70,26 @@ public class LineSearchBehavior extends StateBehavior {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
 			Delay.msDelay(10);
 		}
-
-		// Turn to the left.
-		this.hal.printOnDisplay("TURN: left", 1, 0);
-		this.hal.rotateTo(ROTATE_TO_ANGLE, true);
-		while (!this.suppressed && this.hal.isRotating()) {
-			this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
-			Delay.msDelay(STEP_DELAY_MS);
+		if (hasFoundLine) {
+			this.didFindLine();
+			return;
 		}
 		this.hal.stop();
+
+		// Turn to the left.
+		//this.hal.printOnDisplay("TURN: left", 1, 0);
+		this.hal.rotateTo(ROTATE_TO_ANGLE, true);
+		while (!this.suppressed && this.hal.isRotating()&& !hasFoundLine) {
+			//this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
+			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
+			Delay.msDelay(STEP_DELAY_MS);
+		}
+		if (hasFoundLine) {
+			this.didFindLine();
+			return;
+		}
+		this.hal.stop();
+		
 		this.hal.resetLeftTachoCount();
 		this.hal.forward();
 		while (!suppressed && this.hal.getLeftTachoDistance() < FORWARD_SEARCH_DISTANCE
@@ -94,6 +109,7 @@ public class LineSearchBehavior extends StateBehavior {
 			this.didFindLine();
 			return;
 		}
+		this.hal.stop();
 
 		// Just keep going, maybe we'll find it eventually...
 		Sound.buzz();
@@ -106,7 +122,7 @@ public class LineSearchBehavior extends StateBehavior {
 	}
 
 	private void didFindLine() {
-		this.hal.printOnDisplay("did find line", 2, 0);
+		//this.hal.printOnDisplay("did find line", 2, 0);
 		this.hal.stop();
 		Sound.beepSequenceUp();
 		this.sharedState.setState(MyState.LineFollowState);
