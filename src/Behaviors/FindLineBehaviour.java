@@ -47,6 +47,7 @@ public class FindLineBehaviour extends StateBehavior {
 
 	@Override
 	public void action() {
+		this.hal.printOnDisplay("In FindLineBehaviour", 3, 0);
 		this.suppressed = false;
 		
 		this.hal.resetGyro();
@@ -59,21 +60,21 @@ public class FindLineBehaviour extends StateBehavior {
 		while (!this.suppressed) {
 			// check if we have found a line
 			LineType line_state = this.hal.getLineType();
-			this.hal.printOnDisplay("FindLine: " + line_state.toString(), 4, 0);
+			//this.hal.printOnDisplay("FindLine: " + line_state.toString(), 4, 0);
 			if (line_state == LineType.LINE) {
 				this.hal.stop();
 				this.returnState = FindLineReturnState.LINE_FOUND;
-				this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
+				//this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
 				return;
 			}
 
 			// if right sign = 1, if left sign = -1
 			if (lastUsedDirection == Direction.RIGHT) {
 				sign = 1;
-				this.hal.printOnDisplay("TURN RIGHT", 6, 0);
+				//this.hal.printOnDisplay("TURN RIGHT", 6, 0);
 			} else {
 				sign = -1;
-				this.hal.printOnDisplay("TURN LEFT", 6, 0);
+				//this.hal.printOnDisplay("TURN LEFT", 6, 0);
 			}
 			// rotate/turn to angle
 			if (this.useRotation) {
@@ -87,7 +88,7 @@ public class FindLineBehaviour extends StateBehavior {
 				if (this.hal.getLineType() == LineType.LINE) {
 					this.hal.stop();
 					this.returnState = FindLineReturnState.LINE_FOUND;
-					this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
+					//this.hal.printOnDisplay("FindLine: LINE_FOUND", 5, 0);
 					return;
 				}
 				// Again, do not sample too often here.
@@ -97,7 +98,7 @@ public class FindLineBehaviour extends StateBehavior {
 			// we turned left and right and did not found a line
 			if (bothDirectionsChecked) {
 				this.returnState = FindLineReturnState.LINE_NOT_FOUND;
-				this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 0);
+				//this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 0);
 				// we restore the Direction we were looking before
 				Sound.buzz();
 

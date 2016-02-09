@@ -31,7 +31,7 @@ public class LineSearchBehavior extends StateBehavior {
 	@Override
 	public void action() {
 		this.suppressed = false;
-
+		this.hal.printOnDisplay("In SearchLineBehaviour", 3, 0);
 		// Move forward a bit and then start search sequence.
 		this.hal.resetGyro();
 		this.hal.resetLeftTachoCount();
@@ -44,7 +44,7 @@ public class LineSearchBehavior extends StateBehavior {
 		boolean hasFoundLine = false;
 
 		// Turn to the right.
-		this.hal.printOnDisplay("TURN: right", 1, 0);
+		//this.hal.printOnDisplay("TURN: right", 1, 0);
 		this.hal.setSpeed(TURN_SPEED);
 		this.hal.rotate(TURN_ANGLE);
 		while (!this.suppressed && this.hal.isRotating() && !this.hal.isTouchButtonPressed()
@@ -68,10 +68,10 @@ public class LineSearchBehavior extends StateBehavior {
 		}
 
 		// Turn to the left.
-		this.hal.printOnDisplay("TURN: left", 1, 0);
+		//this.hal.printOnDisplay("TURN: left", 1, 0);
 		this.hal.rotateTo(ROTATE_TO_ANGLE, true);
 		while (!this.suppressed && this.hal.isRotating()) {
-			this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
+			//this.hal.printOnDisplay(Float.toString(this.hal.getCurrentGyro()), 5, 0);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		this.hal.stop();
@@ -106,7 +106,7 @@ public class LineSearchBehavior extends StateBehavior {
 	}
 
 	private void didFindLine() {
-		this.hal.printOnDisplay("did find line", 2, 0);
+		//this.hal.printOnDisplay("did find line", 2, 0);
 		this.hal.stop();
 		Sound.beepSequenceUp();
 		this.sharedState.setState(MyState.LineFollowState);

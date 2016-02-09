@@ -393,11 +393,11 @@ public class HAL implements IHAL {
 			break;
 		
 		case HangingBridge:
-			forwardSpeed = 350;					
+			forwardSpeed = 200;					
 			backwardSpeed = 350;
 			rotateSpeed = 350;
-			turnSpeedInner = 170;//50
-			turnSpeedOuter = 190;//120; diff von 70
+			turnSpeedInner = 130;
+			turnSpeedOuter = 210;
 			break;
 
 		case Rocker:
