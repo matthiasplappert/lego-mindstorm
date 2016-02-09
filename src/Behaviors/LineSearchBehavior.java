@@ -16,7 +16,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private static final float FORWARD_SEARCH_DISTANCE = 40.0f;
 
-	private static final float DISTANCE_THRESHOLD = 10.0f;
+	private static final float DISTANCE_THRESHOLD = 15.0f;
 
 	private static final int TURN_ANGLE = 60;
 
