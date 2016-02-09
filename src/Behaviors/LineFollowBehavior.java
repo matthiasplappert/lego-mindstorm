@@ -36,6 +36,7 @@ public class LineFollowBehavior extends StateBehavior {
 	@Override
 	public void action() {
 		this.suppressed = false;
+		this.lastDirection = this.sharedState.getLineFollowHint();
 		
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);

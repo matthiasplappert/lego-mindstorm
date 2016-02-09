@@ -3,8 +3,13 @@ package State;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import Behaviors.Direction;
+
 public class SharedState {
 	private MyState state;
+	
+	// Use this to hint to the line follow algorithm that it should first look in this direction.
+	private Direction lineFollowHint = Direction.LEFT;
 	
 	private Lock lock;
 	
@@ -30,5 +35,19 @@ public class SharedState {
 		this.setState(MyState.getInitState());
 		if (yield)
 			Thread.yield();
+	}
+	
+	public void setLineFollowHint(Direction hint) {
+		this.lock.lock();
+		this.lineFollowHint = hint;
+		this.lock.unlock();
+	}
+	
+	public Direction getLineFollowHint() {
+		Direction hint;
+		this.lock.lock();
+		hint = this.lineFollowHint;
+		this.lock.unlock();
+		return hint;
 	}
 }
