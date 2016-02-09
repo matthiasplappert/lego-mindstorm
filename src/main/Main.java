@@ -14,6 +14,7 @@ import Behaviors.ElevatorBehaviour;
 import Behaviors.FreeTrackBehaviour;
 import Behaviors.HangingBridgeBehaviour;
 import Behaviors.LineFollowBehavior;
+import Behaviors.LineSearchBehavior;
 import Behaviors.MazeBehaviour;
 import Behaviors.ObstacleEndBehavior;
 import Behaviors.RockerBehaviour;
@@ -90,6 +91,7 @@ public class Main {
 			// Shared behaviors.
 			behaviors.add(new LineFollowBehavior(sharedState, hal));
 			behaviors.add(new ObstacleEndBehavior(sharedState, hal));
+			behaviors.add(new LineSearchBehavior(sharedState, hal));
 
 			// WARNING: always keep this as the last element since it allows us to
 			// exit from the program.
@@ -103,6 +105,7 @@ public class Main {
 				hal.destroy();
 				System.exit(0);
 			}
+			LCD.clear();
 
 			try {
 				StateArbitrator a = new StateArbitrator(Main.getArrayForList(behaviors), sharedState);

@@ -14,7 +14,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private static final float FORWARD_DISTANCE = 5.0f;
 
-	private static final float FORWARD_SEARCH_DISTANCE = 30.0f;
+	private static final float FORWARD_SEARCH_DISTANCE = 40.0f;
 
 	private static final float DISTANCE_THRESHOLD = 10.0f;
 
@@ -22,7 +22,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private static final int ROTATE_TO_ANGLE = -70;
 
-	private static final Speed TURN_SPEED = Speed.Slow;
+	private static final Speed TURN_SPEED = Speed.Medium;
 
 	public LineSearchBehavior(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
