@@ -12,7 +12,7 @@ public class LineSearchBehavior extends StateBehavior {
 
 	private static final int STEP_DELAY_MS = 10;
 
-	private static final float FORWARD_DISTANCE = 5.0f;
+	private static final float FORWARD_DISTANCE = 10.0f;
 
 	private static final float FORWARD_SEARCH_DISTANCE = 40.0f;
 

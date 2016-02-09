@@ -20,6 +20,7 @@ public class SensorSampler extends Thread{
 	private float[] currentBufferGyro;
 	private float[] meanBufferUltrasonic;
 	private float[] meanBufferColor;
+	private float[] meanBufferAmbient;
 
 	
 	private float[] currentBufferUltrasonic;
@@ -29,6 +30,8 @@ public class SensorSampler extends Thread{
 	private MeanFilter meanFilterGyro;
 	private MeanFilter meanFilterUltrasonic;
 	private MeanFilter meanFilterColor;
+	private MeanFilter meanFilterAmbient;
+
 	private EV3ColorSensor colorSensor;
 	private ColorMode colorMode;
 
@@ -63,8 +66,18 @@ public class SensorSampler extends Thread{
 				meanFilterGyro.fetchSample(meanBufferGyro, 0);
 				gyroSampleProvider.fetchSample(currentBufferGyro, 0);
 				meanFilterUltrasonic.fetchSample(meanBufferUltrasonic, 0);
-				meanFilterColor.fetchSample(meanBufferColor, 0);
 				ultrasonicSampleProvider.fetchSample(currentBufferUltrasonic, 0);
+				switch(this.colorMode){
+				case AMBIENT_LIGHT:
+					meanFilterAmbient.fetchSample(meanBufferAmbient, 0);
+					break;
+				case RED:
+					meanFilterColor.fetchSample(meanBufferColor, 0);
+					break;
+				default:
+					break;
+				
+				}
 			lock.unlock();
 			try {
 				Thread.sleep(10);
@@ -119,28 +132,19 @@ public class SensorSampler extends Thread{
 	}
 	
 	public void enableRedMode(){
-		
-		this.meanFilterColor = new MeanFilter(this.colorSensor.getRedMode(), 5);
-		meanBufferColor = new float[meanFilterColor.sampleSize()];
-
-		this.colorMode = ColorMode.RED;
+		this.lock.lock();
+			this.meanFilterColor = new MeanFilter(this.colorSensor.getRedMode(), 5);
+			meanBufferColor = new float[meanFilterColor.sampleSize()];
+			this.colorMode = ColorMode.RED;
+		this.lock.unlock();
 	}
-
-	public void enableRGBMode(){
-		
-		this.meanFilterColor = new MeanFilter(this.colorSensor.getRGBMode(), 5);
-		meanBufferColor = new float[meanFilterColor.sampleSize()];
-
-		this.colorMode = ColorMode.RED;
+	public void enableAmbientMode() {
+		this.lock.lock();
+			this.meanFilterAmbient= new MeanFilter(this.colorSensor.getAmbientMode(), 10);
+			meanBufferAmbient = new float[this.meanFilterAmbient.sampleSize()];
+			this.colorMode = ColorMode.AMBIENT_LIGHT;
+		this.lock.unlock();
 	}
-	
-	public void enableColorIDMode(){
-		
-		this.meanFilterColor = new MeanFilter(this.colorSensor.getColorIDMode(), 5);
-		meanBufferColor = new float[meanFilterColor.sampleSize()];
-		this.colorMode = ColorMode.RED;
-	}
-
 	
 	public ColorMode getColorMode() {
 		return colorMode;
@@ -152,4 +156,12 @@ public class SensorSampler extends Thread{
 		lock.unlock();
 		return value;
 	}
+	
+	public float getMeanAmbientLight() {
+		lock.lock();
+		final float value = meanBufferAmbient[0];
+		lock.unlock();
+		return value;
+	}
+
 }
