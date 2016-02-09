@@ -20,7 +20,7 @@ public class ElevatorBehaviour extends StateBehavior {
 
 	private static final int ELEVATOR_MOVING_DURATION = 10;
 	private static final int ANGLE = -30;
-	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 40;
+	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
 	private static final int BACK_DISTANCE_ON_PLATOON = -7;
 	private static final float MIN_DIST = 1.5f;
 	private static final float DISTANCE_TOLERANCE = 0.5f;
@@ -162,9 +162,9 @@ public class ElevatorBehaviour extends StateBehavior {
 			Delay.msDelay(10);
 		}
 		
-		while (!this.suppressed && this.hal.isTouchButtonPressed()) {
+		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
 			// Get (filtered) distance
-			float distance = this.hal.getMeanDistance();
+			float distance = this.hal.getCurrentDistance();
 
 			this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
 
