@@ -204,6 +204,9 @@ public class HAL implements IHAL {
 		case SAFE:
 			angle = 35;
 			break;
+		case Freetrack:
+			angle=-45;
+			break;
 		// alternative: angle=90 if deployed on the left-hand side of the robot
 		case UP:
 		default:
