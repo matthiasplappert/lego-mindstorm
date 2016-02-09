@@ -41,23 +41,24 @@ public class BridgeBehaviour extends StateBehavior {
 		this.suppressed = false;
 
 		LCD.drawString("BridgeBehavior", 0, 0);
-
-		this.hal.setSpeed(FORWARD_SPEED);
-		this.hal.resetLeftTachoCount();
-		this.hal.forward();
-		while (!suppressed && this.hal.getLeftTachoDistance() < INITIAL_FORWARD_DISTANCE) {
-			Delay.msDelay(10);
-		}
-
+		
 		// RELEASE THE KRAKEN (and wait for it)
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN);
-
 		// Wait until we have a stable signal. We at least wait for 10
 		// iterations and ensure
 		// that we initially cannot see the dropoff.
 		LCD.drawString("Mode: initializing", 0, 3);
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
+		}
+		
+		// Move forward a bit, fast.
+		this.hal.setSpeed(FORWARD_SPEED);
+		this.hal.resetLeftTachoCount();
+		this.hal.forward();
+		while (!suppressed && this.hal.getLeftTachoDistance() < INITIAL_FORWARD_DISTANCE &&
+			   !this.canSeeDropoff(this.getDistance())) {
+			Delay.msDelay(10);
 		}
 
 		// Configure the follow angle. We use this initially before we have
