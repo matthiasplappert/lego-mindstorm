@@ -17,6 +17,7 @@ public class RockerBehaviour extends StateBehavior {
 	public static final int LOOP_DELAY = 10;
 	public static final int SEARCH_COURSE_ANGLE = -45;
 	public static final int STRAIGHT_LINE_THRESHOLD = 1000; // in ms
+	public static final float FORWARD_DISTANCE = 130.0f; // in cm
 
 	private boolean suppressed = false;
 
@@ -90,7 +91,7 @@ public class RockerBehaviour extends StateBehavior {
 		this.hal.resetGyro();
 		this.hal.setCourseFollowingAngle(0);
 		this.hal.setSpeed(Speed.VeryFast);
-		while (!this.suppressed && this.hal.getLeftTachoDistance() < 120.0f) {
+		while (!this.suppressed && this.hal.getLeftTachoDistance() < FORWARD_DISTANCE) {
 			this.hal.performCourseFollowingStep();
 			this.hal.printOnDisplay("distance: " + this.hal.getLeftTachoCount(), 3, 0);
 			Delay.msDelay(LOOP_DELAY);
@@ -98,8 +99,6 @@ public class RockerBehaviour extends StateBehavior {
 		this.hal.stop();
 		
 		// Find the line again.
-		LCD.clear();
-		this.hal.printOnDisplay("Switching to LineSearchState", 0, 5000);
 		this.sharedState.setState(MyState.LineSearchState);
 	}
 
