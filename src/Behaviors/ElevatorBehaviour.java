@@ -54,9 +54,13 @@ public class ElevatorBehaviour extends StateBehavior {
 																					// Sensor
 
 				this.hal.resetLeftTachoCount();
-				this.hal.resetGyro();
 				this.hal.setSpeed(Speed.Fast);
-				this.hal.setCourseFollowingAngle(ANGLE);
+				this.hal.rotateTo(-45, true); // use previous gyro from bridge!
+				while (!this.suppressed && this.hal.isRotating()) {
+					Delay.msDelay(10);
+				}
+				this.hal.stop();
+				this.hal.setCourseFollowingAngle((int)this.hal.getCurrentGyro());
 				while (this.hal.getLeftTachoDistance() < MAX_MOVE_ON_PLATOON_DISTANCE
 						&& !this.hal.isTouchButtonPressed() && !this.suppressed) {// move
 																					// forward
@@ -72,7 +76,7 @@ public class ElevatorBehaviour extends StateBehavior {
 				this.hal.stop();
 				// move back
 				go_back(BACK_DISTANCE_ON_PLATOON);
-				this.hal.rotate(Math.abs(ANGLE));
+				this.hal.rotateTo(23, true);
 				while (this.hal.isRotating() && !this.suppressed) {
 					Delay.msDelay(10);
 				}
