@@ -391,28 +391,20 @@ public class HAL implements IHAL {
 			break;
 			
 		case Labyrinth:
-			forwardSpeed = 350;
-			backwardSpeed = 350;
+			forwardSpeed = 400;
+			backwardSpeed = 400;
 			rotateSpeed = 350;
-			turnSpeedInner = 67;// 50
-			turnSpeedOuter = 190;// 120; diff von 70
+			turnSpeedInner = 160;
+			turnSpeedOuter = 350;
 			break;
 		
 		case HangingBridge:
 			forwardSpeed = 350;					
 			backwardSpeed = 350;
 			rotateSpeed = 350;
-			turnSpeedInner = 170;//50
-			turnSpeedOuter = 190;//120; diff von 70
+			turnSpeedInner = 170;
+			turnSpeedOuter = 190;
 			break;
-
-		case Rocker:
-			forwardSpeed = 300;
-			backwardSpeed = 200;
-			rotateSpeed = 200;
-			turnSpeedInner = 50;
-			turnSpeedOuter = 400;
-			break;	
 		case Fast:
 		default:
 			forwardSpeed = 300;
