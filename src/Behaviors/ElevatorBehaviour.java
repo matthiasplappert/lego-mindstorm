@@ -18,7 +18,7 @@ import State.MyState;
 public class ElevatorBehaviour extends StateBehavior {
 
 	private static final int ELEVATOR_MOVING_DURATION = 8;
-	private static final int ANGLE = -32;
+	private static final int ANGLE = -33;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
 	private static final int BACK_DISTANCE_ON_PLATOON = -11;
 	private static final float MIN_DIST = 1.5f;
@@ -45,16 +45,10 @@ public class ElevatorBehaviour extends StateBehavior {
 		try {
 			LCD.clear();
 			this.hal.printOnDisplay("ElevatorBehaviour started", 0, 0);
-
+			this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 			while (!this.suppressed && !this.finished) {// HERE IS outer loop!
 				boolean status = false;
-				this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);// Here
-																					// we
-																					// do
-																					// not
-																					// need
-																					// Distance
-																					// Sensor
+
 
 				this.hal.resetLeftTachoCount();
 				this.hal.resetGyro();
@@ -176,6 +170,10 @@ public class ElevatorBehaviour extends StateBehavior {
 
 		this.hal.stop();
 		go_back(-2);
+		this.hal.rotateTo(0, true);
+		while(!this.suppressed && this.hal.isRotating()){
+			Delay.msDelay(10);
+		}
 		this.hal.stop();
 		this.hal.setSpeed(forwardSpeed);
 	}
