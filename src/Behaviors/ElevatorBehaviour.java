@@ -18,7 +18,7 @@ import State.MyState;
 public class ElevatorBehaviour extends StateBehavior {
 
 	private static final int ELEVATOR_MOVING_DURATION = 8;
-	private static final int ANGLE = -30;
+	private static final int ANGLE = -32;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
 	private static final int BACK_DISTANCE_ON_PLATOON = -11;
 	private static final float MIN_DIST = 1.5f;
@@ -26,6 +26,9 @@ public class ElevatorBehaviour extends StateBehavior {
 	private static final int TURN_ANGLE = 5;
 	private static final Speed forwardSpeed = Speed.Fast;
 	private static final float MAX_RANGE_PLATOON = 30;
+	private static final int Gyro_Tolerance = 3;
+	private static final int correction_back_distance = -5;
+	private static final int correction_angle = 3;
 	private ComModule comm;
 
 	public ElevatorBehaviour(SharedState sharedState, IHAL hal) {
@@ -144,32 +147,29 @@ public class ElevatorBehaviour extends StateBehavior {
 	private void followWallUntilElevatorEnd() {
 		
 		Sound.beep();
-		this.hal.setSpeed(Speed.Slow);
+//		this.hal.setSpeed(Speed.Slow);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 //		while(!this.suppressed && this.hal.getMeanDistance()> MAX_RANGE_PLATOON){
 //			this.hal.forward();
 //			Delay.msDelay(10);
 //		}
-		this.hal.setSpeed(Speed.VeryFast);
-		this.hal.forward();
+		this.hal.resetGyro();
+		this.hal.setSpeed(Speed.Medium);
 		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
-			// Get (filtered) distance
-//			float distance = this.hal.getCurrentDistance();
-
-//			this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
-
-			// Keep distance to wall.
-//			if (distance > MIN_DIST+ DISTANCE_TOLERANCE) {
-//				this.hal.turn(TURN_ANGLE);
-//			}
-//			
-//			
-//			else if (distance < MIN_DIST) {
-//				this.hal.turn(-TURN_ANGLE);
-//			} 
-//			else {
-//				this.hal.forward();
-//			}
+			float current_gyro = this.hal.getCurrentGyro();
+			if(current_gyro < -Gyro_Tolerance){//too far to left
+				this.hal.backward();
+				Delay.msDelay(10);
+				this.hal.rotate(correction_angle);
+			}
+			else if(current_gyro > Gyro_Tolerance){//too far right
+				this.hal.backward();
+				Delay.msDelay(10);
+				this.hal.rotate(-correction_angle);
+			}
+			else{
+				this.hal.forward();
+			}
 			Delay.msDelay(10);
 
 		}
