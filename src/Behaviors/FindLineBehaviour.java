@@ -99,7 +99,7 @@ public class FindLineBehaviour extends StateBehavior {
 				this.returnState = FindLineReturnState.LINE_NOT_FOUND;
 				//this.hal.printOnDisplay("FindLine: bothChecked LINE_NOT_FOUND", 5, 0);
 				// we restore the Direction we were looking before
-				Sound.buzz();
+				//Sound.buzz();
 
 				if (this.useRotation) {
 					this.hal.rotateTo(0, true);

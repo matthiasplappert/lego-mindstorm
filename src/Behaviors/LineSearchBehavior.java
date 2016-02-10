@@ -112,7 +112,7 @@ public class LineSearchBehavior extends StateBehavior {
 		this.hal.stop();
 
 		// Just keep going, maybe we'll find it eventually...
-		Sound.buzz();
+		//Sound.buzz();
 		this.hal.forward();
 		while (!this.suppressed && !this.hal.isTouchButtonPressed() && !hasFoundLine) {
 			hasFoundLine = this.hal.getLineType().equals(LineType.LINE);
@@ -124,7 +124,7 @@ public class LineSearchBehavior extends StateBehavior {
 	private void didFindLine() {
 		//this.hal.printOnDisplay("did find line", 2, 0);
 		this.hal.stop();
-		Sound.beepSequenceUp();
+		//Sound.beepSequenceUp();
 		this.sharedState.setState(MyState.LineFollowState);
 	}
 

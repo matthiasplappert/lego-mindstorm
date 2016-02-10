@@ -23,7 +23,7 @@ public class ShutdownBehavior extends StateBehavior {
 	@Override
 	public void action() {
 		boolean exit = false;
-		LCD.clear();
+		//LCD.clear();
 		
 		LCD.drawString("Press UP for Menu", 0, 0);
 		LCD.drawString("Press DOWN for EXIT", 0, 1);
@@ -33,7 +33,7 @@ public class ShutdownBehavior extends StateBehavior {
 			Delay.msDelay(50);			
 			
 			if(Button.UP.isDown()){
-				Sound.beep();
+				//Sound.beep();
 				
 				//this lets the arbitrator exit and the main while-loop continues
 				sharedState.setState(MyState.ExitState);

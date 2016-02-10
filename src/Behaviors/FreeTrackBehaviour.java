@@ -41,7 +41,7 @@ public class FreeTrackBehaviour extends StateBehavior {
 	public void action() {
 		this.suppressed = false;
 
-		LCD.drawString("FreeTrackBehaviour", 0, 0);
+		this.hal.printOnDisplay("FreeTrackBehaviour", 0, 0);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
 
 		// We use the same speed throughout the maze
@@ -56,7 +56,7 @@ public class FreeTrackBehaviour extends StateBehavior {
 		this.hal.stop();
 		// We use the same speed throughout the maze
 		this.hal.setSpeed(Speed.Labyrinth);
-		Sound.twoBeeps();
+		//Sound.twoBeeps();
 
 		// We have reached the wall, start navigating.
 		while (!this.suppressed && !this.hasDoneLeftTurn) {
@@ -84,7 +84,7 @@ public class FreeTrackBehaviour extends StateBehavior {
 
 	private void followWall() {
 		float distance = this.hal.getMeanDistance();
-		this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
+		//this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
 
 		if (isTooClose(distance)) {
 			// Too close means that we need to turn left.

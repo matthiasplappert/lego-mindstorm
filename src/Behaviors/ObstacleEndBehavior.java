@@ -50,12 +50,12 @@ public class ObstacleEndBehavior extends StateBehavior {
 			// TODO: what do we do now?!
 			Button.LEDPattern(1);
 			for (int i = 0; i < 5; i++) {
-				Sound.beepSequence();
-				Delay.msDelay(100);
+				//Sound.beepSequence();
+				//Delay.msDelay(100);
 				return;
 			}
 		}
-		LCD.clear();
+		//LCD.clear();
 		
 		// Next step: search the line
 		this.sharedState.setState(MyState.LineSearchState);

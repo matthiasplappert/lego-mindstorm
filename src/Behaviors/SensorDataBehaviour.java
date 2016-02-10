@@ -23,28 +23,28 @@ public class SensorDataBehaviour extends StateBehavior {
 	public void action() {
 		this.suppressed = false;
 		
-		LCD.drawString("Sensor Data Test", 0, 0);
+		//LCD.drawString("Sensor Data Test", 0, 0);
 
-		this.hal.printOnDisplay("Sensor Data", 0, 0);
-		Sound.beepSequence();
-		Delay.msDelay(1000);
-		Sound.beep();
+		//this.hal.printOnDisplay("Sensor Data", 0, 0);
+		//Sound.beepSequence();
+		//Delay.msDelay(1000);
+		//Sound.beep();
 		this.hal.setColorMode(ColorMode.AMBIENT_LIGHT);
-		LCD.clear();
+		//LCD.clear();
 		while(!this.suppressed){
 //			float value = this.hal.getMeanDistance();
-			LCD.drawString("Distance value:" + this.hal.getMeanDistance(), 0, 1);
-			LCD.drawString("Curr gyro:" + this.hal.getCurrentGyro(), 0, 2);
-			LCD.drawString("Mean gyro:" + this.hal.getMeanGyro(), 0, 3);
-			LCD.drawString("Ambient Light on:" + this.hal.isAmbientLightOn(), 0,4);
+			//LCD.drawString("Distance value:" + this.hal.getMeanDistance(), 0, 1);
+			//LCD.drawString("Curr gyro:" + this.hal.getCurrentGyro(), 0, 2);
+			///LCD.drawString("Mean gyro:" + this.hal.getMeanGyro(), 0, 3);
+			//LCD.drawString("Ambient Light on:" + this.hal.isAmbientLightOn(), 0,4);
 			
-			try {
-				LCD.drawString("Elevator Status is:", 0, 5);
-				LCD.drawString(""+Communication.getModule().requestStatus(), 0, 6);
+			/*try {
+				//L/CD.drawString("Elevator Status is:", 0, 5);
+				//LCD.drawString(""+Communication.getModule().requestStatus(), 0, 6);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 
 			//			LCD.drawString("Line Type:" + this.hal.getLineType(), 0, 4);
 			Delay.msDelay(10);

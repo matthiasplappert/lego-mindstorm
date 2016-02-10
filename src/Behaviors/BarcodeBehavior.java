@@ -76,7 +76,7 @@ public class BarcodeBehavior extends StateBehavior {
 
 		// Handle barcode.
 		if (barcode == 0) {
-			Sound.buzz();
+			//Sound.buzz();
 
 			// Did not find barcode, back up to initial pose.
 			this.hal.resetGyro();
@@ -90,7 +90,7 @@ public class BarcodeBehavior extends StateBehavior {
 			}
 			this.hal.stop();
 		} else {
-			Sound.beepSequenceUp();
+			//Sound.beepSequenceUp();
 		}
 		this.scannedBarcode = barcode;
 	}
@@ -108,11 +108,11 @@ public class BarcodeBehavior extends StateBehavior {
 			//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 		}
 		this.hal.stop();
-		Sound.buzz();
+		//Sound.buzz();
 
 		//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
 		//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
-		Delay.msDelay(10000);
+		//Delay.msDelay(10000);
 		System.exit(0);
 	}
 
@@ -120,7 +120,7 @@ public class BarcodeBehavior extends StateBehavior {
 		LineType lineType = this.hal.getLineType();
 
 		// Debugging
-		this.hal.printOnDisplay("Line type: " + lineType, 1, 0);
+		//this.hal.printOnDisplay("Line type: " + lineType, 1, 0);
 
 		switch (this.hal.getLineType()) {
 		case LINE:

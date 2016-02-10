@@ -26,7 +26,7 @@ public class RollBoxBehaviour extends StateBehavior {
 	public void action() {
 		this.suppressed = false;
 
-		this.hal.printOnDisplay("RollBoxBehaviour started", 0, 0);
+		//this.hal.printOnDisplay("RollBoxBehaviour started", 0, 0);
 		//this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
 		this.hal.resetGyro();
@@ -67,7 +67,7 @@ public class RollBoxBehaviour extends StateBehavior {
 			while (!this.suppressed && this.hal.getLineType() != LineType.LINE) {
 				// Get (filtered) distance
 				float distance = this.hal.getMeanDistance();
-				this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
+				//this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
 				// Keep distance to wall.
 				if (isTooClose(distance)) {
 					// Too close means that we need to turn left.

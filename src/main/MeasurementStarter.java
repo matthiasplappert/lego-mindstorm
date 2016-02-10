@@ -89,9 +89,9 @@ public class MeasurementStarter {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		Sound.beep();
+		//Sound.beep();
 		LCD.drawString("MeasurementMode finished", 0, 0);
-		Delay.msDelay(1000);
+		//Delay.msDelay(1000);
 		System.exit(0);
 
 	}

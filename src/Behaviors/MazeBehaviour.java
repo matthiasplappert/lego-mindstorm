@@ -37,7 +37,7 @@ public class MazeBehaviour extends StateBehavior {
 	public void action() {
 		this.suppressed = false;
 		
-		LCD.drawString("MazeBehaviour", 0, 0);
+		this.hal.printOnDisplay("MazeBehaviour", 0, 0);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
 		
 		// We use the same speed throughout the maze
@@ -50,13 +50,13 @@ public class MazeBehaviour extends StateBehavior {
 			this.hal.performCourseFollowingStep();
 		}
 		this.hal.stop();
-		Sound.twoBeeps();
+		//Sound.twoBeeps();
 		
 		// We have reached the wall, start navigating.
 		while (!this.suppressed && this.hal.getLineType() != LineType.LINE) {
 			// Get (filtered) distance
 			float distance = this.hal.getMeanDistance();
-			this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
+			//this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
 			if (isButtonPressed()) {
 				moveBackAndTurn();
 				this.hal.stop();

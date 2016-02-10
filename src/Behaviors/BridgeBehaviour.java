@@ -47,7 +47,7 @@ public class BridgeBehaviour extends StateBehavior {
 		// Wait until we have a stable signal. We at least wait for 10
 		// iterations and ensure
 		// that we initially cannot see the dropoff.
-		LCD.drawString("Mode: initializing", 0, 3);
+		//LCD.drawString("Mode: initializing", 0, 3);
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
 		}
@@ -66,7 +66,7 @@ public class BridgeBehaviour extends StateBehavior {
 		// Configure the follow angle. We use this initially before we have
 		// found the edge
 		// for the first time.
-		LCD.drawString("Mode: finding edge", 0, 3);
+		//LCD.drawString("Mode: finding edge", 0, 3);
 		this.hal.resetGyro();
 		this.hal.setCourseFollowingAngle(OFFSET_ANGLE);
 		this.hal.setSpeed(EDGE_SEARCH_SPEED);
@@ -80,7 +80,7 @@ public class BridgeBehaviour extends StateBehavior {
 
 		// Turn to the left until we can barely see the edge anymore and go go
 		// go.
-		Sound.beep();
+		//Sound.beep();
 		this.hal.setSpeed(EDGE_SEARCH_SPEED);
 		this.hal.rotate(-MAX_TURN_ANGLE);
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
@@ -92,9 +92,9 @@ public class BridgeBehaviour extends StateBehavior {
 		// drop-off.
 		// We then start to regulate the motors such that we keep a safe
 		// distance to the drop-off.
-		Sound.buzz();
-		LCD.clear(3);
-		LCD.drawString("Mode: following edge", 0, 3);
+		//Sound.buzz();
+		//LCD.clear(3);
+		//LCD.drawString("Mode: following edge", 0, 3);
 		while (!this.suppressed && !this.hal.getLineType().equals(LineType.LINE)) {
 			// Get (filtered) distance
 			float distance = this.getDistance();
@@ -151,13 +151,13 @@ public class BridgeBehaviour extends StateBehavior {
 		this.hal.stop();
 		// TODO: detect the end of the bridge
 
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
 		
 		// Restore state
-		LCD.clear();
+		//LCD.clear();
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		
 		this.sharedState.setState(MyState.ElevatorState);
@@ -167,8 +167,8 @@ public class BridgeBehaviour extends StateBehavior {
 		float distance = this.hal.getMeanDistance();
 
 		// Debugging
-		LCD.clear(1);
-		LCD.drawString("Distance: " + Float.toString(distance), 0, 1);
+		//LCD.clear(1);
+		//LCD.drawString("Distance: " + Float.toString(distance), 0, 1);
 
 		return distance;
 	}
@@ -177,8 +177,8 @@ public class BridgeBehaviour extends StateBehavior {
 		boolean canSeeDropoff = (distance > DROPOFF_DISTANCE_THRESHOLD);
 
 		// Debugging
-		LCD.clear(2);
-		LCD.drawString(canSeeDropoff ? "Dropoff detected" : "No dropoff detected", 0, 2);
+		//LCD.clear(2);
+		//LCD.drawString(canSeeDropoff ? "Dropoff detected" : "No dropoff detected", 0, 2);
 
 		return canSeeDropoff;
 	}

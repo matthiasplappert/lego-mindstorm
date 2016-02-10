@@ -17,7 +17,7 @@ import State.MyState;
 
 public class ElevatorBehaviour extends StateBehavior {
 
-	private static final int ELEVATOR_MOVING_DURATION = 8;
+	private static final int ELEVATOR_MOVING_DURATION = 6;
 	private static final int ANGLE = -33;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
 	private static final int BACK_DISTANCE_ON_PLATOON = -11;
@@ -43,7 +43,7 @@ public class ElevatorBehaviour extends StateBehavior {
 	public void action() {
 		this.suppressed = false;
 		try {
-			LCD.clear();
+			//LCD.clear();
 			this.hal.printOnDisplay("ElevatorBehaviour started", 0, 0);
 			this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 			while (!this.suppressed && !this.finished) {// HERE IS outer loop!
@@ -79,29 +79,29 @@ public class ElevatorBehaviour extends StateBehavior {
 																// status=true
 
 					status = this.comm.requestStatus();
-					LCD.drawString("status is false       ", 1, 0);
+					//LCD.drawString("status is false       ", 1, 0);
 					Delay.msDelay(100);
 
 				}
 				this.hal.setColorMode(ColorMode.AMBIENT_LIGHT);
-				LCD.drawString("Request Elevator       ", 1, 0);
+				//LCD.drawString("Request Elevator       ", 1, 0);
 
 				if (this.comm.requestElevator()) {// reserve elevator
 
 					// wait for safe signal
 					this.wait_for_ambient_light_on();
 					// enter elevator
-					LCD.drawString("Ambient Light off      ", 1, 0);
+					//LCD.drawString("Ambient Light off      ", 1, 0);
 					this.followWallUntilElevatorEnd();
 					this.hal.setColorMode(ColorMode.RED);
 					// request elevator to move
-					LCD.drawString("Request Elevator       ", 1, 0);
-					LCD.drawString("to go down       ", 2, 0);
-					Sound.beep();
+					//LCD.drawString("Request Elevator       ", 1, 0);
+					//LCD.drawString("to go down       ", 2, 0);
+					//Sound.beep();
 					if (this.comm.moveElevatorDown()) {
 						Delay.msDelay(ELEVATOR_MOVING_DURATION * 1000);
-						LCD.drawString("Try to leave Elevator      ", 1, 0);
-						LCD.drawString("                           ", 2, 0);
+						//LCD.drawString("Try to leave Elevator      ", 1, 0);
+						//LCD.drawString("                           ", 2, 0);
 
 						this.move_until_line();
 						finished = true;
@@ -130,7 +130,7 @@ public class ElevatorBehaviour extends StateBehavior {
 		this.hal.setSpeed(forwardSpeed);
 		this.hal.forward();
 		while (this.hal.getLineType() != LineType.LINE && !this.suppressed) {
-			LCD.drawString("No Line Found", 1, 0);
+			//LCD.drawString("No Line Found", 1, 0);
 			Delay.msDelay(10);
 		}
 		this.hal.stop();
@@ -139,7 +139,7 @@ public class ElevatorBehaviour extends StateBehavior {
 
 	private void followWallUntilElevatorEnd() {
 		
-		Sound.beep();
+		//Sound.beep();
 //		this.hal.setSpeed(Speed.Slow);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 //		while(!this.suppressed && this.hal.getMeanDistance()> MAX_RANGE_PLATOON){
@@ -178,7 +178,7 @@ public class ElevatorBehaviour extends StateBehavior {
 	}
 
 	private void go_back(int distance) {
-		Sound.beep();
+		//Sound.beep();
 		int neg_dist = -1 * Math.abs(distance);
 		this.hal.stop();
 		this.hal.setSpeed(Speed.Medium);
@@ -194,7 +194,7 @@ public class ElevatorBehaviour extends StateBehavior {
 
 	private void wait_for_ambient_light_on() {
 		while (!this.hal.isAmbientLightOn() && !this.suppressed) {
-			LCD.drawString("Ambient Light is off       ", 1, 0);
+			//LCD.drawString("Ambient Light is off       ", 1, 0);
 			Delay.msDelay(10);
 		}
 

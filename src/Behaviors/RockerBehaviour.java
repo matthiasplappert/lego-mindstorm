@@ -46,7 +46,7 @@ public class RockerBehaviour extends StateBehavior {
 		// Wait until we have a stable signal. We at least wait for 10
 		// iterations and ensure
 		// that we initially cannot see the dropoff.
-		LCD.drawString("Mode: initializing", 0, 3);
+		//LCD.drawString("Mode: initializing", 0, 3);
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(LOOP_DELAY);
 		}
@@ -54,7 +54,7 @@ public class RockerBehaviour extends StateBehavior {
 		// Configure the follow angle. We use this initially before we have
 		// found the edge
 		// for the first time.
-		LCD.drawString("Mode: finding edge", 0, 3);
+		//LCD.drawString("Mode: finding edge", 0, 3);
 		this.hal.resetGyro();
 		this.hal.setCourseFollowingAngle(OFFSET_ANGLE);
 		this.hal.setSpeed(EDGE_SEARCH_SPEED);
@@ -68,7 +68,7 @@ public class RockerBehaviour extends StateBehavior {
 
 		// Turn to the left until we can barely see the edge anymore and go go
 		// go.
-		Sound.beep();
+		//Sound.beep();
 		this.hal.setSpeed(EDGE_SEARCH_SPEED);
 		this.hal.rotate(-MAX_TURN_ANGLE);
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
@@ -80,9 +80,9 @@ public class RockerBehaviour extends StateBehavior {
 		// drop-off.
 		// We then start to regulate the motors such that we keep a safe
 		// distance to the drop-off.
-		Sound.buzz();
-		LCD.clear(3);
-		LCD.drawString("Mode: following edge", 0, 3);
+		//Sound.buzz();
+		//LCD.clear(3);
+		//LCD.drawString("Mode: following edge", 0, 3);
 		this.hal.setSpeed(EDGE_FOLLOW_SPEED);
 		int numberOfStepsWithoutDropoff = 0;
 		boolean finished = false;
@@ -138,13 +138,13 @@ public class RockerBehaviour extends StateBehavior {
 	
 	private float getDistance() {
 		float distance = this.hal.getMeanDistance();
-		this.hal.printOnDisplay("Distance: " + Float.toString(distance), 3, 0);
+		//this.hal.printOnDisplay("Distance: " + Float.toString(distance), 3, 0);
 		return distance;
 	}
 
 	private boolean canSeeDropoff(float distance) {
 		boolean canSeeDropoff = (distance > DROPOFF_DISTANCE_THRESHOLD);
-		this.hal.printOnDisplay(canSeeDropoff ? "Dropoff detected" : "No dropoff detected", 3, 0);
+		//this.hal.printOnDisplay(canSeeDropoff ? "Dropoff detected" : "No dropoff detected", 3, 0);
 		return canSeeDropoff;
 	}
 

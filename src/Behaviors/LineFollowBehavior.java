@@ -40,10 +40,10 @@ public class LineFollowBehavior extends StateBehavior {
 		
 		if (!hal.isRedColorMode())
 			this.hal.setColorMode(ColorMode.RED);
-		LCD.clear();
+		//LCD.clear();
 		this.hal.printOnDisplay("LineSearchBehavior called", 0, 0);
 
-		Sound.beepSequence();
+		//Sound.beepSequence();
 		this.hal.setSpeed(Speed.FollowLine);
 		this.hal.resetGyro();
 		this.searchStage = 0;
@@ -74,7 +74,7 @@ public class LineFollowBehavior extends StateBehavior {
 			switch (line_state) {
 			case LINE:
 				// clear some variables
-				this.hal.printOnDisplay("Search found LINE", 1, 0);
+				//this.hal.printOnDisplay("Search found LINE", 1, 0);
 				this.hal.forward();
 				Delay.msDelay(10);
 				break;
@@ -90,7 +90,7 @@ public class LineFollowBehavior extends StateBehavior {
 				}
 				break;*/
 			case BLACK:
-				this.hal.printOnDisplay("Search found BLACK at " + this.searchStage, 1, 0);
+				//this.hal.printOnDisplay("Search found BLACK at " + this.searchStage, 1, 0);
 				switch (this.searchStage) {
 				case 0:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection);
@@ -124,7 +124,7 @@ public class LineFollowBehavior extends StateBehavior {
 					break;
 				case 3: 
 					//Error nothing ever found
-					Sound.buzz(); 
+					//Sound.buzz(); 
 					this.searchStage = 0; //TODO remove this here
 				}			
 				break;
@@ -137,12 +137,12 @@ public class LineFollowBehavior extends StateBehavior {
 	private void reactToFindLine(FindLineReturnState state) {				
 		switch(state){
 		case LINE_FOUND:
-			this.hal.printOnDisplay("Result is LINE_FOUND at " + this.searchStage, 2, 0);
+			//this.hal.printOnDisplay("Result is LINE_FOUND at " + this.searchStage, 2, 0);
 			this.hal.forward();
 			this.searchStage = 0; //reset search stage
 			break;
 		case LINE_NOT_FOUND:	
-			this.hal.printOnDisplay("Result is LINE_NOT_FOUND at " + this.searchStage, 2, 0);
+			//this.hal.printOnDisplay("Result is LINE_NOT_FOUND at " + this.searchStage, 2, 0);
 			this.searchStage++;
 			break;
 		}
