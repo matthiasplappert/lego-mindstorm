@@ -53,11 +53,13 @@ public class BridgeBehaviour extends StateBehavior {
 		}
 		
 		// Move forward a bit, fast.
+		this.hal.resetGyro();
 		this.hal.setSpeed(FORWARD_SPEED);
-		this.hal.resetLeftTachoCount();
-		this.hal.forward();
-		while (!suppressed && this.hal.getLeftTachoDistance() < INITIAL_FORWARD_DISTANCE &&
-			   !this.canSeeDropoff(this.getDistance())) {
+		this.hal.setCourseFollowingAngle(20);
+		int numberOfForwardSteps = 0;
+		while (!suppressed && numberOfForwardSteps < 200 && !this.canSeeDropoff(this.getDistance())) {
+			this.hal.performCourseFollowingStep();
+			numberOfForwardSteps++;
 			Delay.msDelay(10);
 		}
 
