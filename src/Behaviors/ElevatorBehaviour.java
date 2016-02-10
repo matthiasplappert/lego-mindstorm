@@ -17,15 +17,18 @@ import State.MyState;
 
 public class ElevatorBehaviour extends StateBehavior {
 
-	private static final int ELEVATOR_MOVING_DURATION = 10;
-	private static final int ANGLE = -35;
+	private static final int ELEVATOR_MOVING_DURATION = 8;
+	private static final int ANGLE = -33;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
-	private static final int BACK_DISTANCE_ON_PLATOON = -10;
+	private static final int BACK_DISTANCE_ON_PLATOON = -11;
 	private static final float MIN_DIST = 1.5f;
 	private static final float DISTANCE_TOLERANCE = 0.5f;
 	private static final int TURN_ANGLE = 5;
 	private static final Speed forwardSpeed = Speed.Fast;
 	private static final float MAX_RANGE_PLATOON = 30;
+	private static final int Gyro_Tolerance = 3;
+	private static final int correction_back_distance = -5;
+	private static final int correction_angle = 3;
 	private ComModule comm;
 
 	public ElevatorBehaviour(SharedState sharedState, IHAL hal) {
@@ -42,16 +45,10 @@ public class ElevatorBehaviour extends StateBehavior {
 		try {
 			LCD.clear();
 			this.hal.printOnDisplay("ElevatorBehaviour started", 0, 0);
-
+			this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
 			while (!this.suppressed && !this.finished) {// HERE IS outer loop!
 				boolean status = false;
-				this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);// Here
-																					// we
-																					// do
-																					// not
-																					// need
-																					// Distance
-																					// Sensor
+
 
 				this.hal.resetLeftTachoCount();
 				this.hal.resetGyro();
@@ -143,29 +140,27 @@ public class ElevatorBehaviour extends StateBehavior {
 	private void followWallUntilElevatorEnd() {
 		
 		Sound.beep();
-		this.hal.setSpeed(Speed.Slow);
-		
-		while(!this.suppressed && this.hal.getMeanDistance()> MAX_RANGE_PLATOON){
-			this.hal.forward();
-			Delay.msDelay(10);
-		}
-		
+//		this.hal.setSpeed(Speed.Slow);
+		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
+//		while(!this.suppressed && this.hal.getMeanDistance()> MAX_RANGE_PLATOON){
+//			this.hal.forward();
+//			Delay.msDelay(10);
+//		}
+		this.hal.resetGyro();
+		this.hal.setSpeed(Speed.Medium);
 		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
-			// Get (filtered) distance
-			float distance = this.hal.getCurrentDistance();
-
-			this.hal.printOnDisplay("dist to wall: " + distance, 1, 0);
-
-			// Keep distance to wall.
-			if (distance > MIN_DIST+ DISTANCE_TOLERANCE) {
-				this.hal.turn(-TURN_ANGLE);
+			float current_gyro = this.hal.getCurrentGyro();
+			if(current_gyro < -Gyro_Tolerance){//too far to left
+				this.hal.backward();
+				Delay.msDelay(10);
+				this.hal.rotate(correction_angle);
 			}
-			
-			
-			else if (distance < MIN_DIST) {
-				this.hal.turn(TURN_ANGLE);
-			} 
-			else {
+			else if(current_gyro > Gyro_Tolerance){//too far right
+				this.hal.backward();
+				Delay.msDelay(10);
+				this.hal.rotate(-correction_angle);
+			}
+			else{
 				this.hal.forward();
 			}
 			Delay.msDelay(10);
@@ -174,6 +169,10 @@ public class ElevatorBehaviour extends StateBehavior {
 
 		this.hal.stop();
 		go_back(-2);
+		this.hal.rotateTo(0, true);
+		while(!this.suppressed && this.hal.isRotating()){
+			Delay.msDelay(10);
+		}
 		this.hal.stop();
 		this.hal.setSpeed(forwardSpeed);
 	}
