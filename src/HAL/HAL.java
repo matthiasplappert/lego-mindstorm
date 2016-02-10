@@ -37,7 +37,7 @@ public class HAL implements IHAL {
 	private int turnSpeedOuter;
 
 	private SensorSampler sensorSampler;
-	private float courseFollowingAngle;
+	private float courseFollowingAngle = 0;
 
 	public HAL() {
 		this.motorLeft = new EV3LargeRegulatedMotor(MotorPort.A);
@@ -375,8 +375,8 @@ public class HAL implements IHAL {
 			turnSpeedOuter = 180;
 			break;
 		case VeryFast:
-			forwardSpeed = 500;
-			backwardSpeed = 500;
+			forwardSpeed = 450;
+			backwardSpeed = 450;
 			rotateSpeed = 350;
 			turnSpeedInner = 340;
 			turnSpeedOuter = 400;

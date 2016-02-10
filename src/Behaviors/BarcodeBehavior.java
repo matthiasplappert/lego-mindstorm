@@ -27,7 +27,7 @@ public class BarcodeBehavior extends StateBehavior {
 	public void action() {
 		this.suppressed = false;
 
-		LCD.clear();
+		//LCD.clear();
 		this.hal.printOnDisplay("BarcodeBehavior", 0, 0);
 
 		// WARNING: ONLY ENABLE FOR DEBUGGING, WILL EXIT THE PROGRAM
@@ -55,8 +55,8 @@ public class BarcodeBehavior extends StateBehavior {
 				this.hal.resetRightTachoCount();
 			}
 
-			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
-			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
+			//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
+			//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 
 			// Count changes from line to not on line.
 			if (wasOnLine && !isOnLine) {
@@ -69,7 +69,7 @@ public class BarcodeBehavior extends StateBehavior {
 			wasOnLine = isOnLine;
 
 			// Debugging
-			this.hal.printOnDisplay(Integer.toString(barcode), 2, 0);
+			//this.hal.printOnDisplay(Integer.toString(barcode), 2, 0);
 			Delay.msDelay(STEP_DELAY_MS);
 		}
 		this.hal.stop();
@@ -84,7 +84,7 @@ public class BarcodeBehavior extends StateBehavior {
 			this.hal.resetLeftTachoCount();
 			this.hal.resetRightTachoCount();
 			while (!this.suppressed && -this.hal.getLeftTachoDistance() < MAX_DISTANCE_CM) {
-				this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
+				//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 				this.hal.performCourseFollowingStep(true);
 				Delay.msDelay(STEP_DELAY_MS);
 			}
@@ -104,14 +104,14 @@ public class BarcodeBehavior extends StateBehavior {
 		this.hal.setCourseFollowingAngle(0);
 		while (!this.suppressed && this.hal.getLeftTachoDistance() < 100.0f) {
 			this.hal.performCourseFollowingStep();
-			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
-			this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
+			//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
+			//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 		}
 		this.hal.stop();
 		Sound.buzz();
 
-		this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
-		this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
+		//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoCount()), 5, 0);
+		//this.hal.printOnDisplay(Float.toString(this.hal.getLeftTachoDistance()), 6, 0);
 		Delay.msDelay(10000);
 		System.exit(0);
 	}

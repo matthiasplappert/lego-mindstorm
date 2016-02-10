@@ -34,7 +34,7 @@ public class HangingBridgeBehaviour extends StateBehavior {
 
 		float difference;
 		this.hal.printOnDisplay("HangingBridgeBehaviour started", 0, 0);
-
+		this.hal.printOnDisplay("Search Line", 7, 0);
 		if (!this.hal.getLineType().equals(LineType.LINE)) {
 			//this.hal.rotate(40);
 			//while(!suppressed && this.hal.isRotating()){
@@ -45,11 +45,12 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			
 			linesearch = new LineSearchBehavior(sharedState, hal);
 			linesearch.action();
+			sharedState.setState(this.getTargetState());
 		}
 		// Follow line
 		// After loosing the line
-
-		this.hal.setSpeed(Speed.Fast);
+		this.hal.printOnDisplay("Follow Line", 7, 0);
+		this.hal.setSpeed(Speed.FollowLine);
 
 		float distance = this.hal.getMeanDistance();
 		while (distance > 15.f) {
@@ -94,10 +95,13 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			}
 			distance = this.hal.getMeanDistance();
 		}
-
+		
 		this.hal.stop();
 		Sound.buzz();
-
+		Sound.beep();
+		Sound.buzz();
+		this.hal.setSpeed(Speed.Fast);
+		this.hal.printOnDisplay("Get Direction", 7, 0);
 		this.hal.resetGyro();
 		this.hal.forward();
 		float current_dist = 0;
@@ -116,25 +120,25 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		int count = 0;
 		int gyro_follow = 0;
 
-		while (!enough && this.hal.getCurrentDistance() < 15.f && !suppressed) {
+		while (!enough && !suppressed) {//&&  this.hal.getCurrentDistance() < 15.f 
 			count++;
-			this.hal.printOnDisplay("Count: " + count, 2, 0);
-			this.hal.printOnDisplay("Array_1:" + last_dist[0], 3, 0);
-			this.hal.printOnDisplay("Array_2:" + last_dist[1], 4, 0);
-			this.hal.printOnDisplay("Array_3:" + last_dist[2], 5, 0);
+
+			
 			this.hal.forward();
 			Delay.msDelay(100);
 			current_dist = this.hal.getMeanDistance();
-			last_dist[i] = current_dist;
+			
+			
 			avg = 0;
 			for (int k = 0; k < last_dist.length; k++) {
 				avg += last_dist[k];
 			}
 			avg /= last_dist.length;
 			diff = current_dist - avg;
-
+			
+			last_dist[i] = current_dist;
 			//if (this.hal.getLeftTachoDistance() >= minimum_distance && diff <= 0.02f) {
-			if ( count > 10 && diff <= 0.02f) {
+			if ( count > 10 && diff <= 0.01f) {
 				enough = true;
 				gyro_follow = (int)this.hal.getMeanGyro();
 				Sound.beep();
@@ -143,14 +147,23 @@ public class HangingBridgeBehaviour extends StateBehavior {
 				Sound.beep();
 
 			} else {// else if (Math.abs(current_dist) > 0.1f) {
-				this.hal.turn((int) Math.signum(current_dist));
+				this.hal.turn((int) Math.signum(diff));
 			}
 
 			Delay.msDelay(80);
 			this.hal.stop();
 			i = (i + 1) % last_dist.length;
+			
+			
+			
+			this.hal.printOnDisplay("Count: " + count, 2, 0);
+			this.hal.printOnDisplay("Array_1:" + last_dist[0], 3, 0);
+			this.hal.printOnDisplay("Array_2:" + last_dist[1], 4, 0);
+			this.hal.printOnDisplay("Array_3:" + last_dist[2], 5, 0);
+			this.hal.printOnDisplay("Current:" + current_dist , 6, 0);
 		}
 		this.hal.stop();
+		this.hal.printOnDisplay("Move Forward", 7, 0);
 		//Sound.beep();
 		//Delay.msDelay(5000);
 		// this.hal.printOnDisplay("In Gas", 3, 0);
@@ -179,9 +192,10 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		 */
 
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
-		this.hal.setSpeed(Speed.VeryFast);
+		//this.hal.setSpeed(Speed.VeryFast);
 		Delay.msDelay(100);
 		this.hal.setCourseFollowingAngle(gyro_follow);
+		
 		while (!this.suppressed && this.hal.getLineType() != LineType.LINE)
 
 		{
@@ -195,6 +209,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 		while (!suppressed && this.hal.getLeftTachoDistance() > -10) {
 			Delay.msDelay(10);
 		}
+		this.hal.printOnDisplay("END!", 7, 0);
+		this.hal.stop();
 		this.sharedState.reset(true);
 		Thread.yield();
 
