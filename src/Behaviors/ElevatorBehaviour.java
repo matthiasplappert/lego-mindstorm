@@ -105,7 +105,6 @@ public class ElevatorBehaviour extends StateBehavior {
 
 						this.move_until_line();
 						finished = true;
-						this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 						this.sharedState.reset(true);
 						// new ObstacleEndBehavior(this.sharedState,
 						// this.hal).action();
