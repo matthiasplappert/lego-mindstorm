@@ -386,9 +386,9 @@ public class HAL implements IHAL {
 			break;
 			
 		case FollowLine:
-			forwardSpeed = 500;
-			backwardSpeed = 500;
-			rotateSpeed = 250;
+			forwardSpeed = 450;
+			backwardSpeed = 450;
+			rotateSpeed = 230;
 			turnSpeedInner = 180;
 			turnSpeedOuter = 250;
 			break;
