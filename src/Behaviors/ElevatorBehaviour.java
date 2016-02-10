@@ -106,8 +106,7 @@ public class ElevatorBehaviour extends StateBehavior {
 						this.move_until_line();
 						finished = true;
 						this.sharedState.reset(true);
-						// new ObstacleEndBehavior(this.sharedState,
-						// this.hal).action();
+
 					} else {
 						// TODO: Move back to safe position and go to outer loop
 						throw new IllegalStateException("Error in elevator down!");
@@ -121,6 +120,7 @@ public class ElevatorBehaviour extends StateBehavior {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.sharedState.reset(true);
 
 		// Thread.yield();
 

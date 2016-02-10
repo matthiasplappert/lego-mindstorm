@@ -13,24 +13,25 @@ import State.MyState;
 
 public class FreeTrackBehaviour extends StateBehavior {
 
-	private static final int START_ANGLE = 20;
-	
+	private static final int START_ANGLE = 25;
+
 	private static final float DISTANCE_THRESHOLD = 10.f;
-	
+
 	private static final float DISTANCE_TOLERANCE = 5.f;
-	
+
 	private static final int TURN_ANGLE = 5;
-	
+
 	private static final int LOOP_DELAY = 10;
-	
+
 	private static final float BACKUP_DISTANCE = 10.f;
-	
+
 	private static final int ROTATION_ANGLE = -90;
 
 	private static final Speed DefaultSpeed = Speed.Labyrinth;
-	
+
 	private boolean suppressed;
 	private boolean hasDoneLeftTurn;
+
 	public FreeTrackBehaviour(SharedState sharedState, IHAL hal) {
 		super(sharedState, hal);
 		hasDoneLeftTurn = false;
@@ -39,13 +40,13 @@ public class FreeTrackBehaviour extends StateBehavior {
 	@Override
 	public void action() {
 		this.suppressed = false;
-		
+
 		LCD.drawString("FreeTrackBehaviour", 0, 0);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Labyrinth);
-		
+
 		// We use the same speed throughout the maze
-		this.hal.setSpeed(Speed.Labyrinth);
-		
+		this.hal.setSpeed(Speed.VeryFast);
+
 		// Set course slightly to the right.
 		this.hal.resetGyro();
 		this.hal.setCourseFollowingAngle(START_ANGLE);
@@ -53,8 +54,10 @@ public class FreeTrackBehaviour extends StateBehavior {
 			this.hal.performCourseFollowingStep();
 		}
 		this.hal.stop();
+		// We use the same speed throughout the maze
+		this.hal.setSpeed(Speed.Labyrinth);
 		Sound.twoBeeps();
-		
+
 		// We have reached the wall, start navigating.
 		while (!this.suppressed && !this.hasDoneLeftTurn) {
 			// Get (filtered) distance
@@ -69,13 +72,13 @@ public class FreeTrackBehaviour extends StateBehavior {
 				Delay.msDelay(LOOP_DELAY);
 			}
 		}
-				
-		while(this.hal.getCurrentGyro() < 90 && !this.suppressed){
+
+		while (this.hal.getCurrentGyro() < 90 && !this.suppressed) {
 			this.followWall();
 			Delay.msDelay(10);
 		}
-		
-		//we are around the last corner		
+
+		// we are around the last corner
 		this.sharedState.setState(MyState.BossState);
 	}
 
@@ -100,7 +103,7 @@ public class FreeTrackBehaviour extends StateBehavior {
 			Delay.msDelay(LOOP_DELAY);
 		}
 		this.hal.stop();
-		
+
 		this.hal.rotate(ROTATION_ANGLE);
 		while (!this.suppressed && this.hal.isRotating()) {
 			Delay.msDelay(LOOP_DELAY);

@@ -95,6 +95,7 @@ public class LineFollowBehavior extends StateBehavior {
 				case 0:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 30,  this.lastDirection);
 					this.findLineBehav.action();
+					this.hal.setSpeed(Speed.FollowLine);
 					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());
 					break;
@@ -111,11 +112,13 @@ public class LineFollowBehavior extends StateBehavior {
 					} else {
 						// Keep looking for line
 						this.searchStage++;
+						this.hal.setSpeed(Speed.FollowLine);
 					}
 					break;
 				case 2:
 					this.findLineBehav = new FindLineBehaviour(sharedState, hal, 100, this.lastDirection);
 					this.findLineBehav.action();
+					this.hal.setSpeed(Speed.FollowLine);
 					this.lastDirection = this.findLineBehav.getLastUsedDirection();
 					reactToFindLine(findLineBehav.returnState());
 					break;
