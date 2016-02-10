@@ -42,6 +42,10 @@ public class BridgeBehaviour extends StateBehavior {
 
 		LCD.drawString("BridgeBehavior", 0, 0);
 		
+		this.hal.backward();
+		Delay.msDelay(30);
+		this.hal.stop();
+		
 		// RELEASE THE KRAKEN (and wait for it)
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.DOWN);
 		// Wait until we have a stable signal. We at least wait for 10

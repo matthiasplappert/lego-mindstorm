@@ -1,19 +1,15 @@
 package Behaviors;
 
-import java.util.Random;
-
 import HAL.DistanceSensorPosition;
 import HAL.IHAL;
 import HAL.Speed;
 import State.SharedState;
-import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import State.MyState;
 
 public class FreeTrackBehaviour extends StateBehavior {
 
-	private static final int START_ANGLE = 25;
+	private static final int START_ANGLE = 35;
 
 	private static final float DISTANCE_THRESHOLD = 10.f;
 
