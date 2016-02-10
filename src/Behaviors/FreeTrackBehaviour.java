@@ -69,28 +69,14 @@ public class FreeTrackBehaviour extends StateBehavior {
 				Delay.msDelay(LOOP_DELAY);
 			}
 		}
-		
-		Random r = new Random();
-		int course_last_part = -(90 + r.nextInt(6) + 5);//90 + [0,6[ + 5 = [-95,-100]
-
-		while(this.hal.getCurrentGyro()<-90 && !this.suppressed){
+				
+		while(this.hal.getCurrentGyro() < 90 && !this.suppressed){
 			this.followWall();
 			Delay.msDelay(10);
 		}
-		//we are around the last corner
-		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.Freetrack);
-
-		this.hal.setCourseFollowingAngle(course_last_part);//move slightly to the right
-		this.hal.setSpeed(Speed.VeryFast);
 		
-		while(!this.suppressed){
-			this.hal.performCourseFollowingStep();
-			
-		}
-		
-		this.hal.stop();
-//		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
-		this.sharedState.reset(true);
+		//we are around the last corner		
+		this.sharedState.setState(MyState.BossState);
 	}
 
 	private void followWall() {
