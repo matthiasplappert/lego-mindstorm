@@ -16,7 +16,6 @@ public class RockerBehaviour extends StateBehavior {
 	
 	// Shared constants
 	public static final int LOOP_DELAY = 10;
-	public static final float FORWARD_DISTANCE = 100.0f; // in cm
 	private static final float DROPOFF_DISTANCE_THRESHOLD = 8.0f; // in cm
 	
 	// The initial offset angle. Should be in the direction of the sensor.
@@ -85,7 +84,9 @@ public class RockerBehaviour extends StateBehavior {
 		LCD.clear(3);
 		LCD.drawString("Mode: following edge", 0, 3);
 		this.hal.setSpeed(EDGE_FOLLOW_SPEED);
-		while (!this.suppressed && this.hal.getLeftTachoDistance() < FORWARD_DISTANCE) {
+		int numberOfStepsWithoutDropoff = 0;
+		boolean finished = false;
+		while (!this.suppressed && !finished) {
 			// Get (filtered) distance
 			float distance = this.getDistance();
 			boolean canSeeDropoff = this.canSeeDropoff(distance);
@@ -94,6 +95,7 @@ public class RockerBehaviour extends StateBehavior {
 			if (canSeeDropoff) {
 				// Turn slightly to the left until we do not see the dropoff
 				// anymore.
+				numberOfStepsWithoutDropoff = 0;
 				this.hal.turn(-MAX_TURN_ANGLE);
 				while (!this.suppressed && this.hal.isRotating() && !this.hal.getLineType().equals(LineType.LINE)) {
 					if (!this.canSeeDropoff(this.getDistance())) {
@@ -109,6 +111,11 @@ public class RockerBehaviour extends StateBehavior {
 					if (this.canSeeDropoff(this.getDistance())) {
 						break;
 					}
+					if (numberOfStepsWithoutDropoff > 50) {
+						finished = true;
+						break;
+					}
+					numberOfStepsWithoutDropoff++;
 					Delay.msDelay(LOOP_DELAY);
 				}
 			}
@@ -118,8 +125,10 @@ public class RockerBehaviour extends StateBehavior {
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.UP);
 		
 		// Move forward until we meet the line.
-		this.hal.forward();
+		this.hal.resetGyro();
+		this.hal.setCourseFollowingAngle(-5);
 		while (!this.suppressed && !this.hal.getLineType().equals(LineType.LINE)) {
+			this.hal.performCourseFollowingStep();
 			Delay.msDelay(LOOP_DELAY);
 		}
 		this.hal.stop();
