@@ -18,7 +18,7 @@ import State.MyState;
 public class ElevatorBehaviour extends StateBehavior {
 
 	private static final int ELEVATOR_MOVING_DURATION = 6;
-	private static final int ANGLE = -33;
+	private static final int ANGLE = -35;
 	private static final int MAX_MOVE_ON_PLATOON_DISTANCE = 80;
 	private static final int BACK_DISTANCE_ON_PLATOON = -11;
 	private static final float MIN_DIST = 1.5f;
