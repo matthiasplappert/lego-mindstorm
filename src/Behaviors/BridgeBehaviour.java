@@ -84,7 +84,6 @@ public class BridgeBehaviour extends StateBehavior {
 		while (!this.suppressed && this.canSeeDropoff(this.getDistance())) {
 			Delay.msDelay(STEP_DELAY_MS);
 		}
-		this.hal.resetGyro();  // reset gyro so that we can use it in the elevator!
 		this.hal.stop();
 
 		// Our strategy is the following: We just keep going until we reach the
