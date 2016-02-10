@@ -133,7 +133,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			avg /= last_dist.length;
 			diff = current_dist - avg;
 
-			if (this.hal.getLeftTachoDistance() >= minimum_distance && diff <= 0.02f) {
+			//if (this.hal.getLeftTachoDistance() >= minimum_distance && diff <= 0.02f) {
+			if ( count > 10 && diff <= 0.02f) {
 				enough = true;
 				gyro_follow = (int)this.hal.getMeanGyro();
 				Sound.beep();
@@ -150,8 +151,8 @@ public class HangingBridgeBehaviour extends StateBehavior {
 			i = (i + 1) % last_dist.length;
 		}
 		this.hal.stop();
-		Sound.beep();
-		Delay.msDelay(5000);
+		//Sound.beep();
+		//Delay.msDelay(5000);
 		// this.hal.printOnDisplay("In Gas", 3, 0);
 
 		/*
