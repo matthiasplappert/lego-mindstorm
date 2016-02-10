@@ -2,7 +2,6 @@ package Behaviors;
 
 import java.io.IOException;
 
-
 import HAL.ColorMode;
 import HAL.DistanceSensorPosition;
 import HAL.IHAL;
@@ -49,7 +48,6 @@ public class ElevatorBehaviour extends StateBehavior {
 			while (!this.suppressed && !this.finished) {// HERE IS outer loop!
 				boolean status = false;
 
-
 				this.hal.resetLeftTachoCount();
 				this.hal.resetGyro();
 				this.hal.setSpeed(Speed.Fast);
@@ -66,27 +64,29 @@ public class ElevatorBehaviour extends StateBehavior {
 
 					Delay.msDelay(10);
 				}
+
 				this.hal.stop();
 				// move back
-				go_back(BACK_DISTANCE_ON_PLATOON);
-				this.hal.rotate(Math.abs(ANGLE));
-				while (this.hal.isRotating() && !this.suppressed) {
-					Delay.msDelay(10);
-				}
-				this.hal.stop();
-
 				while (status == false && !this.suppressed) {// wait for
-																// status=true
+					// status=true
 
 					status = this.comm.requestStatus();
 					LCD.drawString("status is false       ", 1, 0);
 					Delay.msDelay(100);
 
 				}
-				this.hal.setColorMode(ColorMode.AMBIENT_LIGHT);
-				LCD.drawString("Request Elevator       ", 1, 0);
-
 				if (this.comm.requestElevator()) {// reserve elevator
+
+					go_back(BACK_DISTANCE_ON_PLATOON);
+
+					this.hal.rotate(Math.abs(ANGLE));
+					while (this.hal.isRotating() && !this.suppressed) {
+						Delay.msDelay(10);
+					}
+					this.hal.stop();
+
+					this.hal.setColorMode(ColorMode.AMBIENT_LIGHT);
+					LCD.drawString("Request Elevator       ", 1, 0);
 
 					// wait for safe signal
 					this.wait_for_ambient_light_on();
@@ -138,29 +138,28 @@ public class ElevatorBehaviour extends StateBehavior {
 	}
 
 	private void followWallUntilElevatorEnd() {
-		
+
 		Sound.beep();
-//		this.hal.setSpeed(Speed.Slow);
+		// this.hal.setSpeed(Speed.Slow);
 		this.hal.moveDistanceSensorToPosition(DistanceSensorPosition.SAFE);
-//		while(!this.suppressed && this.hal.getMeanDistance()> MAX_RANGE_PLATOON){
-//			this.hal.forward();
-//			Delay.msDelay(10);
-//		}
+		// while(!this.suppressed && this.hal.getMeanDistance()>
+		// MAX_RANGE_PLATOON){
+		// this.hal.forward();
+		// Delay.msDelay(10);
+		// }
 		this.hal.resetGyro();
 		this.hal.setSpeed(Speed.Medium);
 		while (!this.suppressed && !this.hal.isTouchButtonPressed()) {
 			float current_gyro = this.hal.getCurrentGyro();
-			if(current_gyro < -Gyro_Tolerance){//too far to left
+			if (current_gyro < -Gyro_Tolerance) {// too far to left
 				this.hal.backward();
 				Delay.msDelay(10);
 				this.hal.rotate(correction_angle);
-			}
-			else if(current_gyro > Gyro_Tolerance){//too far right
+			} else if (current_gyro > Gyro_Tolerance) {// too far right
 				this.hal.backward();
 				Delay.msDelay(10);
 				this.hal.rotate(-correction_angle);
-			}
-			else{
+			} else {
 				this.hal.forward();
 			}
 			Delay.msDelay(10);
@@ -170,7 +169,7 @@ public class ElevatorBehaviour extends StateBehavior {
 		this.hal.stop();
 		go_back(-2);
 		this.hal.rotateTo(0, true);
-		while(!this.suppressed && this.hal.isRotating()){
+		while (!this.suppressed && this.hal.isRotating()) {
 			Delay.msDelay(10);
 		}
 		this.hal.stop();
