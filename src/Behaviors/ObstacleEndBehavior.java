@@ -47,13 +47,8 @@ public class ObstacleEndBehavior extends StateBehavior {
 		this.barcodeBehavior.action();
 		this.sharedState.setState(this.getTargetState());
 		if (this.barcodeBehavior.scannedBarcode != 2) {
-			// TODO: what do we do now?!
-			Button.LEDPattern(1);
-			for (int i = 0; i < 5; i++) {
-				Sound.beepSequence();
-				Delay.msDelay(100);
-				return;
-			}
+			// Wrong barcode, but keep going anyway
+			Sound.buzz();
 		}
 		LCD.clear();
 		
